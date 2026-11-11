@@ -181,8 +181,10 @@ def load_learn(problems: list[dict], categories: list[str]):
     concepts = runpy.run_path(str(LEARN / "concepts.py"))["CONCEPTS"]
     patterns = runpy.run_path(str(LEARN / "patterns.py"))["PATTERNS"]
     insights = runpy.run_path(str(LEARN / "insights.py"))["INSIGHTS"]
+    drills = runpy.run_path(str(LEARN / "python_drills.py"))["DRILLS"]
 
     concept_ids = {c["id"] for c in concepts}
+    assert not set(drills) - concept_ids, f"python_drills.py has unknown concept ids {set(drills) - concept_ids}"
     used_in = defaultdict(list)
     for p in problems:
         tags = detect_concepts(p["solution"])
@@ -202,7 +204,8 @@ def load_learn(problems: list[dict], categories: list[str]):
     for c in concepts:
         c = dict(c)
         c["output"] = run_snippet(c["snippet"])
-        c["quiz"] = [{"id": f"py:{c['id']}:{i}", "kind": "python", **_check_question(q, c["id"])} for i, q in enumerate(c.get("quiz", []))]
+        qs = [*c.get("quiz", []), *drills.get(c["id"], [])]
+        c["quiz"] = [{"id": f"py:{c['id']}:{i}", "kind": "python", **_check_question(q, c["id"])} for i, q in enumerate(qs)]
         c["usedIn"] = used_in.get(c["id"], [])
         out_concepts.append(c)
 

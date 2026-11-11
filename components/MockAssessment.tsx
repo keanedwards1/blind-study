@@ -221,7 +221,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
           <div className="text-xs text-subtle sm:col-span-2">Difficulty order: {difficultyPlan(count).join(" → ")}</div>
         </div>
 
-        <button onClick={start} className="mt-6 rounded-md bg-amber-500 px-5 py-2 text-sm font-semibold text-zinc-950 hover:bg-amber-400">
+        <button onClick={start} className="mt-6 rounded-md bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover">
           Start ({minutes} min)
         </button>
 
@@ -386,7 +386,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
               <li>What you&apos;d improve with more time, or why tests failed</li>
             </ul>
           </div>
-          <button onClick={next} className="mt-5 rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-amber-400">
+          <button onClick={next} className="mt-5 rounded-md bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
             {timeUp || isLast ? "Finish & see results" : "Next problem →"}
           </button>
           {!item.rec && <span className="ml-3 text-xs text-subtle">You can continue without recording.</span>}

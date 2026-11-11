@@ -36,7 +36,8 @@ export default function QuizPage() {
       return pt.quiz.map((q) => ({ ...q, source: "pattern" as const, sourceTitle: pt.category, href: `/learn#pattern-${pt.id}`, category: pt.category, context }));
     }),
     ...concepts.flatMap((c) => {
-      const context: DrillContext = { kind: "concept", title: c.title, summary: c.summary, snippet: c.snippet, output: c.output };
+      const usedIn = c.usedIn.slice(0, 6).map((slug) => ({ slug, title: problems.find((p) => p.slug === slug)?.title ?? slug }));
+      const context: DrillContext = { kind: "concept", title: c.title, summary: c.summary, snippet: c.snippet, output: c.output, usedIn, usedInTotal: c.usedIn.length };
       return c.quiz.map((q) => ({ ...q, source: "python" as const, sourceTitle: c.title, href: `/learn#py-${c.id}`, context }));
     }),
   ];

@@ -1,50 +1,60 @@
 @import "tailwindcss";
 
-/* Theme tokens. Light is the default; <html data-theme="dark"> switches to dark. */
+/*
+ * Drill palette. Light is the default; <html data-theme="dark"> switches to dark.
+ * Surfaces step up in brightness (page → panel → raised → hover) so modules read as stacked cards.
+ * Accent is "Ember" (#FFB224); --accent-text is the same hue tuned to pass contrast as text.
+ */
 :root {
   color-scheme: light;
-  --page: #fafaf9;
+  --page: #f2f3f5;
   --panel: #ffffff;
-  --raised: #f1f1f0;
-  --hover: #f4f4f3;
-  --line: #e7e5e4;
-  --line-strong: #d6d3d1;
-  --fg: #1c1917;
-  --fg-2: #3f3a36;
-  --muted: #57534e;
-  --subtle: #78716c;
-  --btn: #e7e5e4;
-  --btn-hover: #d6d3d1;
-  --ok: #047857;
-  --bad: #be123c;
-  --warn: #b45309;
+  --raised: #f6f7f9;
+  --hover: #eceef1;
+  --line: #e3e5e9;
+  --line-strong: #cdd1d7;
+  --fg: #111216;
+  --fg-2: #33363d;
+  --muted: #5a5e68;
+  --subtle: #80848e;
+  --btn: #e6e8ec;
+  --btn-hover: #d9dce1;
+  --ok: #0a8f63;
+  --bad: #d21f4a;
+  --warn: #b26a00;
   --tle: #c2410c;
-  --accent: #f59e0b;
-  --code-bg: #f5f5f4;
-  --code-fg: #1c1917;
+  --accent: #ffb224;
+  --accent-hover: #ffc14f;
+  --accent-text: #a35f00;
+  --on-accent: #1a1203;
+  --code-bg: #f1f2f5;
+  --code-fg: #111216;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: #09090b;
-  --panel: #18181b;
-  --raised: #27272a;
-  --hover: #1f1f23;
-  --line: #27272a;
-  --line-strong: #3f3f46;
-  --fg: #f4f4f5;
-  --fg-2: #d4d4d8;
-  --muted: #a1a1aa;
-  --subtle: #71717a;
-  --btn: #3f3f46;
-  --btn-hover: #52525b;
-  --ok: #34d399;
-  --bad: #fb7185;
-  --warn: #fbbf24;
-  --tle: #fb923c;
-  --accent: #fbbf24;
-  --code-bg: #27272a;
-  --code-fg: #fafafa;
+  --page: #0b0c0e;
+  --panel: #16171a;
+  --raised: #1e2024;
+  --hover: #26282d;
+  --line: #26282d;
+  --line-strong: #363940;
+  --fg: #f5f5f7;
+  --fg-2: #cfd1d6;
+  --muted: #a0a3ab;
+  --subtle: #6f727b;
+  --btn: #2a2c32;
+  --btn-hover: #34373e;
+  --ok: #2dd4a0;
+  --bad: #ff5c7a;
+  --warn: #ffb224;
+  --tle: #ff8a3d;
+  --accent: #ffb224;
+  --accent-hover: #ffc14f;
+  --accent-text: #ffb224;
+  --on-accent: #1a1203;
+  --code-bg: #1e2024;
+  --code-fg: #f5f5f7;
 }
 
 @theme inline {
@@ -65,14 +75,17 @@
   --color-warn: var(--warn);
   --color-tle: var(--tle);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-text: var(--accent-text);
+  --color-on-accent: var(--on-accent);
+  --font-sans: var(--font-figtree);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 body {
   background: var(--page);
   color: var(--fg);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-figtree), system-ui, sans-serif;
 }
 
 /* Minimal markdown styling for problem statements and lessons */
@@ -88,7 +101,7 @@ body {
 .md strong { color: var(--fg); font-weight: 600; }
 .md em { color: var(--muted); }
 .md code {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 0.85em;
   background: var(--code-bg);
   border-radius: 4px;

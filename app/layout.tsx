@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Figtree, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
 import HydrationMarker from "@/components/HydrationMarker";
+import { DrillMark } from "@/components/icons";
+import NavLinks from "@/components/NavLinks";
 import ThemeToggle, { themeInitScript } from "@/components/ThemeToggle";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+// Figtree: a warm geometric sans with a large x-height, readable at small UI sizes and bold at display sizes.
+// JetBrains Mono: tall, distinct glyphs (0/O, 1/l) for code and numbers.
+const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Drill",
@@ -17,29 +21,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${figtree.variable} ${jetbrainsMono.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         {/* Applies the saved theme before first paint (no flash). Next injects it into <head> outside React's hydration tree. */}
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
-        <header className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-line bg-panel px-4">
-          <Link href="/" className="font-semibold tracking-tight text-fg">
-            drill<span className="text-warn">.</span>
+        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-line bg-panel px-4 sm:px-6">
+          <Link href="/" aria-label="drill home" className="flex shrink-0 items-center gap-2 text-lg font-extrabold tracking-tight text-fg">
+            <DrillMark className="h-7 w-7" />
+            <span className="hidden sm:inline">
+              drill
+            </span>
           </Link>
-          <nav className="flex items-center gap-4 overflow-x-auto text-sm sm:gap-5">
-            <Link href="/" className="text-muted hover:text-fg">
-              Problems
-            </Link>
-            <Link href="/learn" className="text-muted hover:text-fg">
-              Learn
-            </Link>
-            <Link href="/quiz" className="text-muted hover:text-fg">
-              Quiz
-            </Link>
-            <Link href="/mock" className="whitespace-nowrap text-muted hover:text-fg">
-              Mock assessment
-            </Link>
+          <nav className="flex min-w-0 items-center gap-1 overflow-x-auto">
+            <NavLinks />
             <ThemeToggle />
           </nav>
         </header>

@@ -10,7 +10,7 @@ import { QuizCard, kindLabel, useQuizStats } from "./Quiz";
 export type DrillContext =
   | { kind: "problem"; title: string; difficulty: string; statement: string; example: string; solution: string }
   | { kind: "pattern"; title: string; summary: string; signals: string[]; template: string }
-  | { kind: "concept"; title: string; summary: string; snippet: string; output: string };
+  | { kind: "concept"; title: string; summary: string; snippet: string; output: string; usedIn: { slug: string; title: string }[]; usedInTotal: number };
 
 export type DrillQuestion = QuizQuestion & {
   source: "problem" | "python" | "pattern";
@@ -32,7 +32,7 @@ function ContextPanel({ context, href }: { context: DrillContext; href: string }
   const heading = { problem: "Problem", pattern: "Pattern", concept: "Python concept" }[context.kind];
   const code = context.kind === "problem" ? context.solution : context.kind === "pattern" ? context.template : context.snippet;
   return (
-    <div className="mb-3 rounded-lg border border-line bg-raised/60 p-4" data-testid="quiz-context">
+    <div className="mt-3 rounded-xl border border-line bg-raised/60 p-4" data-testid="quiz-context">
       <div className="mb-1 flex items-baseline justify-between gap-2">
         <div className="text-xs font-semibold uppercase tracking-wide text-subtle">{heading}</div>
         <Link href={href} className="text-xs text-subtle underline hover:text-fg-2">
@@ -55,7 +55,25 @@ function ContextPanel({ context, href }: { context: DrillContext; href: string }
           <Markdown>{"**When to use it:**\n" + context.signals.map((s) => `- ${s}`).join("\n")}</Markdown>
         </>
       )}
-      {context.kind === "concept" && <Markdown>{context.summary}</Markdown>}
+      {context.kind === "concept" && (
+        <>
+          <Markdown>{context.summary}</Markdown>
+          {context.usedIn.length > 0 && (
+            <div className="mt-2">
+              <div className="mb-1.5 text-xs text-subtle">
+                You&apos;ll need this in {context.usedInTotal} problem{context.usedInTotal === 1 ? "" : "s"}, including:
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {context.usedIn.map((p) => (
+                  <Link key={p.slug} href={`/problems/${p.slug}`} className="rounded-full border border-line bg-panel px-2.5 py-0.5 text-xs text-fg-2 hover:border-line-strong hover:text-fg">
+                    {p.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
       <button onClick={() => setShowCode(!showCode)} className="mt-2 text-xs font-medium text-fg-2 underline hover:text-fg">
         {showCode ? "Hide code" : reveal[context.kind]}
       </button>
@@ -101,10 +119,17 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
   const mastered = questions.filter((q) => stats[q.id]?.last).length;
   const missed = questions.filter((q) => stats[q.id] && !stats[q.id].last).length;
 
-  function start() {
-    setRound(shuffle(pool).slice(0, size));
+  // Python questions arrive in concept order (basics first), which is the order to learn them in.
+  const pythonQs = questions.filter((q) => q.source === "python");
+
+  function startWith(qs: DrillQuestion[]) {
+    setRound(qs);
     setIdx(0);
     setResults([]);
+  }
+
+  function start() {
+    startWith(shuffle(pool).slice(0, size));
   }
 
   if (round) {
@@ -124,7 +149,6 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
         <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-raised">
           <div className="h-full bg-accent transition-all" style={{ width: `${(results.length / round.length) * 100}%` }} />
         </div>
-        <ContextPanel key={"ctx" + q.id + idx} context={q.context} href={q.href} />
         <QuizCard
           key={q.id + idx}
           question={q}
@@ -132,13 +156,14 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
           label={kindLabel[q.kind]}
           onAnswered={(ok) => setResults((r) => [...r, ok])}
         />
-        <div className="mt-4 flex justify-end">
-          {results.length > idx && !done && (
-            <button onClick={() => setIdx(idx + 1)} className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-zinc-950 hover:opacity-90">
+        {results.length > idx && !done && (
+          <div className="mt-3 flex justify-end">
+            <button onClick={() => setIdx(idx + 1)} className="rounded-full bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
               Next question →
             </button>
-          )}
-        </div>
+          </div>
+        )}
+        <ContextPanel key={"ctx" + q.id + idx} context={q.context} href={q.href} />
         {done && (
           <div className="mt-6 rounded-lg border border-line bg-panel p-5 text-center">
             <div className="text-2xl font-semibold text-fg">
@@ -146,7 +171,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
             </div>
             <p className="mt-1 text-sm text-muted">{right === round.length ? "Perfect round." : "Missed questions go into your “review missed” pile."}</p>
             <div className="mt-4 flex justify-center gap-3">
-              <button onClick={start} className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-zinc-950 hover:opacity-90">
+              <button onClick={start} className="rounded-full bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
                 Another round
               </button>
               <button onClick={() => setRound(null)} className="rounded-md border border-line-strong px-4 py-2 text-sm text-fg-2 hover:bg-hover">
@@ -220,11 +245,27 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
         <button
           onClick={start}
           disabled={!pool.length}
-          className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-zinc-950 hover:opacity-90 disabled:opacity-40"
+          className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover disabled:opacity-40"
         >
           Start ({Math.min(size, pool.length)} questions)
         </button>
         <span className="text-xs text-subtle">{pool.length} match these filters</span>
+      </div>
+
+      <div id="crash-course" className="mt-8 flex scroll-mt-6 flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-panel p-5">
+        <div className="max-w-md">
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-accent-text">Python crash course</div>
+          <p className="mt-1 text-sm font-semibold text-fg">The Python you need for all 75 problems</p>
+          <p className="mt-1 text-sm leading-6 text-muted">
+            {pythonQs.length} questions in learning order, from dicts and sets through heaps, recursion and bit tricks. Each one links to the problems that use it.
+          </p>
+        </div>
+        <button
+          onClick={() => startWith(pythonQs)}
+          className="whitespace-nowrap rounded-full border border-line-strong px-5 py-2 text-sm font-bold text-fg hover:border-fg-2 hover:bg-hover"
+        >
+          Start crash course
+        </button>
       </div>
     </div>
   );

@@ -12,12 +12,12 @@ describe("Theme", () => {
   it("defaults to light and remembers dark mode", () => {
     cy.visit("/");
     cy.get("html").should("not.have.attr", "data-theme");
-    cy.get("body").should("have.css", "background-color", "rgb(250, 250, 249)");
+    cy.get("body").should("have.css", "background-color", "rgb(242, 243, 245)");
     cy.get('button[aria-label="Switch to dark mode"]').click();
     cy.get("html").should("have.attr", "data-theme", "dark");
     cy.reload();
     cy.get("html").should("have.attr", "data-theme", "dark");
-    cy.get("body").should("have.css", "background-color", "rgb(9, 9, 11)");
+    cy.get("body").should("have.css", "background-color", "rgb(11, 12, 14)");
     cy.get('button[aria-label="Switch to light mode"]').click();
     cy.get("html").should("have.attr", "data-theme", "light");
   });
