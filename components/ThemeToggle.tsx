@@ -20,7 +20,7 @@ export default function ThemeToggle() {
         document.documentElement.dataset.theme = next;
         save("theme", next);
       }}
-      className="rounded-md px-2 py-1 text-sm text-muted hover:bg-hover hover:text-fg"
+      className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-base text-muted hover:bg-hover hover:text-fg sm:h-10 sm:w-10 sm:text-lg lg:h-11 lg:w-11 lg:text-xl"
       aria-label={`Switch to ${next} mode`}
       title={`Switch to ${next} mode`}
     >

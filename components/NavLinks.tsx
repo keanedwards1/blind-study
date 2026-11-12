@@ -22,14 +22,15 @@ export default function NavLinks() {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition-colors sm:px-3.5 ${
+            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition-colors sm:px-4 sm:py-2 sm:text-base lg:px-5 lg:text-lg ${
               active ? "bg-fg text-page" : "text-muted hover:bg-hover hover:text-fg"
             }`}
           >
             {short ? (
               <>
-                <span className="sm:hidden">{short}</span>
-                <span className="hidden sm:inline">{label}</span>
+                {/* Full label only once there's room for it at the larger nav size. */}
+                <span className="md:hidden">{short}</span>
+                <span className="hidden md:inline">{label}</span>
               </>
             ) : (
               label

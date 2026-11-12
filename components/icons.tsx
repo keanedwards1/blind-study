@@ -262,10 +262,11 @@ export const UploadIcon = (p: IconProps) => (
 /** Logo: a prompt chevron and cursor on a flat tile that follows the theme. */
 export function DrillMark({ className = "" }: { className?: string }) {
   return (
+    // Geometric lowercase "d" on an amber tile. Keep in sync with app/icon.svg (the favicon).
     <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <rect width="32" height="32" rx="9" className="fill-fg" />
-      <path d="m9 10.5 6 5.5-6 5.5" fill="none" className="stroke-page" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M17.5 21.5h6" className="stroke-page" strokeWidth="3" strokeLinecap="round" />
+      <rect width="32" height="32" rx="8" className="fill-accent" />
+      <circle cx="16" cy="18.5" r="6.25" fill="none" className="stroke-on-accent" strokeWidth="3.5" />
+      <path d="M22.25 7.5v17.25" fill="none" className="stroke-on-accent" strokeWidth="3.5" strokeLinecap="round" />
     </svg>
   );
 }

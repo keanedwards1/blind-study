@@ -385,6 +385,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
           key={q.id + idx}
           question={q}
           allowRetry={false}
+          size="large"
           label={kindLabel[q.kind]}
           onAnswered={(ok) => setResults((r) => [...r, ok])}
         />

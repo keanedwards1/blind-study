@@ -58,11 +58,14 @@ export function QuizCard({
   label,
   onAnswered,
   allowRetry = true,
+  size = "default",
 }: {
   question: QuizQuestion;
   label?: React.ReactNode;
   onAnswered?: (correct: boolean) => void;
   allowRetry?: boolean;
+  /** "large" scales the question and answers up on tablet and desktop (see .quiz-large in globals.css); phones stay compact. */
+  size?: "default" | "large";
 }) {
   const [picked, setPicked] = useState<number | null>(null);
   const order = useMemo(() => seededOrder(question.id, question.options.length), [question]);
@@ -77,14 +80,16 @@ export function QuizCard({
   }
 
   return (
-    <div className="rounded-lg border border-line bg-panel p-4" data-testid="quiz-card">
+    <div className={`rounded-lg border border-line bg-panel p-4 ${size === "large" ? "quiz-large" : ""}`} data-testid="quiz-card">
       <div className="mb-2 flex items-center justify-between gap-2 text-xs text-subtle">
         <span>{label ?? kindLabel[question.kind]}</span>
         {answered && <span className={correct ? "font-medium text-ok" : "font-medium text-bad"}>{correct ? "Correct" : "Not quite"}</span>}
       </div>
-      <Markdown>{question.q}</Markdown>
-      {question.code && <pre className="mt-2 overflow-auto rounded-md bg-raised p-3 font-mono text-[13px] leading-6 text-fg">{question.code}</pre>}
-      <div className="mt-3 grid gap-2">
+      <div className="quiz-q">
+        <Markdown>{question.q}</Markdown>
+      </div>
+      {question.code && <pre className="quiz-code mt-2 overflow-auto rounded-md bg-raised p-3 font-mono text-[13px] leading-6 text-fg">{question.code}</pre>}
+      <div className="quiz-opts mt-3 grid gap-2">
         {order.map((i) => {
           const opt = question.options[i];
           let tone = "border-line hover:border-line-strong hover:bg-hover";
@@ -104,7 +109,7 @@ export function QuizCard({
         })}
       </div>
       {answered && (
-        <div className="mt-3 border-t border-line pt-3">
+        <div className="quiz-why mt-3 border-t border-line pt-3">
           {question.why && <Markdown>{question.why}</Markdown>}
           {allowRetry && (
             <button onClick={() => setPicked(null)} className="mt-1 text-xs text-subtle hover:text-fg-2">

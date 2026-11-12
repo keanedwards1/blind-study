@@ -175,9 +175,23 @@ select:not([multiple]):focus-visible {
   }
 }
 
-/* Horizontal page gutter, shared by the site header and every page so left edges line up. */
+/* Horizontal page gutter, shared by the site header and every page so left edges line up.
+ * --header-h is the site header's height; full-height screens (workspace, mock session) subtract it. */
 :root {
   --gutter: clamp(1rem, 4vw, 4rem);
+  --header-h: 3.5rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-h: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 4.5rem;
+  }
 }
 
 /* Page treatment shared by the learning and practice screens. */
@@ -368,6 +382,54 @@ select:not([multiple]):focus-visible {
 
   .page-workspace > div:nth-child(2) > section:first-child > div:first-child {
     overflow-x: auto;
+  }
+}
+
+/*
+ * Quiz rounds: much larger question and answer text on tablet/desktop. Phones keep the compact default.
+ * Lives here (not as utilities) because .md sets its own font-size below, unlayered.
+ */
+@media (min-width: 640px) {
+  .quiz-large {
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+  }
+  .quiz-large > div:first-child {
+    font-size: 0.875rem;
+  }
+  .quiz-large .quiz-q .md {
+    font-size: 1.5rem;
+    line-height: 1.45;
+    color: var(--fg);
+  }
+  .quiz-large .quiz-code {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .quiz-large .quiz-opts {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .quiz-large .quiz-opts > button {
+    padding: 0.9rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 1.2rem;
+    line-height: 1.45;
+  }
+  .quiz-large .quiz-why .md {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiz-large .quiz-q .md {
+    font-size: 1.875rem;
+  }
+  .quiz-large .quiz-opts > button {
+    font-size: 1.35rem;
+  }
+  .quiz-large .quiz-why .md {
+    font-size: 1.25rem;
   }
 }
 

@@ -60,7 +60,7 @@ export default function Workspace({
   );
 
   return (
-    <div className="page-workspace flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
+    <div className="page-workspace flex flex-1 flex-col lg:h-[calc(100vh-var(--header-h))] lg:overflow-hidden">
       <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2 text-sm">
         <Link href="/" className="text-muted hover:text-fg">
           ← Problems

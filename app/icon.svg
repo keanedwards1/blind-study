@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Same mark as DrillMark in components/icons.tsx: geometric lowercase "d" on an amber tile. -->
+  <rect width="32" height="32" rx="8" fill="#FFB224"/>
+  <circle cx="16" cy="18.5" r="6.25" fill="none" stroke="#1A1203" stroke-width="3.5"/>
+  <path d="M22.25 7.5v17.25" fill="none" stroke="#1A1203" stroke-width="3.5" stroke-linecap="round"/>
+</svg>

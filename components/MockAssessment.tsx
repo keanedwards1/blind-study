@@ -334,7 +334,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
 
   if (phase === "coding") {
     return (
-      <div className="page-mock-session flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
+      <div className="page-mock-session flex flex-1 flex-col lg:h-[calc(100vh-var(--header-h))] lg:overflow-hidden">
         {header}
         <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
           <section className="min-w-0 overflow-auto border-line p-5 lg:border-r">
@@ -362,7 +362,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
   // explain
   const isLast = idx === items.length - 1;
   return (
-    <div className="page-mock-session flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
+    <div className="page-mock-session flex flex-1 flex-col lg:h-[calc(100vh-var(--header-h))] lg:overflow-hidden">
       {header}
       <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
         <section className="flex min-h-[50vh] min-w-0 flex-col border-line lg:border-r">
