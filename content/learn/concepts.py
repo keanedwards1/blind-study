@@ -9,9 +9,9 @@ CONCEPTS = [
         title="dict (hash map)",
         group="Core data structures",
         summary="""
-A `dict` maps keys to values with **average O(1)** lookup, insert and delete. It is the workhorse of interview problems, because it answers questions like "Have I seen this before?", "Where did I see it?", and "How many times have I seen it?".
+A `dict` (dictionary) stores a value under a key, like a labeled lookup table. You can usually look up, add, or remove an item in about the same amount of time, even as the dictionary grows (average O(1), or constant-time, operations). This makes it useful for questions like "Have I seen this before?", "Where did I see it?", and "How many times have I seen it?".
 
-Keys must be **hashable** (for example, ints, strings, or tuples of those), so a list cannot be a key. Convert it with `tuple(lst)` first.
+Keys must be **hashable** (Python can turn them into a stable lookup value), such as integers, strings, or tuples of those. A list cannot be a key because it can change; convert it with `tuple(lst)` first.
 """,
         snippet="""seen = {}
 for i, word in enumerate(["a", "b", "a"]):
@@ -47,7 +47,7 @@ for key, value in seen.items():
         title="set",
         group="Core data structures",
         summary="""
-A `set` stores **unique** hashable values with O(1) average `add`, `remove` and membership tests. Use it for "visited" tracking, de-duplication, and fast lookups when you don't need a value attached.
+A `set` stores each hashable value only once. Adding, removing, or checking for a value usually takes about the same time regardless of set size (average O(1), or constant time). Use a set to remember which items you have visited, remove duplicates, or look things up when you do not need to store a value with each item.
 """,
         snippet="""visited = set()
 visited.add((0, 0))
@@ -78,7 +78,7 @@ print(type(empty).__name__, type({}).__name__)
         title="The `in` operator (membership)",
         group="Core data structures",
         summary="""
-`x in container` asks "is x here?". Its cost depends entirely on the container, and this is the most common hidden performance bug:
+`x in container` asks "is x here?" (a membership test). How long that check takes depends on the container, and using the wrong container is a common hidden performance problem:
 
 | container | cost of `x in c` |
 |---|---|
@@ -111,7 +111,7 @@ print("ell" in "hello")          # substring test on strings
         title="list as a stack",
         group="Core data structures",
         summary="""
-A Python `list` is a dynamic array. `append(x)` and `pop()` at the **end** are O(1), which makes it a perfect **stack** (last in, first out). Use it for bracket matching, DFS, undo history, and building results.
+A Python `list` is a resizable array. Adding an item to the end with `append(x)` and removing the last item with `pop()` take O(1) time. This makes a list a good **stack**: the last item added is the first one removed (last in, first out, or LIFO). Use it to match brackets, search depth-first, store undo steps, or build results.
 
 Popping from the **front** (`pop(0)`) is O(n) because every element shifts. Use `collections.deque` for queues.
 """,
@@ -142,7 +142,7 @@ print(bool([]))      # empty list is falsy, so 'while stack:' works
         title="Counter & defaultdict",
         group="Core data structures",
         summary="""
-The `collections` module provides two dict subclasses that remove a lot of boilerplate:
+The `collections` module has two dictionary types that save you from writing repeated setup code:
 
 - `Counter(iterable)` counts how often each item occurs, and a missing key reads as 0.
 - `defaultdict(factory)` creates a default value (like `[]` or `0`) the first time you touch a missing key.
@@ -161,7 +161,7 @@ print(dict(groups))
 """,
         notes="""
 - `Counter(a) == Counter(b)` is an O(n) anagram test.
-- `defaultdict(int)` behaves like a counter; `defaultdict(list)` groups items; `defaultdict(set)` builds adjacency sets.
+- `defaultdict(int)` behaves like a counter; `defaultdict(list)` groups items; `defaultdict(set)` can store each node's neighbours (an adjacency set).
 - Reading a missing key on a defaultdict **inserts** it. Use `k in d` if you only want to check.
 """,
         quiz=[
@@ -176,7 +176,7 @@ print(dict(groups))
         title="deque (double-ended queue)",
         group="Core data structures",
         summary="""
-`collections.deque` supports O(1) `append`/`pop` at **both** ends. It's the right structure for a **queue** (BFS, level-order traversal, sliding-window maximums).
+`collections.deque` lets you add or remove an item at either end in O(1) time. It is useful as a **queue**: the first item added is the first one removed (first in, first out, or FIFO). Queues are used in breadth-first search, level-by-level tree walks, and sliding-window maximum problems.
 """,
         snippet="""from collections import deque
 
@@ -197,7 +197,7 @@ print("levels:", level)
 """,
         notes="""
 - `popleft()` is O(1), while `list.pop(0)` is O(n).
-- `for _ in range(len(q))` freezes the current level's size, which is the key trick for level-by-level BFS.
+- `for _ in range(len(q))` saves the number of items at the start of the loop, so you can process exactly one level of the tree before moving to the next (level-by-level BFS).
 - Indexing into the middle (`q[i]`) is O(n). It's a linked structure.
 """,
         quiz=[
@@ -210,7 +210,7 @@ print("levels:", level)
         title="heapq (priority queue)",
         group="Core data structures",
         summary="""
-`heapq` turns a plain list into a **min-heap**: `heap[0]` is always the smallest item. Push and pop are O(log n), and `heapify` is O(n).
+`heapq` keeps a list arranged so its smallest item is always first (`heap[0]`). This arrangement is a **min-heap**. Adding or removing an item takes O(log n) time; arranging an existing list as a heap takes O(n) time with `heapify`.
 
 Python only has a min-heap. For a **max-heap**, push negated values.
 """,
@@ -250,7 +250,7 @@ print(heapq.nlargest(2, [4, 9, 1, 7]))
         title="bisect (binary search helpers)",
         group="Core data structures",
         summary="""
-`bisect_left(a, x)` returns the first index where `x` could be inserted to keep the **sorted** list `a` sorted, in O(log n). It's the built-in binary search.
+`bisect_left(a, x)` finds the first position where `x` could go in the already-sorted list `a` without changing its order. It takes O(log n) time and is Python's built-in binary-search helper.
 """,
         snippet="""from bisect import bisect_left, bisect_right, insort
 
@@ -278,7 +278,7 @@ print(a)
         title="Slicing",
         group="Sequences & iteration",
         summary="""
-`seq[start:stop:step]` makes a **new copy** of part of a list or string. `stop` is excluded. Negative indices count from the end, and `[::-1]` reverses.
+`seq[start:stop:step]` makes a **new copy** of part of a list or string. The slice includes `start` but stops before `stop`. Negative positions count from the end, and `[::-1]` makes a reversed copy.
 """,
         snippet="""s = "abcdef"
 print(s[1:4], s[:2], s[-2:], s[::-1], s[::2])
@@ -305,7 +305,7 @@ print(nums[10:])         # out-of-range slices don't raise errors
         title="range & for loops",
         group="Sequences & iteration",
         summary="""
-`range(start, stop, step)` produces integers lazily, with `stop` excluded. Counting down needs an explicit negative step, and the stop is still excluded: `range(n - 1, -1, -1)` visits `n-1 … 0`.
+`range(start, stop, step)` provides a sequence of integers without storing them all at once. It includes `start` and stops before `stop`. To count down, give it a negative step; the stop is still excluded: `range(n - 1, -1, -1)` visits `n-1 … 0`.
 """,
         snippet="""print(list(range(3)))
 print(list(range(2, 8, 2)))
@@ -331,7 +331,7 @@ print(i, j)
         title="enumerate & zip",
         group="Sequences & iteration",
         summary="""
-`enumerate(seq)` gives `(index, value)` pairs, so there's no need for `range(len(seq))`. `zip(a, b)` walks two sequences in lockstep and stops at the **shorter** one.
+`enumerate(seq)` gives each item together with its position `(index, value)`, so there is no need to write `range(len(seq))`. `zip(a, b)` takes one item from each sequence at a time and stops when the **shorter** sequence ends.
 """,
         snippet="""for i, ch in enumerate("abc"):
     print(i, ch)
@@ -343,9 +343,9 @@ for prev, cur in zip(words, words[1:]):   # adjacent pairs
 print(list(enumerate("hi", start=1)))
 """,
         notes="""
-- `zip(xs, xs[1:])` is the idiom for comparing neighbours.
-- `zip` silently truncates to the shorter input, which is usually what you want for prefix comparisons.
-- Both return lazy iterators, so wrap them in `list()` if you want to print or reuse the result.
+- `zip(xs, xs[1:])` is a common way to compare neighbouring items.
+- `zip` stops when the shorter input ends. This is useful when comparing matching positions at the start of two sequences (their common prefix).
+- Both return iterators that produce values as you use them instead of saving all the values. Wrap one in `list()` if you want to print or reuse all its results.
 """,
         quiz=[
             dict(q="What does this print?", code="print(list(zip('abc', [1, 2])))", options=["[('a', 1), ('b', 2)]", "[('a', 1), ('b', 2), ('c', None)]", "Error", "[('a', 'b'), (1, 2)]"], answer=0, predict=True,
@@ -357,7 +357,7 @@ print(list(enumerate("hi", start=1)))
         title="Comprehensions & generator expressions",
         group="Sequences & iteration",
         summary="""
-`[expr for x in it if cond]` builds a list in one readable line. The same syntax with `{}` builds a set or dict, and with `()` makes a lazy **generator** (handy inside `sum`, `any`, `max`).
+`[expr for x in it if cond]` builds a list in one readable line. The same form with `{}` builds a set or dictionary; with `()` it makes a **generator**, which produces each value only when needed instead of saving them all at once. Generators are useful inside `sum`, `any`, and `max`.
 """,
         snippet="""nums = [3, 1, 4, 1, 5]
 print([x * x for x in nums if x > 1])
@@ -384,7 +384,7 @@ print(grid)
         title="Tuple unpacking & simultaneous assignment",
         group="Sequences & iteration",
         summary="""
-`a, b = b, a` evaluates the **whole** right side first, then assigns. That makes swaps and "advance two pointers at once" updates safe without temporary variables. Unpacking also works in `for` loops: `for i, (x, y) in enumerate(pairs)`.
+`a, b = b, a` works because Python reads the **whole** right side before assigning either value. You can swap values or update two pointers without temporary variables. This feature is called tuple unpacking (assigning several values at once). It also works in loops: `for i, (x, y) in enumerate(pairs)`.
 """,
         snippet="""a, b = 1, 2
 a, b = b, a
@@ -421,8 +421,8 @@ intervals = [[1, 2], [2, 3], [5, 9]]
 print(all(intervals[i][0] >= intervals[i - 1][1] for i in range(1, len(intervals))))
 """,
         notes="""
-- `all([])` is **True** (vacuous truth). Watch for this edge case.
-- Passing a generator instead of a list keeps short-circuiting cheap.
+- `all([])` is **True**: there is no item that makes the statement false. This is called vacuous truth; watch for this edge case.
+- Passing a generator instead of a list lets `any` and `all` stop as soon as they know the answer, without building a full list (short-circuiting).
 """,
         quiz=[
             dict(q="What does this print?", code="print(all([]), any([]))", options=["True False", "False False", "True True", "False True"], answer=0, predict=True,
@@ -434,7 +434,7 @@ print(all(intervals[i][0] >= intervals[i - 1][1] for i in range(1, len(intervals
         title="min, max & running best",
         group="Sequences & iteration",
         summary="""
-`best = max(best, candidate)` is how most greedy and DP solutions track an answer. `min` and `max` also take a `key` function and a `default` for empty input.
+`best = max(best, candidate)` is a common way for greedy and dynamic-programming solutions to remember the best answer so far. `min` and `max` also take a `key` function and a `default` for empty input.
 """,
         snippet="""best = 0
 for x in [3, -1, 7, 2]:
@@ -501,7 +501,7 @@ else:
         title="Sorting & key functions",
         group="Sequences & iteration",
         summary="""
-`sorted(it)` returns a new list; `lst.sort()` sorts in place and returns **None**. Both are O(n log n) and **stable**. `key=` decides what to compare, often with a `lambda`.
+`sorted(it)` returns a new list; `lst.sort()` reorders the existing list and returns **None**. Both are O(n log n) and **stable** (items with equal sort keys keep their original order). `key=` tells Python what part of each item to compare, often with a `lambda` function.
 """,
         snippet="""intervals = [[5, 6], [1, 4], [2, 3]]
 print(sorted(intervals))                        # by first item, then second
@@ -515,7 +515,7 @@ print(x)
 """,
         notes="""
 - `x = x.sort()` sets x to **None**, which is a classic bug.
-- Lists and tuples sort lexicographically, so interval lists sort by start time by default.
+- Lists and tuples sort one item at a time from left to right (lexicographic order), so pairs like `[start, end]` sort by start time first.
 - Sorting first often unlocks two-pointer or greedy solutions (3Sum, Merge Intervals).
 """,
         quiz=[
@@ -531,7 +531,7 @@ print(x)
         title="Recursion",
         group="Functions & objects",
         summary="""
-A recursive function solves a problem by calling itself on smaller inputs. Every recursive function needs (1) a **base case** that stops, and (2) a step that moves **toward** the base case. Trees, backtracking and divide-and-conquer are naturally recursive.
+A recursive function solves a problem by calling itself on a smaller input. Every recursive function needs (1) a **base case** that stops, and (2) a step that makes the next input smaller or closer to that stopping case. Trees, backtracking, and divide-and-conquer problems often fit this pattern.
 """,
         snippet="""def depth(tree):
     if tree is None:                 # base case
@@ -548,7 +548,7 @@ print(sys.getrecursionlimit())       # default ~1000 frames
         notes="""
 - The recursion depth counts toward **space** complexity: O(h) for a tree of height h.
 - Python's default limit is about 1000 frames. Deep linked lists or skewed trees can hit RecursionError, so use an explicit stack for those.
-- `@functools.cache` memoizes a recursive function, which turns plain recursion into top-down DP.
+- `@functools.cache` saves each result so the function can reuse it instead of calculating it again (memoization). This is called top-down dynamic programming (DP).
 """,
         quiz=[
             dict(q="What does this print?", code="def f(n):\n    if n <= 1:\n        return 1\n    return n * f(n - 1)\nprint(f(4))", options=["24", "10", "4", "RecursionError"], answer=0, predict=True,
@@ -562,7 +562,7 @@ print(sys.getrecursionlimit())       # default ~1000 frames
         title="Nested functions, closures & nonlocal",
         group="Functions & objects",
         summary="""
-Defining a helper **inside** your function lets it read the outer variables (the grid, the word, the result list) without passing them around. To **reassign** an outer variable (not just mutate it), declare it `nonlocal`.
+Defining a helper **inside** your function lets it use the outer function's variables (such as the grid, word, or result list) without passing them in. This is a closure. To **assign a new value** to an outer variable (rather than changing the list or dictionary it refers to), declare it `nonlocal`.
 """,
         snippet="""def max_path(values):
     best = float("-inf")
@@ -630,7 +630,7 @@ print(c.value())
         title="Node objects & references",
         group="Functions & objects",
         summary="""
-Linked lists, trees and graphs are objects that **point** at each other (`node.next`, `node.left`, `node.neighbors`). Variables hold references, so rewiring a pointer changes the structure. A **dummy head** node removes most edge cases when you build or splice lists.
+Linked lists, trees, and graphs contain objects that refer to other objects (`node.next`, `node.left`, `node.neighbors`). A variable holds a reference (a link to an object), so changing that link changes the structure. A temporary first node (dummy head) avoids many special cases when building or joining linked lists.
 """,
         snippet="""class ListNode:
     def __init__(self, val=0, next=None):
@@ -667,7 +667,7 @@ print(out)
         title="float('inf') sentinels",
         group="Numbers & strings",
         summary="""
-`float("inf")` is larger than every number, and `float("-inf")` is smaller. They make good starting values for running minimums and maximums, and for "unreachable" in DP tables.
+`float("inf")` is larger than every number, and `float("-inf")` is smaller. They are useful starting values when finding a minimum or maximum, and can mark a value as unreachable in a dynamic-programming table. Such a marker is called a sentinel.
 """,
         snippet="""lo = float("inf")
 for x in [7, 3, 9]:

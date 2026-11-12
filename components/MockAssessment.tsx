@@ -192,38 +192,44 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
 
   // ------------------------------------------------------------------ setup
   if (phase === "setup") {
-    const num = "w-20 rounded-md border border-line bg-panel px-2 py-1 text-sm text-fg";
+    const num = "h-11 w-24 justify-self-start rounded-lg border border-line bg-panel px-3 text-sm tabular-nums text-fg hover:border-line-strong";
     return (
       <div className="page-shell page-mock">
-        <h1 className="text-2xl font-semibold text-fg">Mock assessment</h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
+        <h1 className="text-fg">Mock assessment</h1>
+        <p className="page-intro">
           Simulates a timed online assessment. Problems appear one at a time, in order, and get harder as you go. When you submit a problem its code locks, then you record a
           short webcam explanation of it. <b className="text-fg-2">The clock keeps running while you record</b>, so budget time for it. Hints and solutions are hidden.
         </p>
 
-        <div className="mt-6 grid gap-4 rounded-lg border border-line p-5 sm:grid-cols-2">
-          <label className="flex items-center justify-between gap-3 text-sm text-fg-2">
-            Problems
-            <input type="number" min={1} max={5} value={countRaw} onChange={(e) => setCountRaw(e.target.value)} onBlur={() => setCountRaw(String(count))} className={num} />
-          </label>
-          <label className="flex items-center justify-between gap-3 text-sm text-fg-2">
-            Time limit (min)
-            <input type="number" min={1} max={240} value={minutesRaw} onChange={(e) => setMinutesRaw(e.target.value)} onBlur={() => setMinutesRaw(String(minutes))} className={num} />
-          </label>
-          <label className="flex items-center justify-between gap-3 text-sm text-fg-2">
-            Explanation max (min)
-            <input type="number" min={1} max={10} value={explainRaw} onChange={(e) => setExplainRaw(e.target.value)} onBlur={() => setExplainRaw(String(explainMin))} className={num} />
-          </label>
-          <label className="flex items-center gap-2 text-sm text-fg-2">
-            <input type="checkbox" checked={includeSolved} onChange={(e) => setIncludeSolved(e.target.checked)} />
-            Include problems I&apos;ve solved
-          </label>
-          <div className="text-xs text-subtle sm:col-span-2">Difficulty order: {difficultyPlan(count).join(" → ")}</div>
+        <div className="mt-8 grid gap-4 rounded-2xl border border-line p-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
+          <div className="grid content-start gap-4 sm:grid-cols-3">
+            <label className="grid content-start gap-2 text-sm text-fg-2">
+              Problems (1–5)
+              <input type="number" inputMode="numeric" min={1} max={5} value={countRaw} onChange={(e) => setCountRaw(e.target.value)} onBlur={() => setCountRaw(String(count))} className={num} />
+            </label>
+            <label className="grid content-start gap-2 text-sm text-fg-2">
+              Time limit (min)
+              <input type="number" inputMode="numeric" min={1} max={240} value={minutesRaw} onChange={(e) => setMinutesRaw(e.target.value)} onBlur={() => setMinutesRaw(String(minutes))} className={num} />
+            </label>
+            <label className="grid content-start gap-2 text-sm text-fg-2">
+              Explanation max (min)
+              <input type="number" inputMode="numeric" min={1} max={10} value={explainRaw} onChange={(e) => setExplainRaw(e.target.value)} onBlur={() => setExplainRaw(String(explainMin))} className={num} />
+            </label>
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-fg-2 sm:col-span-3">
+              <input type="checkbox" checked={includeSolved} onChange={(e) => setIncludeSolved(e.target.checked)} className="h-4 w-4 accent-accent-text" />
+              Include problems I&apos;ve solved
+            </label>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-raised p-4 xl:flex-col xl:items-start xl:justify-center">
+            <div>
+              <div className="text-sm font-semibold text-fg">Difficulty order</div>
+              <div className="mt-1 text-sm text-muted">{difficultyPlan(count).join(" → ")}</div>
+            </div>
+            <button onClick={start} className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover">
+              Start ({minutes} min)
+            </button>
+          </div>
         </div>
-
-        <button onClick={start} className="mt-6 rounded-md bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover">
-          Start ({minutes} min)
-        </button>
 
         {history.length > 0 && (
           <div className="mt-10">
@@ -261,7 +267,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
         <p className="mt-1 text-sm text-muted">
           {timeUp ? "Time ran out. " : ""}Total time used: {clock((endAt - startAt) / 1000)} of {minutes}:00
         </p>
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 grid items-start gap-4 min-[1800px]:grid-cols-2 min-[3000px]:grid-cols-3">
           {items.map((it, i) => {
             const codingSec = it.startedAt && it.submittedAt ? (it.submittedAt - it.startedAt) / 1000 : null;
             const full = it.passed !== undefined && it.passed === it.total;
@@ -299,7 +305,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
           })}
         </div>
         <p className="mt-4 text-xs text-subtle">Recordings exist only in this tab and disappear when you leave the page.</p>
-        <button onClick={reset} className="mt-6 rounded-md border border-line-strong px-4 py-2 text-sm text-fg hover:bg-hover">
+        <button onClick={reset} className="mt-6 rounded-full border border-line-strong px-5 py-2 text-sm font-semibold text-fg hover:bg-hover">
           New mock assessment
         </button>
       </div>
@@ -386,7 +392,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
               <li>What you&apos;d improve with more time, or why tests failed</li>
             </ul>
           </div>
-          <button onClick={next} className="mt-5 rounded-md bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
+          <button onClick={next} className="mt-5 rounded-full bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
             {timeUp || isLast ? "Finish & see results" : "Next problem →"}
           </button>
           {!item.rec && <span className="ml-3 text-xs text-subtle">You can continue without recording.</span>}

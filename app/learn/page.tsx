@@ -42,7 +42,7 @@ export default function LearnPage() {
       <div className="min-w-0 flex-1 space-y-10">
         <header>
           <h1 className="text-2xl font-semibold text-fg">Learn the building blocks</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+          <p className="page-intro">
             Every problem is a <b className="text-fg-2">pattern</b> (the idea) built from <b className="text-fg-2">Python pieces</b> (the tools). Learn the pattern guides,
             run and edit the Python snippets, then check yourself with the quizzes. For mixed practice, try the{" "}
             <Link href="/quiz" className="text-fg underline">

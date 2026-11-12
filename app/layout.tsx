@@ -27,17 +27,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
-        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-line bg-panel px-4 sm:px-6">
+        <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-line bg-panel px-(--gutter)">
           <Link href="/" aria-label="drill home" className="flex shrink-0 items-center gap-2 text-lg font-extrabold tracking-tight text-fg">
             <DrillMark className="h-7 w-7" />
             <span className="hidden sm:inline">
               drill
             </span>
           </Link>
-          <nav className="flex min-w-0 items-center gap-1 overflow-x-auto">
-            <NavLinks />
+          <div className="flex min-w-0 items-center gap-1">
+            <nav className="flex min-w-0 items-center gap-0.5 overflow-x-auto sm:gap-1">
+              <NavLinks />
+            </nav>
+            {/* Outside the scrolling nav so it never scrolls offscreen on narrow phones. */}
             <ThemeToggle />
-          </nav>
+          </div>
         </header>
         <main className="flex flex-1 flex-col">{children}</main>
         <HydrationMarker />

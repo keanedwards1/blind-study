@@ -3,6 +3,7 @@ import QuizDrill, { type DrillContext, type DrillQuestion } from "@/components/Q
 import { py } from "@/lib/format";
 import { concepts, patterns } from "@/lib/learn";
 import { categories, problems } from "@/lib/problems";
+import { programmingTermQuestions, pythonBasicsQuestions } from "@/lib/quiz-courses";
 import type { Problem } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Quiz drill · Drill" };
@@ -38,8 +39,10 @@ export default function QuizPage() {
     ...concepts.flatMap((c) => {
       const usedIn = c.usedIn.slice(0, 6).map((slug) => ({ slug, title: problems.find((p) => p.slug === slug)?.title ?? slug }));
       const context: DrillContext = { kind: "concept", title: c.title, summary: c.summary, snippet: c.snippet, output: c.output, usedIn, usedInTotal: c.usedIn.length };
-      return c.quiz.map((q) => ({ ...q, source: "python" as const, sourceTitle: c.title, href: `/learn#py-${c.id}`, context }));
+      return c.quiz.map((q) => ({ ...q, source: "python" as const, sourceTitle: c.title, href: `/learn#py-${c.id}`, category: c.group, context }));
     }),
+    ...pythonBasicsQuestions.map((q) => ({ ...q, source: "basics" as const, sourceTitle: "Python basics" })),
+    ...programmingTermQuestions.map((q) => ({ ...q, source: "terms" as const, sourceTitle: "Programming terms" })),
   ];
   return <QuizDrill questions={questions} categories={categories} />;
 }

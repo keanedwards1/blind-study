@@ -10,8 +10,14 @@ function ProblemLinks({ slugs, bySlug }: { slugs: string[]; bySlug: Record<strin
   return (
     <div className="flex flex-wrap gap-1.5">
       {slugs.map((s) => (
-        <Link key={s} href={`/problems/${s}`} className="rounded-md border border-line px-2 py-0.5 text-xs text-fg-2 hover:bg-hover">
-          {bySlug[s]?.title ?? s} <span className={difficultyColor[bySlug[s]?.difficulty ?? ""]}>·</span>
+        <Link
+          key={s}
+          href={`/problems/${s}`}
+          title={bySlug[s]?.difficulty}
+          className="inline-flex items-center gap-1.5 rounded-md border border-line px-2 py-1 text-xs text-fg-2 hover:bg-hover"
+        >
+          <span aria-hidden="true" className={`h-1.5 w-1.5 shrink-0 rounded-full bg-current ${difficultyColor[bySlug[s]?.difficulty ?? ""] ?? "text-subtle"}`} />
+          {bySlug[s]?.title ?? s}
         </Link>
       ))}
     </div>
@@ -30,6 +36,17 @@ export function ConceptCard({ concept, bySlug }: { concept: Concept; bySlug: Rec
         <h2 className="text-lg font-semibold text-fg">{concept.title}</h2>
       </header>
       <Markdown>{concept.summary}</Markdown>
+      <div className="rounded-lg border border-line bg-raised/60 p-3.5">
+        <Label>Example question</Label>
+        <Markdown>{concept.exampleQuestion}</Markdown>
+        <Link href={`/problems/${concept.exampleSlug}`} className="mt-2 inline-block text-xs font-medium text-fg underline">
+          Open {bySlug[concept.exampleSlug]?.title ?? "example problem"} →
+        </Link>
+      </div>
+      <div>
+        <Label>Template, broken down line by line</Label>
+        <pre className="overflow-auto whitespace-pre-wrap break-words rounded-lg bg-raised p-4 font-mono text-[13px] leading-6 text-fg">{concept.template}</pre>
+      </div>
       <div>
         <Label>Try it (edit and run)</Label>
         <Playground code={concept.snippet} expected={concept.output} />

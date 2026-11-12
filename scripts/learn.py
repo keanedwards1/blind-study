@@ -179,11 +179,14 @@ def problem_quiz(p: dict, categories: list[str], insight: dict | None) -> list[d
 def load_learn(problems: list[dict], categories: list[str]):
     """Validate concept + pattern content, annotate problems in place, return learn.json payload."""
     concepts = runpy.run_path(str(LEARN / "concepts.py"))["CONCEPTS"]
+    templates = runpy.run_path(str(LEARN / "templates.py"))["TEMPLATES"]
     patterns = runpy.run_path(str(LEARN / "patterns.py"))["PATTERNS"]
     insights = runpy.run_path(str(LEARN / "insights.py"))["INSIGHTS"]
     drills = runpy.run_path(str(LEARN / "python_drills.py"))["DRILLS"]
 
     concept_ids = {c["id"] for c in concepts}
+    assert set(templates) == concept_ids, f"concept templates don't match concepts: {set(templates) ^ concept_ids}"
+    problems_by_slug = {p["slug"]: p for p in problems}
     assert not set(drills) - concept_ids, f"python_drills.py has unknown concept ids {set(drills) - concept_ids}"
     used_in = defaultdict(list)
     for p in problems:
@@ -203,6 +206,17 @@ def load_learn(problems: list[dict], categories: list[str]):
     out_concepts = []
     for c in concepts:
         c = dict(c)
+        template = templates[c["id"]]
+        example_slug = template["exampleSlug"]
+        assert example_slug in problems_by_slug, f"{c['id']}: unknown example problem {example_slug}"
+        compile(template["code"], f"<template {c['id']}>", "exec")
+        example = problems_by_slug[example_slug]
+        c["template"] = template["code"]
+        c["exampleSlug"] = example_slug
+        c["exampleQuestion"] = template.get(
+            "question",
+            example["desc"].split("\n\n**Constraints**", 1)[0].strip(),
+        )
         c["output"] = run_snippet(c["snippet"])
         qs = [*c.get("quiz", []), *drills.get(c["id"], [])]
         c["quiz"] = [{"id": f"py:{c['id']}:{i}", "kind": "python", **_check_question(q, c["id"])} for i, q in enumerate(qs)]

@@ -15,7 +15,7 @@ A personal coding-interview practice site: 75 classic problems in Python. Code r
 - **Learn tab on each problem**: the pattern and the Python building blocks its solution uses, plus a self-quiz (key insight,
   time and space complexity, pattern). The **Solution** tab tags every line of the reference solution with the concepts it uses.
 - **Quiz drill** (`/quiz`): mixed rounds from all question banks, each shown with its problem or concept as context. It tracks
-  your answers and keeps a "review missed" pile.
+  your answers so you can drill only unanswered or missed questions.
 - **Light mode** by default, with a dark-mode toggle in the header.
 
 Progress (solved problems, your code, quiz answers, mock history) lives in `localStorage` in your browser. Use Export/Import

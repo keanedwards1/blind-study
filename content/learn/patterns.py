@@ -4,8 +4,8 @@
 PATTERNS = [
     dict(
         category="Arrays & Hashing",
-        summary="This pattern trades memory for speed. You store what you have already seen in a dict or set, so each later lookup takes O(1) time instead of another scan through the input.",
-        signals=["The problem asks you to find a pair, a duplicate, or a complement.", "The problem asks you to group items that share some property.", "You need to count how often values occur.", "Your brute-force solution uses a nested loop whose inner loop only *searches* for something."],
+        summary="Remember the values you have already seen in a dictionary or set. Then you can usually check for a value in the same amount of time, no matter how many items there are (average O(1) lookup), instead of scanning the input again.",
+        signals=["The problem asks for a pair, a duplicate, or a value that completes a pair to reach a target (a complement).", "The problem asks you to group items that share some property.", "You need to count how often values occur.", "Your simple solution uses a nested loop, and the inner loop only *searches* for something."],
         template="""def solve(nums, target):
     seen = {}                      # value -> index (or count, or list)
     for i, x in enumerate(nums):
@@ -14,15 +14,15 @@ PATTERNS = [
         seen[x] = i                # record what you've seen
 """,
         complexity="These solutions usually run in O(n) time and use O(n) extra space, compared with O(n²) time for the brute-force approach.",
-        pitfalls=["Add each element to the map only *after* you check for its complement; otherwise an element can be paired with itself.", "Lists cannot be used as dict keys because they are mutable, so convert them to tuples first.", "Sorting can be the better choice when memory matters: it takes O(n log n) time but needs only O(1) extra space."],
+        pitfalls=["Add each value to the dictionary only *after* checking for the value that completes its pair; otherwise a value can be paired with itself.", "Lists cannot be used as dictionary keys because they can change. Convert them to tuples first.", "Sorting can be a better choice when memory matters: it takes O(n log n) time but needs only O(1) extra space."],
         quiz=[dict(q="A nested-loop solution checks every pair to find two numbers summing to a target. What does a hash map change?",
                    options=["Each partner lookup becomes O(1), so O(n) total", "It sorts the array", "It reduces space to O(1)", "Nothing, it's still O(n²)"], answer=0,
                    why="You replace the inner search loop with a constant-time dictionary lookup.")],
     ),
     dict(
         category="Two Pointers",
-        summary="You keep two indices into a sequence (usually a sorted one) and move them toward each other or in the same direction. Each move rules out a group of candidates, so you never recheck the same work.",
-        signals=["The input is sorted, or sorting it would not lose any information you need.", "You need to compare elements from both ends, as in palindrome checks.", "The problem asks for a pair or triplet with a target sum.", "The solution must use O(1) extra space."],
+        summary="Track two indices in a sequence (the two-pointer technique) and move them toward each other or in the same direction. Each move lets you skip choices that cannot be the answer, so you do not check the same items again.",
+        signals=["The input is sorted, or sorting it would not lose any information you need.", "You need to compare items from both ends, as when checking whether a word reads the same forward and backward (a palindrome check).", "The problem asks for a pair or triplet with a target sum.", "The solution must use O(1) extra space (constant extra space)."],
         template="""def solve(nums, target):
     nums.sort()
     lo, hi = 0, len(nums) - 1
@@ -36,15 +36,15 @@ PATTERNS = [
             hi -= 1        # need smaller
 """,
         complexity="Each scan takes O(n) time (O(n log n) overall if you sort first) and uses O(1) extra space.",
-        pitfalls=["Skip over duplicate values, or the same answer will be reported more than once.", "Make sure every iteration moves at least one pointer; otherwise the loop never ends.", "Choose the loop condition (`lo < hi` or `lo <= hi`) deliberately, based on whether the two pointers may point at the same element."],
-        quiz=[dict(q="In a sorted array, `nums[lo] + nums[hi]` is **too small**. Which pointer moves?",
+        pitfalls=["Skip over duplicate values, or the same answer will be reported more than once.", "Make sure every loop repeats only after moving at least one index; otherwise it never ends.", "Choose the loop condition (`lo < hi` or `lo <= hi`) based on whether both indices may refer to the same item."],
+        quiz=[dict(q="In a sorted array, `nums[lo] + nums[hi]` is **too small**. Which index moves?",
                    options=["lo moves right", "hi moves left", "both move", "restart from the middle"], answer=0,
                    why="Moving `lo` to the right is the only move that can increase the sum.")],
     ),
     dict(
         category="Sliding Window",
-        summary="You maintain a contiguous window, `[left, right]`, over the input. The right edge advances one step at a time, and whenever the window breaks the problem's rule, the left edge moves forward until the window is valid again. Every element enters the window once and leaves it at most once.",
-        signals=["The problem asks for the longest or shortest **substring** or **subarray** that satisfies some condition.", "The answer is a contiguous range of the input.", "The condition can be updated incrementally as elements enter and leave (for example, counts, sums, or the number of distinct characters)."],
+        summary="Keep track of one continuous part of the input, from `left` to `right` (a sliding window). Move `right` forward to make the part larger. If it stops meeting the problem's rule, move `left` forward until it does again. Each item is added once and removed at most once.",
+        signals=["The problem asks for the longest or shortest continuous part of a string or list (a substring or subarray) that satisfies a condition.", "The answer is a continuous range of the input.", "You can update the condition as items enter or leave the range, for example by updating counts, sums, or the number of different characters."],
         template="""def longest(s):
     window = {}
     left = best = 0
@@ -56,16 +56,16 @@ PATTERNS = [
         best = max(best, right - left + 1)        # record
     return best
 """,
-        complexity="The algorithm runs in O(n) time because each pointer moves forward at most n times. The extra space is whatever you need to describe the window, such as a dictionary of character counts.",
-        pitfalls=["Record the answer at the right moment: for the longest window, record it after shrinking; for the shortest window, record it while the window is still valid, before each shrink.", "Subsequence problems are not sliding-window problems, because a subsequence does not have to be contiguous."],
+        complexity="The algorithm runs in O(n) time because each index moves forward at most n times. The extra space is whatever you need to describe the range, such as a dictionary of character counts.",
+        pitfalls=["Record the answer at the right moment: for the longest range, record it after shrinking; for the shortest range, record it while it still meets the rule, before each shrink.", "A subsequence can skip items, so it does not have to be continuous; sliding windows are only for continuous ranges."],
         quiz=[dict(q="Why is a sliding window O(n) even though it has a `while` loop inside a `for` loop?",
                    options=["`left` only moves forward, at most n times in total", "The while loop runs at most once", "Python optimises nested loops", "It isn't. It's O(n²)"], answer=0,
-                   why="Count total pointer moves (amortised analysis): right moves n times and left moves at most n times.")],
+                   why="Count all moves: `right` moves n times, and `left` moves at most n times. This way of counting the total work is called amortized analysis.")],
     ),
     dict(
         category="Stack",
-        summary="A stack is last in, first out. You push items that are waiting to be matched or resolved, and you pop them when the matching item arrives. Handling the most recent item first is exactly what nested structures require.",
-        signals=["The input contains matching brackets or some other nested structure.", "The problem asks for the next greater (or smaller) element, which calls for a monotonic stack.", "You need to undo actions or keep backtracking state.", "You need to evaluate an arithmetic expression."],
+        summary="A stack lets you add (push) and remove (pop) items at the same end. The last item added is the first one removed (last in, first out, or LIFO). This is useful when you need to match nested items, such as brackets: add an opening bracket, then remove it when its closing bracket appears.",
+        signals=["The input contains matching brackets or another structure nested inside itself.", "The problem asks for the next larger or smaller item; this can use a stack kept in increasing or decreasing order (a monotonic stack).", "You need to undo actions or remember choices while exploring different possibilities (backtracking).", "You need to evaluate an arithmetic expression."],
         template="""def balanced(s):
     pairs = {")": "(", "]": "["}
     stack = []
@@ -84,8 +84,8 @@ PATTERNS = [
     ),
     dict(
         category="Binary Search",
-        summary="Binary search halves the search space at each step by asking a yes-or-no question about the middle element. It works on sorted arrays and, more generally, on any **monotonic** condition: one that is false for every value up to some point and true for every value after it.",
-        signals=["The input is sorted, or it is a sorted array that has been rotated.", "The problem asks for the smallest (or largest) value that satisfies some condition.", "The problem requires O(log n) time.", "The answer lies in a numeric range, and you can test whether any candidate value is large enough."],
+        summary="Binary search cuts the remaining choices in half at each step by checking the middle item. It works on sorted arrays and on any yes-or-no test whose answers change only once as values increase (a monotonic condition). For example, the answer can be false up to a cutoff and true after it.",
+        signals=["The input is sorted, or it is a sorted array that has been rotated.", "The problem asks for the smallest or largest value that meets a condition.", "The problem needs only about 20 checks to search a million items (O(log n) time).", "The answer lies in a range of numbers, and you can test whether a possible answer is large enough."],
         template="""def first_true(lo, hi, ok):
     # smallest x in [lo, hi] with ok(x) True (ok is monotonic)
     while lo < hi:
@@ -103,8 +103,8 @@ PATTERNS = [
     ),
     dict(
         category="Linked List",
-        summary="Linked-list problems are about rewiring `next` pointers. The key tools are a dummy head node, slow and fast pointers (for finding the middle or detecting a cycle), and in-place reversal.",
-        signals=["The input is a `ListNode`.", "The problem asks you to work in place or to use O(1) extra space.", "You need the middle node, the n-th node from the end, or to detect a cycle."],
+        summary="In a linked list, each node has a `next` link to the following node. Many problems are solved by changing those links (rewiring pointers). A temporary starter node (dummy head), two links that move at different speeds (slow and fast pointers), and reversing the links without making a copy (in-place reversal) are common tools.",
+        signals=["The input is a `ListNode` (one item in a linked list).", "The problem asks you to change the existing list without making a copy (in place), or to use O(1) extra space.", "You need the middle item, the n-th item from the end, or to detect whether links form a loop (a cycle)."],
         template="""def reverse(head):
     prev, cur = None, head
     while cur:
@@ -127,8 +127,8 @@ def middle(head):
     ),
     dict(
         category="Trees",
-        summary="Most tree problems are solved either with a depth-first search that combines the answers from the left and right subtrees, or with a breadth-first search that processes the tree level by level. Before writing code, decide what each recursive call **returns** to its parent and what, if anything, it records globally.",
-        signals=["The input is a `TreeNode`.", "The problem asks about depth, height, paths, or ancestors.", "The problem asks you to process the tree level by level, which calls for BFS.", "The tree is a binary search tree, so an in-order traversal visits the values in sorted order."],
+        summary="Most tree problems use one of two walks: visit each branch before moving to the next (depth-first search, DFS), or visit all nodes on one level before moving down (breadth-first search, BFS). Before writing code, decide what each call returns to the call that started it, and whether it also updates a shared answer.",
+        signals=["The input is a `TreeNode` (one node in a tree).", "The problem asks about depth, height, paths, or ancestors.", "The problem asks you to process the tree level by level, which uses breadth-first search (BFS).", "The tree is a binary search tree, so visiting left subtree, node, then right subtree (in-order traversal) visits values in sorted order."],
         template="""def dfs(node):
     if not node:
         return 0                     # base case
@@ -137,7 +137,7 @@ def middle(head):
     # combine: what does this subtree report to its parent?
     return 1 + max(left, right)
 """,
-        complexity="A traversal takes O(n) time. Recursion uses O(h) space, where h is the height of the tree: about log n for a balanced tree and up to n for a completely skewed one.",
+        complexity="A traversal takes O(n) time. Recursion uses O(h) space, where h is the tree's height: about log n for a balanced tree and up to n for a very unbalanced tree.",
         pitfalls=["Keep the value you return to the parent separate from the global answer; in Maximum Path Sum, for example, they are different quantities.", "Checking that a tree is a valid BST requires bounds inherited from all ancestors, not just a comparison with the parent.", "Remember the base case for an empty tree (`if not node`)."],
         quiz=[dict(q="Which traversal visits the values of a BST in sorted order?",
                    options=["In-order (left, node, right)", "Pre-order", "Post-order", "Level-order"], answer=0,
@@ -145,8 +145,8 @@ def middle(head):
     ),
     dict(
         category="Tries",
-        summary="A trie is a tree of characters in which each path from the root spells out a prefix. A lookup costs O(length of the word), no matter how many words are stored, and a search can stop early as soon as a prefix does not exist.",
-        signals=["Many of the words share prefixes.", "The problem involves \"starts with\" queries or autocomplete.", "You need to search a grid for many words at once."],
+        summary="A trie (pronounced “try”) stores words as paths of letters that share their beginnings. Each path from the top spells a word prefix. Finding a word takes time proportional to its length, regardless of how many words are stored, and the search can stop as soon as a needed prefix is missing.",
+        signals=["Many of the words start with the same letters (they share prefixes).", "The problem asks which words start with some letters, or needs autocomplete.", "You need to search a grid for many words at once."],
         template="""class Trie:
     def __init__(self):
         self.root = {}
@@ -173,8 +173,8 @@ def middle(head):
     ),
     dict(
         category="Heap / Priority Queue",
-        summary="Use a heap when you repeatedly need the smallest (or largest) item while new items keep arriving. A heap supports push and pop in O(log n) time and lets you peek at the top item in O(1) time.",
-        signals=["The problem asks for the k largest, smallest, or closest items.", "You need to merge several sorted lists or streams.", "You need a running median.", "You need to schedule items by their earliest time."],
+        summary="Use a heap (a priority queue) when you repeatedly need the smallest or largest item as new items arrive. Adding or removing the top item takes O(log n) time; checking which item is on top takes O(1) time.",
+        signals=["The problem asks for the k largest, smallest, or closest items.", "You need to combine several sorted lists or streams.", "You need the median as new values arrive (a running median).", "You need to schedule items by their earliest time."],
         template="""import heapq
 
 def k_largest(nums, k):
@@ -193,8 +193,8 @@ def k_largest(nums, k):
     ),
     dict(
         category="Backtracking",
-        summary="Backtracking builds a solution one choice at a time. When a partial solution cannot lead to a valid answer, you undo the last choice and try the next one. The rhythm is always the same: choose, explore, then un-choose.",
-        signals=["The problem asks for all combinations, permutations, or subsets.", "You are searching under constraints, as in finding a word in a grid or placing N queens.", "The input is small enough that an exponential-time search is acceptable."],
+        summary="Build an answer one choice at a time. If a partial answer cannot lead to a valid result, undo the last choice and try another one. This method is called backtracking: choose, explore, then undo the choice.",
+        signals=["The problem asks for all combinations, orderings, or subsets (permutations).", "You are searching under rules, such as finding a word in a grid or placing N queens.", "The input is small enough that trying many possible choices (an exponential-time search) is acceptable."],
         template="""def combos(candidates, target):
     out, path = [], []
     def bt(start, remaining):
@@ -209,7 +209,7 @@ def k_largest(nums, k):
     bt(0, target)
     return out
 """,
-        complexity="Backtracking takes exponential time in the worst case. Pruning branches that cannot succeed is what makes it fast enough in practice.",
+        complexity="Backtracking may take exponential time in the worst case. Skipping choices that cannot lead to an answer (pruning) often makes it fast enough in practice.",
         pitfalls=["Append a copy of the current path (`path[:]`) to the results, not the path itself, which keeps changing.", "Restore any state you changed (for example, un-mark visited cells) before returning from a call.", "Pass a start index into each call so the same combination is not generated in several different orders."],
         quiz=[dict(q="Why `out.append(path[:])` instead of `out.append(path)`?",
                    options=["path keeps changing; you need a snapshot", "It's faster", "path is a tuple", "No difference"], answer=0,
@@ -217,8 +217,8 @@ def k_largest(nums, k):
     ),
     dict(
         category="Graphs",
-        summary="A graph is a set of nodes connected by edges. You explore it with DFS or BFS while tracking which nodes you have visited; union-find answers connectivity questions, and topological sort handles dependencies.",
-        signals=["The input is a grid of cells, as in island-counting or flood-fill problems.", "The problem involves prerequisites or other dependencies.", "You need to count or compare connected components.", "The input is given explicitly as nodes and edges."],
+        summary="A graph is a set of points (nodes) connected by links (edges). You can visit its nodes with depth-first search (DFS) or breadth-first search (BFS), marking which ones you have seen. Use a structure that joins connected groups (union-find) to check whether points are connected, or order tasks so every prerequisite comes first (topological sort).",
+        signals=["The input is a grid of cells, as in island-counting or flood-fill problems.", "The problem involves prerequisites or other dependencies.", "You need to count or compare separate connected groups (connected components).", "The input lists points and links (nodes and edges)."],
         template="""from collections import deque
 
 def bfs(start, neighbors):
@@ -233,15 +233,15 @@ def bfs(start, neighbors):
     return seen
 """,
         complexity="A traversal takes O(V + E) time and space, where V is the number of nodes and E the number of edges. For a grid, that becomes O(rows × cols).",
-        pitfalls=["Mark a node as visited when you **push** it, not when you pop it; otherwise the same node can be queued many times.", "Check the grid boundaries before you read a neighbouring cell.", "Be clear about whether the edges are directed or undirected, and add them to the adjacency list accordingly."],
+        pitfalls=["Mark a node as visited when you add it to the queue or stack, not when you remove it; otherwise you may add the same node many times.", "Check the grid boundaries before you read a neighbouring cell.", "Be clear about whether links go one way (directed) or both ways (undirected). Store each node's neighbours in a list (an adjacency list)."],
         quiz=[dict(q="Which algorithm detects whether course prerequisites contain a cycle?",
                    options=["Topological sort (Kahn's)", "Binary search", "Dijkstra", "Two pointers"], answer=0,
-                   why="If some nodes never reach an in-degree of 0, those nodes form a cycle.")],
+                   why="If some courses still have a prerequisite after all available courses are processed, there is a cycle.")],
     ),
     dict(
         category="Advanced Graphs",
-        summary="In these problems, you first have to *build* the graph from the input, and then run a standard algorithm on it, such as topological sort, Dijkstra's algorithm, or a minimum spanning tree.",
-        signals=["The input hides ordering constraints that you need to extract.", "The problem asks for shortest paths in a weighted graph.", "The problem asks for the minimum cost to connect everything."],
+        summary="First work out which points are connected and build a graph from the input. Then use an algorithm suited to the question: order tasks around their dependencies (topological sort), find shortest paths when links have costs (Dijkstra's algorithm), or connect everything at the lowest total cost (minimum spanning tree).",
+        signals=["The input hides rules about which items must come first, and you need to work out the order.", "The problem asks for shortest paths when links have different costs (a weighted graph).", "The problem asks for the cheapest way to connect everything."],
         template="""from collections import deque
 
 def topo_order(nodes, edges):
@@ -262,15 +262,15 @@ def topo_order(nodes, edges):
     return order if len(order) == len(nodes) else None   # None = cycle
 """,
         complexity="Topological sort runs in O(V + E) time.",
-        pitfalls=["Avoid adding the same edge twice, because duplicate edges inflate the in-degree counts.", "Handle invalid input separately; in Alien Dictionary, for example, a word that comes before its own prefix makes the ordering impossible."],
+        pitfalls=["Avoid adding the same link twice. Duplicate links make the number of prerequisites for a node look too large (its in-degree).", "Handle invalid input separately; in Alien Dictionary, for example, a word that comes before its own prefix makes the ordering impossible."],
         quiz=[dict(q="Kahn's algorithm outputs fewer nodes than exist. What does that mean?",
                    options=["The graph has a cycle", "The graph is disconnected", "There are duplicate nodes", "It's a tree"], answer=0,
-                   why="Nodes on a cycle never reach in-degree 0.")],
+                   why="A course on a cycle always has a remaining prerequisite, so its in-degree (number of incoming prerequisite links) never reaches 0.")],
     ),
     dict(
         category="1-D Dynamic Programming",
-        summary="In 1-D dynamic programming, the answer for position i is built from the answers for smaller positions. Define what `dp[i]` means, write the recurrence, set the base cases, and then, if possible, keep only the last few values instead of the whole table.",
-        signals=["The problem asks for the number of ways, the minimum cost, or the maximum value.", "Each step involves a choice that affects which choices are available later.", "A brute-force recursive solution would recompute the same subproblems many times."],
+        summary="For many problems, the answer at position `i` can be calculated from answers at earlier positions. This is one-dimensional dynamic programming (1-D DP). Write down what `dp[i]` means, the rule for calculating it from earlier answers (the recurrence), and the first answers you already know (base cases). If possible, keep only the most recent answers instead of the whole table.",
+        signals=["The problem asks for the number of ways, the minimum cost, or the maximum value.", "Each step involves a choice that affects which choices are available later.", "A simple recursive solution would solve the same smaller questions many times (repeated subproblems)."],
         template="""def rob(nums):
     # dp[i] = best using the first i houses
     prev2 = prev1 = 0
@@ -286,8 +286,8 @@ def topo_order(nodes, edges):
     ),
     dict(
         category="2-D Dynamic Programming",
-        summary="Here the state needs two indices, such as a position in each of two strings or a cell in a grid. You fill a table in which each cell depends on neighbouring cells (typically the one above, the one to the left, and the diagonal).",
-        signals=["You are comparing two sequences, as in Longest Common Subsequence or edit distance.", "You are counting or optimising paths through a grid.", "The state is naturally described as \"the first i items with capacity j\"."],
+        summary="Some problems need two positions to describe what remains, such as one position in each of two strings or a row and column in a grid. This is two-dimensional dynamic programming (2-D DP). Fill a table where each answer uses nearby answers, often the cell above, the cell to the left, and the diagonal cell.",
+        signals=["You are comparing two sequences, as in Longest Common Subsequence or edit distance.", "You are counting or optimizing paths through a grid.", "Each answer depends on two values, such as how many items you have considered and how much capacity remains."],
         template="""def lcs(a, b):
     m, n = len(a), len(b)
     dp = [[0] * (n + 1) for _ in range(m + 1)]
@@ -307,8 +307,8 @@ def topo_order(nodes, edges):
     ),
     dict(
         category="Greedy",
-        summary="A greedy algorithm makes the locally best choice at each step and never revisits it. It only works when you can argue that a locally best choice never prevents a globally best answer.",
-        signals=["The problem asks whether something is reachable or possible.", "A single pass that tracks a running best value seems sufficient.", "You can make an exchange argument: swapping any solution's choice for the greedy choice never makes it worse."],
+        summary="A greedy algorithm picks what looks best at each step and does not change that choice later. It works only when you can show that each choice still allows the best possible final answer.",
+        signals=["The problem asks whether something is reachable or possible.", "A single pass that tracks the best value so far seems sufficient.", "You can show that replacing a choice in any valid solution with the greedy choice never makes the final answer worse (an exchange argument)."],
         template="""def max_subarray(nums):
     best = cur = nums[0]
     for x in nums[1:]:
@@ -324,7 +324,7 @@ def topo_order(nodes, edges):
     ),
     dict(
         category="Intervals",
-        summary="Sort the intervals by their start (or end) times, and then sweep through them once, merging overlaps or counting conflicts as you go.",
+        summary="Sort the time ranges by their start or end, then scan the list once. As you go, combine ranges that overlap or count the ones that conflict.",
         signals=["The input is a list of `[start, end]` pairs.", "The problem is about meetings, bookings, or ranges.", "You need to detect overlaps, merge intervals, or find the minimum number of removals."],
         template="""def merge(intervals):
     out = []
@@ -335,7 +335,7 @@ def topo_order(nodes, edges):
             out.append([s, e])
     return out
 """,
-        complexity="Sorting takes O(n log n) time, and the sweep afterwards takes O(n).",
+        complexity="Sorting takes O(n log n) time, and scanning the sorted list takes O(n).",
         pitfalls=["Decide whether intervals that only touch at an endpoint count as overlapping, and use `<` or `<=` accordingly.", "To keep the maximum number of non-overlapping intervals, sort by **end** time, not start time."],
         quiz=[dict(q="To keep the most non-overlapping intervals, sort by…",
                    options=["End time", "Start time", "Length", "No sort needed"], answer=0,
@@ -343,7 +343,7 @@ def topo_order(nodes, edges):
     ),
     dict(
         category="Math & Geometry",
-        summary="These problems involve manipulating matrices and doing arithmetic on indices. Work out how positions map to new positions (for example, a rotation is a transpose followed by a reversal), and handle the boundaries carefully.",
+        summary="These problems involve changing a matrix or calculating new positions from old ones. For example, to turn a square matrix clockwise, swap rows and columns (transpose), then reverse each row. Keep careful track of the boundaries.",
         signals=["You need to transform a 2-D matrix.", "The problem requires you to work in place.", "You need to traverse a matrix in a spiral or layer by layer."],
         template="""def rotate(m):
     n = len(m)
@@ -361,8 +361,8 @@ def topo_order(nodes, edges):
     ),
     dict(
         category="Bit Manipulation",
-        summary="Treat integers as arrays of bits. XOR cancels out pairs of equal values, `n & (n - 1)` clears the lowest set bit, and shifts move bits left or right.",
-        signals=["The problem forbids arithmetic operators or demands O(1) space for a numeric task.", "You need to count the set bits in a number.", "You need to find a single missing or unpaired value."],
+        summary="Look at an integer as a row of 0s and 1s (bits). XOR cancels matching pairs, `n & (n - 1)` clears the rightmost 1 (the lowest set bit), and shift operators move all bits left or right.",
+        signals=["The problem forbids arithmetic operators or requires constant extra space for a number problem (O(1) space).", "You need to count the 1s in a number's binary form (set bits).", "You need to find one missing or unpaired value."],
         template="""def count_ones(n):
     count = 0
     while n:
@@ -370,7 +370,7 @@ def topo_order(nodes, edges):
         count += 1
     return count
 """,
-        complexity="These solutions take time proportional to the number of bits, which is constant for fixed-width integers.",
+        complexity="These solutions take time proportional to the number of bits. If the number of bits is fixed (for example, 32-bit integers), this is constant time.",
         pitfalls=["Python integers have no fixed size, so mask with `0xFFFFFFFF` when a problem assumes 32-bit integers.", "Bitwise operators have lower precedence than comparisons and arithmetic, so wrap bit operations in parentheses."],
         quiz=[dict(q="XOR all of [4, 1, 2, 1, 2]. What's the result?", code="r = 0\nfor x in [4, 1, 2, 1, 2]:\n    r ^= x\nprint(r)",
                    options=["4", "0", "10", "1"], answer=0, predict=True, why="Equal pairs cancel out (x ^ x = 0), which leaves only the unpaired 4.")],

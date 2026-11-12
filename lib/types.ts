@@ -36,7 +36,7 @@ export type Problem = {
 
 export type QuizQuestion = {
   id: string;
-  kind: "insight" | "pattern" | "time" | "space" | "python" | "pattern-guide";
+  kind: "insight" | "pattern" | "time" | "space" | "python" | "pattern-guide" | "python-basics" | "term";
   q: string;
   code?: string;
   options: string[];
@@ -50,6 +50,9 @@ export type Concept = {
   group: string;
   summary: string;
   snippet: string;
+  template: string;
+  exampleSlug: string;
+  exampleQuestion: string;
   output: string;
   notes: string;
   quiz: QuizQuestion[];

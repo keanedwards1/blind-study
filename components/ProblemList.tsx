@@ -132,10 +132,10 @@ export default function ProblemList({ problems, categories }: { problems: Proble
   }
 
   const pillSelect =
-    "h-10 cursor-pointer rounded-full border border-line bg-panel px-4 text-sm font-medium text-fg-2 hover:border-line-strong focus:border-fg-2 focus:outline-none";
+    "h-11 cursor-pointer rounded-full border border-line bg-panel px-4 text-sm font-medium text-fg-2 hover:border-line-strong focus:border-fg-2 focus:outline-none";
 
   return (
-    <div className="w-full min-w-0 space-y-10 px-3 pb-16 pt-3 sm:px-5 sm:pt-5">
+    <div className="page-shell space-y-10">
       {/* ------------------------------------------------ summary */}
       <section className="relative flex flex-wrap items-center gap-8 overflow-hidden rounded-2xl border border-line bg-panel p-6 sm:p-8">
         {/* Background image: a tilted wall of category tiles, faded out toward the text. */}
@@ -151,11 +151,11 @@ export default function ProblemList({ problems, categories }: { problems: Proble
         </div>
 
         <div className="relative min-w-0 flex-1 basis-80">
-          <h1 className="text-3xl font-bold tracking-tight text-fg sm:text-4xl">Problems</h1>
-          <p className="mt-2 text-[15px] leading-7 text-muted">
+          <h1 className="text-fg">Problems</h1>
+          <p className="page-intro">
             {total} problems in {categories.length} categories. Solutions are written in Python and run in the browser.
           </p>
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <button onClick={pickRandom} className="flex h-11 items-center gap-2 rounded-full bg-fg px-5 text-sm font-semibold text-page transition-opacity hover:opacity-85">
               <ShuffleIcon className="h-4.5 w-4.5" />
               Random unsolved
@@ -191,7 +191,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
       </section>
 
       {/* ------------------------------------------------ sections of the site */}
-      <section className="grid grid-cols-2 gap-2 sm:gap-2.5 lg:grid-cols-4">
+      <section className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5 lg:grid-cols-4">
         {lastUnsolved ? (
           <button onClick={() => router.push(`/problems/${lastUnsolved.slug}`)} className={tile}>
             <IconBox hue={categoryHue(lastUnsolved.category)}>
@@ -234,7 +234,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
       {recent.length > 0 && (
         <section>
           <SectionHeading title="Recent" />
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4 min-[2200px]:grid-cols-6 min-[3000px]:grid-cols-8">
             {recent.map((p) => (
               <button key={p.slug} onClick={() => router.push(`/problems/${p.slug}`)} className={`${tile} h-16`}>
                 <IconBox hue={categoryHue(p.category)}>
@@ -256,14 +256,15 @@ export default function ProblemList({ problems, categories }: { problems: Proble
       <section>
         <SectionHeading title="All problems" aside={<span className="mb-0.5 text-xs text-subtle">{filtered.length} shown</span>} />
 
-        <div className="sticky top-0 z-10 -mx-3 mb-4 flex flex-wrap gap-2 bg-page/90 px-3 py-3 backdrop-blur-md sm:-mx-5 sm:px-5">
+        <div className="sticky top-0 z-10 -mx-(--gutter) mb-4 flex flex-wrap gap-2 bg-page/90 px-(--gutter) py-3 backdrop-blur-md">
           <label className="relative min-w-0 flex-1 basis-56">
             <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-subtle" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search problems"
-              className="h-10 w-full rounded-full border border-line bg-panel pl-10 pr-4 text-sm text-fg placeholder:text-subtle hover:border-line-strong focus:border-fg-2 focus:outline-none"
+              aria-label="Search problems"
+              className="h-11 w-full rounded-full border border-line bg-panel pl-10 pr-4 text-sm text-fg placeholder:text-subtle hover:border-line-strong focus:border-fg-2 focus:outline-none"
             />
           </label>
           <select value={diff} onChange={(e) => setDiff(e.target.value)} className={pillSelect} aria-label="Difficulty">
@@ -279,7 +280,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
           </select>
         </div>
 
-        <div className="gap-4 lg:columns-2">
+        <div className="gap-4 lg:columns-2 2xl:columns-3 min-[2200px]:columns-4">
           {categories.map((cat) => {
             const items = filtered.filter((p) => p.category === cat);
             if (!items.length) return null;

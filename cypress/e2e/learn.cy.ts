@@ -125,10 +125,33 @@ describe("Quiz drill", () => {
     cy.get("body").then(($b) => {
       const missed = Number($b.find(":contains('To review')").last().prev().text());
       if (missed > 0) {
-        cy.contains("label", "Only review missed").find("input").check();
+        cy.contains("label", "Show").find("select").select("missed");
         cy.contains(`${missed} match these filters`);
       }
     });
+  });
+
+  it("tracks progress per quiz and resets one category", () => {
+    cy.visit("/quiz");
+    cy.get('[data-testid="quiz-set"]').first().as("basics");
+    cy.get("@basics").should("contain", "Python basics").and("contain", "0%");
+    cy.get("@basics").contains("button", "By category").click();
+    cy.get("@basics").find('button[aria-label="Reset Errors"]').should("be.disabled");
+
+    // Practising a category drills only its questions, then shows the category's progress.
+    cy.get("@basics").find('button[aria-label="Practice Errors"]').click();
+    cy.contains("Question 1 of 2");
+    cy.get('[data-testid="quiz-card"] button').first().click();
+    cy.contains("button", "Next question").click();
+    cy.get('[data-testid="quiz-card"] button').first().click();
+    cy.get('[data-testid="round-progress"]').should("contain", "Python basics · Errors");
+
+    cy.contains("button", "Back").click();
+    cy.get("@basics").contains("button", "By category").click();
+    cy.on("window:confirm", () => true);
+    cy.get("@basics").find('button[aria-label="Reset Errors"]').should("not.be.disabled").click();
+    cy.get("@basics").find('button[aria-label="Reset Errors"]').should("be.disabled");
+    cy.get("@basics").should("contain", "0 / 72 right");
   });
 
   it("shows each question with the context it's about", () => {

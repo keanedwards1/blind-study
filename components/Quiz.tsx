@@ -22,6 +22,13 @@ function recordAnswer(id: string, correct: boolean) {
   });
 }
 
+/** Forget the recorded answers for these questions, so they count as unanswered again. */
+export function resetQuizStats(ids: string[]) {
+  const stats = { ...load<QuizStats>("quiz-stats", {}) };
+  for (const id of ids) delete stats[id];
+  save("quiz-stats", stats);
+}
+
 /** Deterministic shuffle so options don't jump around between renders. */
 function seededOrder(id: string, n: number): number[] {
   let h = 2166136261;
@@ -42,6 +49,8 @@ export const kindLabel: Record<QuizQuestion["kind"], string> = {
   space: "Space complexity",
   python: "Python",
   "pattern-guide": "Pattern",
+  "python-basics": "Python basics",
+  term: "Programming term",
 };
 
 export function QuizCard({

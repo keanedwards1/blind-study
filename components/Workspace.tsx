@@ -89,45 +89,47 @@ export default function Workspace({
             {tabBtn("solution", "Solution")}
           </div>
           <div className="flex-1 overflow-auto p-5">
-            {tab === "desc" && <ProblemDescription problem={problem} />}
+            <div className="mx-auto max-w-3xl">
+              {tab === "desc" && <ProblemDescription problem={problem} />}
 
-            {tab === "learn" && <LearnTab problem={problem} pattern={pattern} concepts={concepts} />}
+              {tab === "learn" && <LearnTab problem={problem} pattern={pattern} concepts={concepts} />}
 
-            {tab === "hints" && (
-              <div className="space-y-3">
-                {problem.hints.slice(0, hintsShown).map((h, i) => (
-                  <div key={i} className="rounded-lg border border-line bg-panel p-3">
-                    <div className="mb-1 text-xs text-subtle">Hint {i + 1}</div>
-                    <Markdown>{h}</Markdown>
+              {tab === "hints" && (
+                <div className="space-y-3">
+                  {problem.hints.slice(0, hintsShown).map((h, i) => (
+                    <div key={i} className="rounded-lg border border-line bg-panel p-3">
+                      <div className="mb-1 text-xs text-subtle">Hint {i + 1}</div>
+                      <Markdown>{h}</Markdown>
+                    </div>
+                  ))}
+                  {hintsShown < problem.hints.length ? (
+                    <button onClick={() => setHintsShown(hintsShown + 1)} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
+                      Show hint {hintsShown + 1}
+                    </button>
+                  ) : (
+                    <p className="text-sm text-subtle">That&apos;s all the hints.</p>
+                  )}
+                </div>
+              )}
+
+              {tab === "solution" &&
+                (revealed ? (
+                  <div className="space-y-4">
+                    <Markdown>{problem.explanation}</Markdown>
+                    <SolutionBreakdown code={problem.solution} lineTags={problem.lineTags} concepts={Object.fromEntries(concepts.map((c) => [c.id, c]))} />
+                    <button onClick={() => onCodeChange(problem.solution)} className="text-xs text-subtle hover:text-fg-2">
+                      Load solution into editor
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-start gap-3">
+                    <p className="text-sm text-muted">Try for at least 20–30 minutes before looking. Understanding the solution matters more than seeing it.</p>
+                    <button onClick={() => setRevealed(true)} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
+                      Reveal solution & explanation
+                    </button>
                   </div>
                 ))}
-                {hintsShown < problem.hints.length ? (
-                  <button onClick={() => setHintsShown(hintsShown + 1)} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
-                    Show hint {hintsShown + 1}
-                  </button>
-                ) : (
-                  <p className="text-sm text-subtle">That&apos;s all the hints.</p>
-                )}
-              </div>
-            )}
-
-            {tab === "solution" &&
-              (revealed ? (
-                <div className="space-y-4">
-                  <Markdown>{problem.explanation}</Markdown>
-                  <SolutionBreakdown code={problem.solution} lineTags={problem.lineTags} concepts={Object.fromEntries(concepts.map((c) => [c.id, c]))} />
-                  <button onClick={() => onCodeChange(problem.solution)} className="text-xs text-subtle hover:text-fg-2">
-                    Load solution into editor
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col items-start gap-3">
-                  <p className="text-sm text-muted">Try for at least 20–30 minutes before looking. Understanding the solution matters more than seeing it.</p>
-                  <button onClick={() => setRevealed(true)} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
-                    Reveal solution & explanation
-                  </button>
-                </div>
-              ))}
+            </div>
           </div>
         </section>
 
