@@ -14,6 +14,8 @@ A personal coding-interview practice site: 75 classic problems in Python. Code r
   snippet you can edit and run, gotchas, the problems that use it, and a mini-quiz.
 - **Learn tab on each problem**: the pattern and the Python building blocks its solution uses, plus a self-quiz (key insight,
   time and space complexity, pattern). The **Solution** tab tags every line of the reference solution with the concepts it uses.
+- **Learn mode** (toggle on each problem page): lists the Python building blocks you could use to write the answer
+  (loops, slicing, dict/set/heap calls, and so on) under the problem statement. The setting carries across problems.
 - **Quiz drill** (`/quiz`): mixed rounds from all question banks, each shown with its problem or concept as context. It tracks
   your answers so you can drill only unanswered or missed questions.
 - **Light mode** by default, with a dark-mode toggle in the header.
@@ -74,7 +76,7 @@ Other options: `in=["list" | "tree" | "lists" | "graph" | None, ...]` and `out="
 design problems (tests are `[operations, arguments]`); `driver` and `checker` hold custom Python for special cases.
 
 Learning content lives in `content/learn/`: `concepts.py` (Python toolkit), `patterns.py` (one guide per category) and
-`insights.py` (one key-insight question per problem). Python concept tags on each solution line come from parsing the
+`insights.py` (one key-insight question per problem) and `grammar.py` (the Learn mode building blocks for each problem; the build fails if a problem has none). Python concept tags on each solution line come from parsing the
 solution's syntax tree (`scripts/learn.py`), and complexity/pattern questions are generated from each problem's explanation.
 "Predict the output" questions are verified by running their code.
 

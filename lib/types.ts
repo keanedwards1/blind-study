@@ -32,7 +32,11 @@ export type Problem = {
   concepts: string[];
   lineTags: Record<string, string[]>;
   quiz: QuizQuestion[];
+  /** Learn mode: the Python building blocks you could use to write an answer. */
+  grammar: GrammarSection[];
 };
+
+export type GrammarSection = { title: string; items: string[] };
 
 export type QuizQuestion = {
   id: string;

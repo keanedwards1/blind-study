@@ -6,6 +6,7 @@ import type { Concept, PatternGuide, Problem, ProblemSummary, RunOutcome } from 
 import { load, markAttempted, markSolved, save, useSolved } from "@/lib/storage";
 import CodePane from "./CodePane";
 import LearnTab from "./LearnTab";
+import LearnMode, { LearnModeToggle, useLearnMode } from "./LearnMode";
 import SolutionBreakdown from "./SolutionBreakdown";
 import Markdown from "./Markdown";
 import ProblemDescription from "./ProblemDescription";
@@ -31,6 +32,7 @@ export default function Workspace({
   const [hintsShown, setHintsShown] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const solved = useSolved();
+  const learnMode = useLearnMode();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => () => clearTimeout(saveTimer.current), []);
@@ -66,6 +68,7 @@ export default function Workspace({
           ← Problems
         </Link>
         <div className="flex items-center gap-3">
+          <LearnModeToggle onEnable={() => setTab("desc")} />
           {solved[problem.slug] && <span className="rounded bg-emerald-500/15 px-2 py-0.5 text-xs text-ok">Solved</span>}
           {prev && (
             <Link href={`/problems/${prev.slug}`} className="text-muted hover:text-fg" title={prev.title}>
@@ -90,7 +93,12 @@ export default function Workspace({
           </div>
           <div className="flex-1 overflow-auto p-5">
             <div className="mx-auto max-w-3xl">
-              {tab === "desc" && <ProblemDescription problem={problem} />}
+              {tab === "desc" && (
+                <div className="space-y-6">
+                  <ProblemDescription problem={problem} />
+                  {learnMode && <LearnMode sections={problem.grammar} />}
+                </div>
+              )}
 
               {tab === "learn" && <LearnTab problem={problem} pattern={pattern} concepts={concepts} />}
 

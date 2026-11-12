@@ -176,6 +176,27 @@ def problem_quiz(p: dict, categories: list[str], insight: dict | None) -> list[d
     return qs
 
 
+def parse_grammar(slug: str, text: str) -> list[dict]:
+    """Turn a learn-mode entry ('## Title' lines followed by '- item' lines) into [{title, items}]."""
+    sections: list[dict] = []
+    for n, line in enumerate(text.strip().splitlines(), 1):
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith("## "):
+            sections.append({"title": line[3:].strip(), "items": []})
+        elif line.startswith("- ") and sections:
+            sections[-1]["items"].append(line[2:].strip())
+        else:
+            raise AssertionError(f"grammar.py {slug} line {n}: expected '## title' or '- item', got {line!r}")
+        if line.count("`") % 2:
+            raise AssertionError(f"grammar.py {slug} line {n}: unbalanced backticks in {line!r}")
+    assert sections, f"grammar.py {slug}: no sections"
+    empty = [s["title"] for s in sections if not s["items"]]
+    assert not empty, f"grammar.py {slug}: empty sections {empty}"
+    return sections
+
+
 def load_learn(problems: list[dict], categories: list[str]):
     """Validate concept + pattern content, annotate problems in place, return learn.json payload."""
     concepts = runpy.run_path(str(LEARN / "concepts.py"))["CONCEPTS"]
@@ -202,6 +223,13 @@ def load_learn(problems: list[dict], categories: list[str]):
         p["quiz"] = problem_quiz(p, categories, insights.get(p["slug"]))
     missing = [p["slug"] for p in problems if p["slug"] not in insights]
     assert not missing, f"missing insight questions for: {missing}"
+    grammar = runpy.run_path(str(LEARN / "grammar.py"))["GRAMMAR"]
+    missing = [p["slug"] for p in problems if p["slug"] not in grammar]
+    assert not missing, f"grammar.py is missing learn-mode entries for: {missing}"
+    unknown = set(grammar) - set(problems_by_slug)
+    assert not unknown, f"grammar.py has entries for unknown problems: {sorted(unknown)}"
+    for p in problems:
+        p["grammar"] = parse_grammar(p["slug"], grammar[p["slug"]])
 
     out_concepts = []
     for c in concepts:
