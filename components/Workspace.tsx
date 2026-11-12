@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Concept, PatternGuide, Problem, ProblemSummary, RunOutcome } from "@/lib/types";
-import { load, markAttempted, markSolved, save, useSolved } from "@/lib/storage";
+import { load, markAttempted, markSolved, markUnsolved, save, useSolved } from "@/lib/storage";
 import CodePane from "./CodePane";
 import LearnTab from "./LearnTab";
-import LearnMode, { LearnModeToggle, useLearnMode } from "./LearnMode";
+import LearnMode from "./LearnMode";
 import SolutionBreakdown from "./SolutionBreakdown";
 import Markdown from "./Markdown";
 import ProblemDescription from "./ProblemDescription";
 
-type Tab = "desc" | "learn" | "hints" | "solution";
+type Tab = "desc" | "learn" | "hints" | "solution" | "learnMode";
 
 export default function Workspace({
   problem,
@@ -32,7 +32,6 @@ export default function Workspace({
   const [hintsShown, setHintsShown] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const solved = useSolved();
-  const learnMode = useLearnMode();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => () => clearTimeout(saveTimer.current), []);
@@ -55,7 +54,7 @@ export default function Workspace({
   const tabBtn = (id: Tab, label: string) => (
     <button
       onClick={() => setTab(id)}
-      className={`px-3 py-2 text-sm ${tab === id ? "border-b-2 border-accent text-fg" : "text-subtle hover:text-fg-2"}`}
+      className={`shrink-0 whitespace-nowrap px-3 py-2 text-sm ${tab === id ? "border-b-2 border-accent text-fg" : "text-subtle hover:text-fg-2"}`}
     >
       {label}
     </button>
@@ -68,8 +67,18 @@ export default function Workspace({
           ← Problems
         </Link>
         <div className="flex items-center gap-3">
-          <LearnModeToggle onEnable={() => setTab("desc")} />
-          {solved[problem.slug] && <span className="rounded bg-emerald-500/15 px-2 py-0.5 text-xs text-ok">Solved</span>}
+          {solved[problem.slug] && (
+            <span className="flex items-center gap-1.5">
+              <span className="rounded bg-ok/15 px-2 py-0.5 text-xs text-ok">Solved</span>
+              <button
+                onClick={() => window.confirm(`Mark “${problem.title}” as not solved? Your code is kept.`) && markUnsolved(problem.slug)}
+                className="text-xs text-subtle hover:text-fg-2"
+                title="Remove the solved status from this problem"
+              >
+                Mark unsolved
+              </button>
+            </span>
+          )}
           {prev && (
             <Link href={`/problems/${prev.slug}`} className="text-muted hover:text-fg" title={prev.title}>
               ‹ Prev
@@ -83,22 +92,22 @@ export default function Workspace({
         </div>
       </div>
 
-      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
+      {/* The single row is pinned to the available height so tall tab content scrolls inside its pane
+          instead of stretching the row (which used to make the editor taller). */}
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)]">
         <section className="flex min-h-0 min-w-0 flex-col border-line lg:border-r">
-          <div className="flex border-b border-line px-2">
+          <div className="flex overflow-x-auto border-b border-line px-2">
             {tabBtn("desc", "Description")}
             {tabBtn("learn", "Learn")}
             {tabBtn("hints", `Hints (${problem.hints.length})`)}
             {tabBtn("solution", "Solution")}
+            {tabBtn("learnMode", "Learn mode")}
           </div>
           <div className="flex-1 overflow-auto p-5">
             <div className="mx-auto max-w-3xl">
-              {tab === "desc" && (
-                <div className="space-y-6">
-                  <ProblemDescription problem={problem} />
-                  {learnMode && <LearnMode sections={problem.grammar} />}
-                </div>
-              )}
+              {tab === "desc" && <ProblemDescription problem={problem} />}
+
+              {tab === "learnMode" && <LearnMode sections={problem.grammar} />}
 
               {tab === "learn" && <LearnTab problem={problem} pattern={pattern} concepts={concepts} />}
 

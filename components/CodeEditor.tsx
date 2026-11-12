@@ -51,6 +51,8 @@ export default function CodeEditor({
         padding: { top: 12 },
         renderLineHighlight: readOnly ? "none" : "line",
         fixedOverflowWidgets: true,
+        // Let the wheel scroll the page once the editor has nothing left to scroll (or fits entirely).
+        scrollbar: { alwaysConsumeMouseWheel: false },
       }}
     />
   );

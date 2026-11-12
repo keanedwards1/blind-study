@@ -75,6 +75,14 @@ export function useAttempted() {
 export function markSolved(slug: string) {
   save("solved", { ...load<Progress>("solved", {}), [slug]: Date.now() });
 }
+/** Clears a problem's solved status. It stays in "attempted" so it still shows up as worked on. */
+export function markUnsolved(slug: string) {
+  const { [slug]: solvedAt, ...rest } = load<Progress>("solved", {});
+  if (solvedAt === undefined) return;
+  save("solved", rest);
+  const attempted = load<Progress>("attempted", {});
+  if (!attempted[slug]) save("attempted", { ...attempted, [slug]: solvedAt });
+}
 export function markAttempted(slug: string) {
   save("attempted", { ...load<Progress>("attempted", {}), [slug]: Date.now() });
 }
