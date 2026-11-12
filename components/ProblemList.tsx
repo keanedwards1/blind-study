@@ -135,7 +135,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
     "h-10 cursor-pointer rounded-full border border-line bg-panel px-4 text-sm font-medium text-fg-2 hover:border-line-strong focus:border-fg-2 focus:outline-none";
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-10 px-3 pb-16 pt-3 sm:px-5 sm:pt-5">
+    <div className="w-full min-w-0 space-y-10 px-3 pb-16 pt-3 sm:px-5 sm:pt-5">
       {/* ------------------------------------------------ summary */}
       <section className="relative flex flex-wrap items-center gap-8 overflow-hidden rounded-2xl border border-line bg-panel p-6 sm:p-8">
         {/* Background image: a tilted wall of category tiles, faded out toward the text. */}

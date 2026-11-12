@@ -194,7 +194,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
   if (phase === "setup") {
     const num = "w-20 rounded-md border border-line bg-panel px-2 py-1 text-sm text-fg";
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-8">
+      <div className="page-shell page-mock">
         <h1 className="text-2xl font-semibold text-fg">Mock assessment</h1>
         <p className="mt-2 text-sm leading-6 text-muted">
           Simulates a timed online assessment. Problems appear one at a time, in order, and get harder as you go. When you submit a problem its code locks, then you record a
@@ -256,7 +256,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
   // ------------------------------------------------------------------ summary
   if (phase === "summary") {
     return (
-      <div className="mx-auto w-full max-w-4xl px-4 py-8">
+      <div className="page-shell page-mock page-mock-results">
         <h1 className="text-2xl font-semibold text-fg">Results</h1>
         <p className="mt-1 text-sm text-muted">
           {timeUp ? "Time ran out. " : ""}Total time used: {clock((endAt - startAt) / 1000)} of {minutes}:00
@@ -328,13 +328,13 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
 
   if (phase === "coding") {
     return (
-      <div className="flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
+      <div className="page-mock-session flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
         {header}
-        <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-2">
-          <section className="overflow-auto border-line p-5 lg:border-r">
+        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
+          <section className="min-w-0 overflow-auto border-line p-5 lg:border-r">
             <ProblemDescription problem={item.problem} />
           </section>
-          <section className="h-[85vh] min-h-0 lg:h-auto">
+          <section className="h-[85vh] min-h-0 min-w-0 lg:h-auto">
             <CodePane
               key={idx}
               problem={item.problem}
@@ -356,10 +356,10 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
   // explain
   const isLast = idx === items.length - 1;
   return (
-    <div className="flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
+    <div className="page-mock-session flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
       {header}
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-2">
-        <section className="flex min-h-[50vh] flex-col border-line lg:border-r">
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
+        <section className="flex min-h-[50vh] min-w-0 flex-col border-line lg:border-r">
           <div className="border-b border-line px-4 py-2 text-xs text-muted">
             Submitted code (read-only). Highlight the part you&apos;re explaining as you talk.
           </div>
@@ -367,7 +367,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
             <CodeEditor value={item.code} readOnly />
           </div>
         </section>
-        <section className="overflow-auto p-5">
+        <section className="min-w-0 overflow-auto p-5">
           <div className="mb-4 flex items-baseline justify-between">
             <h2 className="font-medium text-fg">{item.problem.title}</h2>
             <span className={item.passed === item.total ? "text-sm text-ok" : "text-sm text-bad"}>

@@ -137,7 +137,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
     const q = round[idx];
     const right = results.filter(Boolean).length;
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-8">
+      <div className="page-shell page-quiz page-quiz-round">
         <div className="mb-4 flex items-center justify-between text-sm">
           <span className="text-muted">
             Question {idx + 1} of {round.length} · {right} correct
@@ -186,7 +186,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
 
   const select = "rounded-md border border-line bg-panel px-2 py-1.5 text-sm text-fg-2";
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8">
+    <div className="page-shell page-quiz">
       <h1 className="text-2xl font-semibold text-fg">Quiz drill</h1>
       <p className="mt-2 text-sm leading-6 text-muted">
         Quick-fire questions on key insights, complexity, patterns and Python behaviour, drawn from all {questions.length} questions. Wrong answers go into a review pile

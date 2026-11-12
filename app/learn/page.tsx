@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Learn · Drill" };
 export default function LearnPage() {
   const bySlug = Object.fromEntries(summaries().map((p) => [p.slug, p]));
   return (
-    <div className="mx-auto flex w-full max-w-6xl gap-8 px-4 py-8">
+    <div className="page-shell page-learn flex w-full min-w-0 gap-8">
       <nav className="sticky top-4 hidden max-h-[calc(100vh-5rem)] w-56 shrink-0 self-start overflow-auto text-sm lg:block">
         <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-subtle">Patterns</div>
         <ul className="mb-5 space-y-1">

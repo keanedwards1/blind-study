@@ -60,7 +60,7 @@ export default function Workspace({
   );
 
   return (
-    <div className="flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
+    <div className="page-workspace flex flex-1 flex-col lg:h-[calc(100vh-3rem)] lg:overflow-hidden">
       <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2 text-sm">
         <Link href="/" className="text-muted hover:text-fg">
           ← Problems
@@ -80,8 +80,8 @@ export default function Workspace({
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-2">
-        <section className="flex min-h-0 flex-col border-line lg:border-r">
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
+        <section className="flex min-h-0 min-w-0 flex-col border-line lg:border-r">
           <div className="flex border-b border-line px-2">
             {tabBtn("desc", "Description")}
             {tabBtn("learn", "Learn")}
@@ -131,7 +131,7 @@ export default function Workspace({
           </div>
         </section>
 
-        <section className="h-[85vh] min-h-0 lg:h-auto">
+        <section className="h-[85vh] min-h-0 min-w-0 lg:h-auto">
           <CodePane
             problem={problem}
             code={code}
