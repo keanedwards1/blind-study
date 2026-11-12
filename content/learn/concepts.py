@@ -736,7 +736,7 @@ print(bin(10), int("1010", 2))
         quiz=[
             dict(q="What does this print?", code="print(6 & 3, 6 | 3, 6 ^ 3)", options=["2 7 5", "2 7 1", "3 6 5", "0 7 5"], answer=0, predict=True,
                  why="In binary, 6 is 110 and 3 is 011. So 110 & 011 = 010 (2), 110 | 011 = 111 (7), and 110 ^ 011 = 101 (5)."),
-            dict(q="What does `n & (n - 1)` do?", options=["Clears the lowest set bit", "Sets the lowest bit", "Doubles n", "Counts the 1-bits"], answer=0,
+            dict(q="What does `n & (n - 1)` do?", options=["Clears the lowest set bit", "Clears the highest set bit", "Keeps only the lowest set bit", "Counts the 1-bits"], answer=0,
                  why="Subtracting 1 flips the lowest 1-bit and every bit below it, so the AND clears that bit."),
         ],
     ),

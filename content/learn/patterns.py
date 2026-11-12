@@ -16,7 +16,7 @@ PATTERNS = [
         complexity="These solutions usually run in O(n) time and use O(n) extra space, compared with O(n²) time for the brute-force approach.",
         pitfalls=["Add each value to the dictionary only *after* checking for the value that completes its pair; otherwise a value can be paired with itself.", "Lists cannot be used as dictionary keys because they can change. Convert them to tuples first.", "Sorting can be a better choice when memory matters: it takes O(n log n) time but needs only O(1) extra space."],
         quiz=[dict(q="A nested-loop solution checks every pair to find two numbers summing to a target. What does a hash map change?",
-                   options=["Each partner lookup becomes O(1), so O(n) total", "It sorts the array", "It reduces space to O(1)", "Nothing, it's still O(n²)"], answer=0,
+                   options=["Each partner lookup becomes O(1), so O(n) overall", "The pairs come out sorted, so O(n log n) overall", "Space drops to O(1), but time stays O(n²)", "Each lookup is still O(n), so it stays O(n²)"], answer=0,
                    why="You replace the inner search loop with a constant-time dictionary lookup.")],
     ),
     dict(
@@ -59,7 +59,7 @@ PATTERNS = [
         complexity="The algorithm runs in O(n) time because each index moves forward at most n times. The extra space is whatever you need to describe the range, such as a dictionary of character counts.",
         pitfalls=["Record the answer at the right moment: for the longest range, record it after shrinking; for the shortest range, record it while it still meets the rule, before each shrink.", "A subsequence can skip items, so it does not have to be continuous; sliding windows are only for continuous ranges."],
         quiz=[dict(q="Why is a sliding window O(n) even though it has a `while` loop inside a `for` loop?",
-                   options=["`left` only moves forward, at most n times in total", "The while loop runs at most once", "Python optimises nested loops", "It isn't. It's O(n²)"], answer=0,
+                   options=["`left` only moves forward, at most n times in total", "The inner `while` runs at most once per step of `right`", "Each `while` pass halves the window", "It isn't; nested loops make it O(n²)"], answer=0,
                    why="Count all moves: `right` moves n times, and `left` moves at most n times. This way of counting the total work is called amortized analysis.")],
     ),
     dict(
@@ -140,7 +140,7 @@ def middle(head):
         complexity="A traversal takes O(n) time. Recursion uses O(h) space, where h is the tree's height: about log n for a balanced tree and up to n for a very unbalanced tree.",
         pitfalls=["Keep the value you return to the parent separate from the global answer; in Maximum Path Sum, for example, they are different quantities.", "Checking that a tree is a valid BST requires bounds inherited from all ancestors, not just a comparison with the parent.", "Remember the base case for an empty tree (`if not node`)."],
         quiz=[dict(q="Which traversal visits the values of a BST in sorted order?",
-                   options=["In-order (left, node, right)", "Pre-order", "Post-order", "Level-order"], answer=0,
+                   options=["In-order (left, node, right)", "Pre-order (node, left, right)", "Post-order (left, right, node)", "Level-order (top to bottom)"], answer=0,
                    why="Everything in the left subtree is smaller and everything in the right is larger.")],
     ),
     dict(
@@ -168,7 +168,7 @@ def middle(head):
         complexity="Each insert or search takes O(L) time, where L is the length of the word. The trie uses space proportional to the total number of characters inserted.",
         pitfalls=["Mark the end of each word explicitly: 'app' is a prefix of 'apple', but it is not necessarily a stored word.", "In Word Search II, remove each word from the trie once you find it, so it is not reported twice and the search stays fast."],
         quiz=[dict(q="Why use a trie instead of a set of words for prefix queries?",
-                   options=["A prefix check is O(prefix length) instead of scanning every word", "It uses less memory", "Sets can't store strings", "Tries are sorted"], answer=0,
+                   options=["A prefix check costs O(prefix length), not a scan of every word", "A trie stores the same words in less memory than a set", "Set lookups are O(n) for strings, but trie lookups are O(1)", "A trie keeps words sorted, so prefixes can be binary searched"], answer=0,
                    why="With a set, you would have to test `w.startswith(p)` against every stored word.")],
     ),
     dict(
@@ -212,7 +212,7 @@ def k_largest(nums, k):
         complexity="Backtracking may take exponential time in the worst case. Skipping choices that cannot lead to an answer (pruning) often makes it fast enough in practice.",
         pitfalls=["Append a copy of the current path (`path[:]`) to the results, not the path itself, which keeps changing.", "Restore any state you changed (for example, un-mark visited cells) before returning from a call.", "Pass a start index into each call so the same combination is not generated in several different orders."],
         quiz=[dict(q="Why `out.append(path[:])` instead of `out.append(path)`?",
-                   options=["path keeps changing; you need a snapshot", "It's faster", "path is a tuple", "No difference"], answer=0,
+                   options=["path keeps changing; you need a snapshot", "Slicing is faster than appending the list itself", "append can't store a list inside another list", "No difference; both store the same values"], answer=0,
                    why="Without a copy, every stored result would refer to the same list, which is empty by the time the search finishes.")],
     ),
     dict(
@@ -235,8 +235,8 @@ def bfs(start, neighbors):
         complexity="A traversal takes O(V + E) time and space, where V is the number of nodes and E the number of edges. For a grid, that becomes O(rows × cols).",
         pitfalls=["Mark a node as visited when you add it to the queue or stack, not when you remove it; otherwise you may add the same node many times.", "Check the grid boundaries before you read a neighbouring cell.", "Be clear about whether links go one way (directed) or both ways (undirected). Store each node's neighbours in a list (an adjacency list)."],
         quiz=[dict(q="Which algorithm detects whether course prerequisites contain a cycle?",
-                   options=["Topological sort (Kahn's)", "Binary search", "Dijkstra", "Two pointers"], answer=0,
-                   why="If some courses still have a prerequisite after all available courses are processed, there is a cycle.")],
+                   options=["Topological sort (Kahn's)", "Dijkstra's shortest paths", "Union-find over the edges", "Minimum spanning tree (Kruskal's)"], answer=0,
+                   why="If some courses still have a prerequisite after all available courses are processed, there is a cycle. Union-find detects cycles in undirected graphs, not in prerequisite (directed) graphs.")],
     ),
     dict(
         category="Advanced Graphs",
@@ -281,7 +281,7 @@ def topo_order(nodes, edges):
         complexity="These solutions usually take O(n) or O(n · k) time and between O(1) and O(n) space.",
         pitfalls=["State the meaning of `dp[i]` in words before you write any code.", "Double-check the base cases and the table size (does it need n or n + 1 entries?).", "A greedy approach often looks correct but fails; Coin Change is the classic example."],
         quiz=[dict(q="What's the core sign that a problem needs DP rather than plain recursion?",
-                   options=["Overlapping subproblems get recomputed", "The input is sorted", "It uses a tree", "It asks for all solutions"], answer=0,
+                   options=["The same subproblems get solved again and again", "Each subproblem is independent of the others", "The input is sorted, so choices can be greedy", "It asks for every solution, not just the best"], answer=0,
                    why="Memoizing or tabulating the results means each subproblem is solved only once.")],
     ),
     dict(
@@ -302,7 +302,7 @@ def topo_order(nodes, edges):
         complexity="These solutions take O(m · n) time. They use O(m · n) space for the full table, which can often be reduced to a single row.",
         pitfalls=["Build the table with a comprehension (`[[0] * n for _ in range(m)]`), not `[[0] * n] * m`, which repeats the same row object.", "Fill the table in an order that computes every cell's dependencies before the cell itself."],
         quiz=[dict(q="In LCS, when `a[i] != b[j]`, dp[i][j] is…",
-                   options=["max(dp[i+1][j], dp[i][j+1])", "dp[i+1][j+1] + 1", "0", "dp[i+1][j+1]"], answer=0,
+                   options=["max(dp[i+1][j], dp[i][j+1])", "dp[i+1][j+1] + 1", "min(dp[i+1][j], dp[i][j+1])", "dp[i+1][j+1]"], answer=0,
                    why="You skip a character from one string or the other, and keep whichever result is better.")],
     ),
     dict(
@@ -319,7 +319,7 @@ def topo_order(nodes, edges):
         complexity="Greedy solutions usually take O(n) time, or O(n log n) if they sort first.",
         pitfalls=["Greedy code is easy to write and easy to get wrong, so try to find a counterexample before you commit to it.", "If the greedy approach fails, the problem usually needs dynamic programming instead."],
         quiz=[dict(q="In Kadane's algorithm, why restart the running sum at `x` when `cur + x < x`?",
-                   options=["A negative prefix can only lower future sums", "To save memory", "Because x is positive", "To handle sorting"], answer=0,
+                   options=["A negative running sum can only lower later sums", "A positive x always starts a better subarray", "Restarting stops the sum from overflowing", "It keeps the subarray as short as possible"], answer=0,
                    why="Dropping a negative running sum always helps whatever comes next.")],
     ),
     dict(
