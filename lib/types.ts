@@ -12,6 +12,11 @@ export type RunSpec = {
   mutate?: number;
   driver?: string;
   checker?: string;
+  /** Learn Python task formats (see public/harness.py). */
+  stdin?: boolean;
+  raises?: boolean;
+  require?: string[];
+  forbid?: string[];
 };
 
 export type Problem = {
@@ -96,3 +101,22 @@ export type RunOutcome = {
   passed: number;
   total: number;
 };
+
+// ---- Learn Python
+export type PyConcept = { id: string; title: string; intro: string; builtins: string[]; problems: string[] };
+
+export type PyLevel = {
+  n: number;
+  /** "python": authored fundamentals (levels 1-7); "blind": Blind 75 problems (levels 8-10). */
+  kind: "python" | "blind";
+  title: string;
+  summary: string;
+  /** False while a level's content hasn't been written yet. */
+  ready: boolean;
+  concepts: PyConcept[];
+  problems: string[];
+  /** Pool the level quiz draws from. */
+  quiz: QuizQuestion[];
+};
+
+export type PlacementTask = { level: number; slug: string };

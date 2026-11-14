@@ -47,3 +47,7 @@ __pycache__/
 /cypress/screenshots
 /cypress/videos
 /cypress/downloads
+
+# your own music for Learn Python (see public/audio/local/README.md): never committed or deployed
+/public/audio/local/*
+!/public/audio/local/README.md

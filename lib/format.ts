@@ -15,6 +15,17 @@ function fmt(v: unknown): string {
   return String(v);
 }
 
+/**
+ * Show a test value the way the task compares it: printed text as-is, strict (type-exact) values as Python's own repr text
+ * (the harness already produced it), an expected exception as "raises X", and everything else via py().
+ */
+export function show(spec: { out?: string; compare?: string }, v: unknown): string {
+  if (v && typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 1 && "raises" in v) return `raises ${(v as { raises: string }).raises}`;
+  if (typeof v === "string" && spec.out === "stdout") return v === "" ? "(nothing printed)" : v;
+  if (typeof v === "string" && spec.compare === "strict") return v;
+  return py(v);
+}
+
 export function clock(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds));
   const h = Math.floor(s / 3600);

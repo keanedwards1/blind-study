@@ -43,6 +43,9 @@ body {
   --accent-text: #a35f00;
   --on-accent: #1a1203;
   --code-bg: #f1f2f5;
+  /* Inline code chips in prose (problem statements, lessons): visible against the page and panel colours. */
+  --code-inline-bg: #e4e7ed;
+  --code-inline-line: #d3d8e0;
   --code-fg: #111216;
 }
 
@@ -69,6 +72,8 @@ body {
   --accent-text: #ffb224;
   --on-accent: #1a1203;
   --code-bg: #1e2024;
+  --code-inline-bg: #272a31;
+  --code-inline-line: #383c45;
   --code-fg: #f5f5f7;
 }
 
@@ -448,14 +453,245 @@ select:not([multiple]):focus-visible {
 .md code {
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 0.85em;
-  background: var(--code-bg);
-  border-radius: 4px;
-  padding: 0.1em 0.35em;
+  background: var(--code-inline-bg);
+  box-shadow: inset 0 0 0 1px var(--code-inline-line);
+  border-radius: 5px;
+  padding: 0.12em 0.4em;
   color: var(--code-fg);
 }
 .md pre { background: var(--code-bg); border-radius: 8px; padding: 0.8em 1em; overflow-x: auto; }
-.md pre code { background: none; padding: 0; }
+.md pre code { background: none; padding: 0; box-shadow: none; }
 .md h1, .md h2, .md h3 { color: var(--fg); font-weight: 600; margin: 1em 0 0.4em; }
 .md table { border-collapse: collapse; margin: 0.6em 0; font-size: 0.875rem; }
 .md th, .md td { border: 1px solid var(--line); padding: 0.3em 0.7em; text-align: left; }
 .md th { background: var(--raised); color: var(--fg); font-weight: 600; }
+
+/* ======================================================================== Learn Python game screens
+ * A nature theme in three biomes: soil & roots (worlds 1-3), deep forest (4-7), firelands (8-10).
+ * Everything is scoped to .game so the rest of the site keeps its look.
+ */
+.game {
+  --n-ink: #f4ecdc;
+  --n-dim: #c9bda4;
+  --n-faint: #8f8470;
+  --n-card: rgba(18, 13, 9, 0.62);
+  --n-card-line: rgba(244, 236, 220, 0.1);
+  --n-amber: #e9b44c;
+  --n-moss: #7fb069;
+  --n-ember: #ff7a2f;
+  --n-bark: #6b4a2f;
+  --n-sky-1: #1d140d;
+  --n-sky-2: #3b2a1c;
+  /* No `position` here: overlays combine .game with Tailwind's `fixed`, and an unlayered rule would override it. */
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--n-ink);
+  background: linear-gradient(180deg, var(--n-sky-1) 0%, var(--n-sky-2) 100%);
+}
+.game[data-biome="forest"] {
+  --n-sky-1: #0c1a12;
+  --n-sky-2: #1c3524;
+}
+.game[data-biome="fire"] {
+  --n-sky-1: #160907;
+  --n-sky-2: #3a1309;
+}
+/* Markdown (lessons, world summaries) inherits the scene's light text instead of the site's grey. */
+.game .md {
+  color: inherit;
+}
+.game .md strong {
+  color: inherit;
+}
+/* Inline code on the dark scenes (world intros); lessons open in a light panel and keep the normal style. */
+.n-on-dark .md code {
+  background: rgba(244, 236, 220, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(244, 236, 220, 0.2);
+  color: inherit;
+}
+.game .font-display {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* Cards and buttons */
+.n-card {
+  background: var(--n-card);
+  border: 1px solid var(--n-card-line);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+}
+.n-btn {
+  --btn: var(--n-amber);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #22170e;
+  background: var(--btn);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
+  cursor: pointer;
+}
+.n-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+.n-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+.n-btn.ghost {
+  color: var(--n-ink);
+  background: rgba(244, 236, 220, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(244, 236, 220, 0.2);
+}
+.n-btn:focus-visible,
+.n-stone:focus-visible,
+.n-clearing:focus-visible {
+  outline: 2px solid var(--n-amber);
+  outline-offset: 4px;
+}
+.n-btn[aria-disabled="true"] {
+  filter: grayscale(1) brightness(0.7);
+  cursor: not-allowed;
+}
+
+/* Stage "stones" and map "clearings" */
+.n-stone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  width: 4.75rem;
+  height: 4.75rem;
+  border-radius: 46% 54% 50% 50% / 55% 48% 52% 45%;
+  background: radial-gradient(circle at 35% 30%, #f6eedd, #d8c9a8 70%);
+  color: #2b1d14;
+  font-weight: 700;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), inset 0 -4px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 160ms ease;
+}
+.n-stone:hover {
+  transform: translateY(-2px) rotate(-2deg);
+}
+.n-stone[data-state="cleared"] {
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--world) 45%, #fff), color-mix(in srgb, var(--world) 75%, #000) 85%);
+  color: #14100b;
+}
+.n-stone[data-state="locked"] {
+  background: radial-gradient(circle at 35% 30%, #4a3f35, #2a221b 80%);
+  color: #8f8470;
+  cursor: not-allowed;
+}
+.n-stone[data-state="open"] {
+  animation: n-glow 2.2s ease-in-out infinite;
+}
+.n-clearing {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 9rem;
+  text-align: center;
+}
+.n-clearing .ring {
+  display: grid;
+  place-items: center;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 40%, rgba(244, 236, 220, 0.16), rgba(0, 0, 0, 0.35));
+  box-shadow: inset 0 0 0 2px rgba(244, 236, 220, 0.18), 0 8px 18px rgba(0, 0, 0, 0.4);
+  transition: transform 180ms ease;
+}
+.n-clearing:hover .ring {
+  transform: scale(1.05);
+}
+.n-clearing[data-current="true"] .ring {
+  box-shadow: inset 0 0 0 3px var(--world), 0 0 0 6px color-mix(in srgb, var(--world) 30%, transparent), 0 0 30px color-mix(in srgb, var(--world) 60%, transparent);
+  animation: n-breathe 2.6s ease-in-out infinite;
+}
+.n-clearing[data-locked="true"] {
+  filter: grayscale(0.85) brightness(0.7);
+}
+.n-trail {
+  flex: 1 1 2rem;
+  min-width: 1.5rem;
+  height: 0;
+  border-top: 3px dashed rgba(233, 180, 76, 0.45);
+  margin-top: 3rem;
+}
+.n-trail.down {
+  flex: none;
+  width: 0;
+  height: 2.5rem;
+  min-width: 0;
+  border-top: none;
+  border-left: 3px dashed rgba(233, 180, 76, 0.45);
+  margin: 0;
+}
+
+/* Scenery particles: fireflies (forest), embers (fire), falling leaves (soil). */
+.n-particle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 999px;
+}
+.n-firefly {
+  width: 4px;
+  height: 4px;
+  background: #f6f0a0;
+  box-shadow: 0 0 10px 3px rgba(246, 240, 160, 0.6);
+  animation: n-float 9s ease-in-out infinite, n-flicker 2.4s ease-in-out infinite;
+}
+.n-ember {
+  width: 3px;
+  height: 3px;
+  background: #ffb347;
+  box-shadow: 0 0 8px 2px rgba(255, 122, 47, 0.7);
+  animation: n-rise 7s linear infinite;
+}
+.n-leaf {
+  width: 10px;
+  height: 6px;
+  border-radius: 0 100% 0 100%;
+  background: #a3743a;
+  animation: n-fall 12s linear infinite;
+}
+
+@keyframes n-float { 50% { transform: translate(14px, -22px); } }
+@keyframes n-flicker { 50% { opacity: 0.25; } }
+@keyframes n-rise { from { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } to { transform: translate(20px, -110vh); opacity: 0; } }
+@keyframes n-fall { from { transform: translate(0, -10vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.9; } to { transform: translate(60px, 110vh) rotate(540deg); opacity: 0; } }
+@keyframes n-sway { 50% { transform: rotate(-3deg); } }
+@keyframes n-breathe { 50% { transform: scale(1.06); } }
+@keyframes n-glow { 50% { box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 0 0 5px color-mix(in srgb, var(--world) 40%, transparent), 0 0 24px color-mix(in srgb, var(--world) 70%, transparent); } }
+@keyframes n-pop { 0% { transform: scale(0) rotate(-30deg); } 70% { transform: scale(1.25) rotate(8deg); } 100% { transform: none; } }
+@keyframes n-rise-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes n-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes n-shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+.n-sway { transform-origin: bottom center; animation: n-sway 4s ease-in-out infinite; }
+.n-pop { animation: n-pop 450ms ease-out both; }
+.n-rise-in { animation: n-rise-in 600ms ease-out both; }
+.n-fade { animation: n-fade 500ms ease-out both; }
+.n-shake { animation: n-shake 320ms ease-in-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .game *,
+  .game *::before,
+  .game *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .game .n-particle {
+    display: none;
+  }
+}

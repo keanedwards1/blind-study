@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { CaseResult, Problem, RunOutcome } from "@/lib/types";
-import { py } from "@/lib/format";
+import { py, show } from "@/lib/format";
 
 const chip: Record<string, string> = {
   pass: "bg-emerald-500/15 text-ok border-emerald-600/40",
@@ -13,6 +13,7 @@ const chip: Record<string, string> = {
 };
 
 function verdict(o: RunOutcome): { label: string; color: string } {
+  if (o.compileError?.startsWith("Task rule:")) return { label: "Task rule not met", color: "text-bad" };
   if (o.compileError) return { label: o.compileError.includes("Time limit") ? "Time Limit Exceeded" : "Compile / Load Error", color: "text-bad" };
   if (o.passed === o.total) return { label: o.kind === "submit" ? "Accepted" : "All examples passed", color: "text-ok" };
   if (o.cases.some((c) => c.status === "timeout")) return { label: "Time Limit Exceeded", color: "text-tle" };
@@ -99,7 +100,7 @@ export default function ResultsPanel({
             {problem.examples[sel] && (
               <>
                 <Inputs problem={problem} args={problem.examples[sel].args} />
-                <Field label="Expected">{py(problem.examples[sel].expected)}</Field>
+                <Field label={problem.spec.out === "stdout" ? "Expected printed output" : "Expected"}>{show(problem.spec, problem.examples[sel].expected)}</Field>
               </>
             )}
             <p className="text-xs text-subtle">
@@ -169,9 +170,12 @@ function OutcomeView({ problem, outcome, sel, setSel }: { problem: Problem; outc
                   {c.error ? (
                     <Field label={c.status === "timeout" ? "Timeout" : "Error"} tone="text-bad">{c.error}</Field>
                   ) : (
-                    <Field label="Your output" tone={c.status === "pass" ? "text-ok" : "text-bad"}>{py(c.result)}</Field>
+                    <Field label={problem.spec.out === "stdout" ? "You printed" : "Your output"} tone={c.status === "pass" ? "text-ok" : "text-bad"}>
+                      {show(problem.spec, c.result)}
+                    </Field>
                   )}
-                  <Field label="Expected">{py(t.expected)}</Field>
+                  <Field label={problem.spec.out === "stdout" ? "Expected printed output" : "Expected"}>{show(problem.spec, t.expected)}</Field>
+                  {problem.spec.compare === "strict" && <div className="text-xs text-subtle">This task checks the type too: a tuple isn&apos;t a list, and 3 isn&apos;t 3.0.</div>}
                   {problem.spec.checker && <div className="text-xs text-subtle">Several answers are valid here; a checker validates yours.</div>}
                   {c.stdout && <Field label="Stdout">{c.stdout}</Field>}
                 </>

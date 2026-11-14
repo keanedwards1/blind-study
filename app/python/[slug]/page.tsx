@@ -1,0 +1,50 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import GameStage from "@/components/game/GameStage";
+import { conceptById, patternById } from "@/lib/learn";
+import { levelInfos, levelOf, levels, stageLabel, stageProblem } from "@/lib/python";
+
+type Params = PageProps<"/python/[slug]">["params"];
+
+/** Every stage of every world, including the Blind 75 problems in worlds 8-10. */
+export function generateStaticParams() {
+  return levels.flatMap((l) => l.problems.map((slug) => ({ slug })));
+}
+
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { slug } = await params;
+  return { title: `${stageProblem(slug)?.title ?? "Stage"} · Learn Python · Drill` };
+}
+
+export default function StagePage({ params }: PageProps<"/python/[slug]">) {
+  return (
+    <Suspense fallback={<div className="p-6 text-sm text-subtle">Loading stage…</div>}>
+      <StageLoader params={params} />
+    </Suspense>
+  );
+}
+
+async function StageLoader({ params }: { params: Params }) {
+  const { slug } = await params;
+  const level = levelOf(slug);
+  const problem = stageProblem(slug);
+  if (!level || !problem) notFound();
+  const i = level.problems.indexOf(slug);
+  const nextSlug = level.problems[i + 1];
+  return (
+    <GameStage
+      key={slug}
+      problem={problem}
+      pattern={level.kind === "blind" ? patternById[problem.pattern] : undefined}
+      concepts={problem.concepts.map((id) => conceptById[id])}
+      stage={{
+        label: stageLabel(level, slug),
+        world: { n: level.n, title: level.title },
+        worldSlugs: level.problems,
+        next: nextSlug ? { slug: nextSlug, label: stageLabel(level, nextSlug) } : undefined,
+      }}
+      levelInfo={levelInfos()}
+    />
+  );
+}

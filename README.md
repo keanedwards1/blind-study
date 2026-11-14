@@ -16,6 +16,15 @@ A personal coding-interview practice site: 75 classic problems in Python. Code r
   time and space complexity, pattern). The **Solution** tab tags every line of the reference solution with the concepts it uses.
 - **Learn mode** (toggle on each problem page): lists the Python building blocks you could use to write the answer
   (loops, slicing, dict/set/heap calls, and so on) under the problem statement. The setting carries across problems.
+- **Learn Python** (`/python`): a 20-task placement test (same editor and tests; **Can't solve** skips a task) puts you on
+  one of 10 levels. Levels 1–7 teach every Python built-in and core concept with small coding tasks; levels 8–10 are the Blind 75
+  (Easy; first half of the Mediums; remaining Mediums + Hard). A level unlocks once the previous one is mastered: every task
+  solved plus its quiz passed (10 random questions, 80% to pass).
+- **The game layer** on Learn Python: a forest trail map (`/python`) through three biomes (soil & roots, deep forest,
+  firelands), a stage map per world (`/python/world/N`), a score screen after every stage (leaves, score, time, tries, best),
+  a guardian encounter for each world's quiz, and world intro/complete scenes. Music is two CC0 tracks by The Cynic Project
+  (see `public/audio/CREDITS.md`), much quieter while you code; sound effects are synthesised in the browser (`lib/audio/`).
+  To change the music, put a file in `public/audio/` and set its path in `lib/audio/custom.ts`. Scoring rules live in `lib/game-score.ts`.
 - **Quiz drill** (`/quiz`): mixed rounds from all question banks, each shown with its problem or concept as context. It tracks
   your answers so you can drill only unanswered or missed questions.
 - **Light mode** by default, with a dark-mode toggle in the header.
@@ -79,6 +88,13 @@ Learning content lives in `content/learn/`: `concepts.py` (Python toolkit), `pat
 `insights.py` (one key-insight question per problem) and `grammar.py` (the Learn mode building blocks for each problem; the build fails if a problem has none). Python concept tags on each solution line come from parsing the
 solution's syntax tree (`scripts/learn.py`), and complexity/pattern questions are generated from each problem's explanation.
 "Predict the output" questions are verified by running their code.
+
+Learn Python content lives in `content/python/`: `levelNN.py` (concepts, each with a lesson, problems and quiz questions)
+and `placement.py` (2 tasks per level), with shared `P`/`Q`/`Gen` helpers in `_helpers.py`. Problems use the same dict format, plus extra task formats handled by `public/harness.py`:
+`out="stdout"` (checks what's printed), `stdin=True` (the first test argument is the lines `input()` returns),
+`compare="strict"` (type-exact: a tuple isn't a list), `raises=True` (an expected exception counts as the answer), and
+`require=[...]` / `forbid=[...]` (the code must or mustn't use a built-in, method like `".join"`, operator like `"op:%"`,
+or syntax like `"listcomp"`/`"slicing"`/`"recursion"`). Once all seven levels exist, the build fails if any built-in isn't covered.
 
 `npm run problems` runs every reference solution against its examples (and fails if any don't match), fills in
 the hidden tests' expected outputs, checks that every starter compiles, and writes `data/problems.json`.

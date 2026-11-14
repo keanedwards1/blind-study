@@ -39,6 +39,7 @@ export default function CodePane({
   onReset,
   submitLabel = "Submit",
   confirmSubmit,
+  extraAction,
 }: {
   problem: Problem;
   code: string;
@@ -48,6 +49,8 @@ export default function CodePane({
   onReset?: () => void;
   submitLabel?: string;
   confirmSubmit?: string;
+  /** An extra button shown right after Submit (the placement test's "Can't solve"). */
+  extraAction?: React.ReactNode;
 }) {
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
   const [running, setRunning] = useState(false);
@@ -110,6 +113,7 @@ export default function CodePane({
         >
           {submitLabel}
         </button>
+        {extraAction}
       </div>
       <div className="min-h-[200px] flex-[2] overflow-hidden">
         <ResultsPanel problem={problem} outcome={outcome} running={running} progress={progress} />

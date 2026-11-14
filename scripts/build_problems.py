@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import learn  # noqa: E402
+import python_levels  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location("harness", ROOT / "public" / "harness.py")
@@ -29,7 +30,7 @@ COMMENTS = {
     "graph": "# Definition for a graph node (pre-defined):\n# class Node:\n#     def __init__(self, val=0, neighbors=None):\n#         self.val = val\n#         self.neighbors = neighbors if neighbors is not None else []\n",
 }
 DIFFICULTIES = {"Easy", "Medium", "Hard"}
-SPEC_KEYS = ["fn", "kind", "cls", "in", "out", "compare", "mutate", "driver", "checker"]
+SPEC_KEYS = ["fn", "kind", "cls", "in", "out", "compare", "mutate", "driver", "checker", "stdin", "raises", "require", "forbid"]
 
 
 def parse_sig(sig):
@@ -58,15 +59,29 @@ def build_one(p, category):
         p["starter"] = header + "\n" + p["starter"]
     if p.get("kind") == "class":
         p.setdefault("params", ["operations", "arguments"])
+    if p.get("stdin"):
+        p["params"] = ["stdin", *p["params"]]  # the first test argument is the list of lines input() returns
     for k in ("driver", "checker"):
         if p.get(k):
             p[k] = p[k].strip() + "\n"
 
     run_spec = {k: p[k] for k in SPEC_KEYS if p.get(k) is not None}
-    sol = harness.Session(p["solution"], run_spec)
+    try:
+        sol = harness.Session(p["solution"], run_spec)
+    except harness.TaskRuleError as e:
+        raise AssertionError(f"{p['slug']}: the reference solution breaks its own task rule: {e}") from None
+
+    strict = run_spec.get("compare") == "strict"
+
+    def typed(expected):
+        # Content files write real Python values; strict tasks compare their canonical text.
+        if strict and not (isinstance(expected, dict) and set(expected) == {"raises"}):
+            return harness.typed_repr(expected)
+        return expected
 
     examples = []
     for args, expected in p["examples"]:
+        expected = typed(expected)
         r = sol.run(args, expected)
         if r["error"] or not r["ok"]:
             raise AssertionError(f"{p['slug']}: example {args!r} expected {expected!r}, solution gave {r['result']!r} {r['error'] or ''}")
@@ -82,7 +97,7 @@ def build_one(p, category):
         tests.append({"args": args, "expected": r["result"]})
 
     # The starter must at least compile and run through the harness without crashing it.
-    starter = harness.Session(p["starter"], run_spec)
+    starter = harness.Session(p["starter"], run_spec, rules=False)
     for t in tests:
         starter.run(t["args"], t["expected"])
 
@@ -123,6 +138,7 @@ def main():
     dest = ROOT / "data" / "problems.json"
     dest.write_text(json.dumps({"categories": categories, "problems": out}, separators=(",", ":")))
     print(f"OK: {len(out)} problems, {sum(len(p['tests']) for p in out)} test cases -> {dest.relative_to(ROOT)} ({dest.stat().st_size // 1024} KB)")
+    python_levels.build_python(out, categories, build_one)
 
 
 if __name__ == "__main__":

@@ -19,12 +19,33 @@ export default function Workspace({
   next,
   pattern,
   concepts,
+  basePath = "/problems",
+  backHref = "/",
+  backLabel = "Problems",
+  hud,
+  descFooter,
+  onSubmitted: onSubmittedExtra,
+  onHintShown,
+  onSolutionRevealed,
 }: {
   problem: Problem;
   prev?: ProblemSummary;
   next?: ProblemSummary;
-  pattern: PatternGuide;
+  /** Blind 75 problems have a pattern guide (the Learn tab); Learn Python tasks don't. */
+  pattern?: PatternGuide;
   concepts: Concept[];
+  /** Prefix for the Prev/Next links. */
+  basePath?: string;
+  backHref?: string;
+  backLabel?: string;
+  /** Extra content for the top bar (the Learn Python game puts its timer and tries here). */
+  hud?: React.ReactNode;
+  /** Fills the empty space under the problem statement (the Learn Python game puts its music visual here). */
+  descFooter?: React.ReactNode;
+  /** Called after every Submit, once the solved state has been recorded. */
+  onSubmitted?: (o: RunOutcome) => void;
+  onHintShown?: () => void;
+  onSolutionRevealed?: () => void;
 }) {
   const key = `code:${problem.slug}`;
   const [code, setCode] = useState<string>(() => load<string | null>(key, null) ?? problem.starter);
@@ -49,6 +70,7 @@ export default function Workspace({
 
   function onSubmitted(o: RunOutcome) {
     if (!o.compileError && o.passed === o.total) markSolved(problem.slug);
+    onSubmittedExtra?.(o);
   }
 
   const tabBtn = (id: Tab, label: string) => (
@@ -63,9 +85,10 @@ export default function Workspace({
   return (
     <div className="page-workspace flex flex-1 flex-col lg:h-[calc(100vh-var(--header-h))] lg:overflow-hidden">
       <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2 text-sm">
-        <Link href="/" className="text-muted hover:text-fg">
-          ← Problems
+        <Link href={backHref} className="text-muted hover:text-fg">
+          ← {backLabel}
         </Link>
+        {hud}
         <div className="flex items-center gap-3">
           {solved[problem.slug] && (
             <span className="flex items-center gap-1.5">
@@ -80,12 +103,12 @@ export default function Workspace({
             </span>
           )}
           {prev && (
-            <Link href={`/problems/${prev.slug}`} className="text-muted hover:text-fg" title={prev.title}>
+            <Link href={`${basePath}/${prev.slug}`} className="text-muted hover:text-fg" title={prev.title}>
               ‹ Prev
             </Link>
           )}
           {next && (
-            <Link href={`/problems/${next.slug}`} className="text-muted hover:text-fg" title={next.title}>
+            <Link href={`${basePath}/${next.slug}`} className="text-muted hover:text-fg" title={next.title}>
               Next ›
             </Link>
           )}
@@ -98,18 +121,26 @@ export default function Workspace({
         <section className="flex min-h-0 min-w-0 flex-col border-line lg:border-r">
           <div className="flex overflow-x-auto border-b border-line px-2">
             {tabBtn("desc", "Description")}
-            {tabBtn("learn", "Learn")}
+            {pattern && tabBtn("learn", "Learn")}
             {tabBtn("hints", `Hints (${problem.hints.length})`)}
             {tabBtn("solution", "Solution")}
-            {tabBtn("learnMode", "Learn mode")}
+            {problem.grammar.length > 0 && tabBtn("learnMode", "Learn mode")}
           </div>
           <div className="flex-1 overflow-auto p-5">
-            <div className="mx-auto max-w-3xl">
-              {tab === "desc" && <ProblemDescription problem={problem} />}
+            <div className="mx-auto flex min-h-full max-w-3xl flex-col">
+              {tab === "desc" &&
+                (descFooter ? (
+                  <div className="flex flex-1 flex-col gap-6">
+                    <ProblemDescription problem={problem} />
+                    <div className="min-h-[280px] flex-1">{descFooter}</div>
+                  </div>
+                ) : (
+                  <ProblemDescription problem={problem} />
+                ))}
 
               {tab === "learnMode" && <LearnMode sections={problem.grammar} />}
 
-              {tab === "learn" && <LearnTab problem={problem} pattern={pattern} concepts={concepts} />}
+              {tab === "learn" && pattern && <LearnTab problem={problem} pattern={pattern} concepts={concepts} />}
 
               {tab === "hints" && (
                 <div className="space-y-3">
@@ -120,7 +151,11 @@ export default function Workspace({
                     </div>
                   ))}
                   {hintsShown < problem.hints.length ? (
-                    <button onClick={() => setHintsShown(hintsShown + 1)} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
+                    <button
+                      onClick={() => {
+                        setHintsShown(hintsShown + 1);
+                        onHintShown?.();
+                      }} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
                       Show hint {hintsShown + 1}
                     </button>
                   ) : (
@@ -141,7 +176,11 @@ export default function Workspace({
                 ) : (
                   <div className="flex flex-col items-start gap-3">
                     <p className="text-sm text-muted">Try for at least 20–30 minutes before looking. Understanding the solution matters more than seeing it.</p>
-                    <button onClick={() => setRevealed(true)} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
+                    <button
+                      onClick={() => {
+                        setRevealed(true);
+                        onSolutionRevealed?.();
+                      }} className="rounded-md border border-line-strong px-3 py-1.5 text-sm text-fg-2 hover:bg-hover">
                       Reveal solution & explanation
                     </button>
                   </div>

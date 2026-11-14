@@ -1,13 +1,16 @@
 # Test harness shared by the in-browser Pyodide worker and scripts/build_problems.py.
 # Runs user code in an isolated namespace and checks results against expected outputs.
+import ast
 import contextlib
 import copy
 import io
+import itertools
 import json
 import linecache
 import math
 import time
 import traceback
+import types as _types
 
 USER_FILE = "solution.py"
 
@@ -152,6 +155,9 @@ IN_ADAPTERS = {
     "lists": lambda a: [build_list(x) for x in a],
     "tree": build_tree,
     "graph": build_graph,
+    # JSON has no tuples or sets, so tasks that take them convert on the way in.
+    "tuple": tuple,
+    "set": set,
 }
 OUT_ADAPTERS = {
     "list": list_to_arr,
@@ -179,6 +185,115 @@ def normalize(x):
 
 def _key(x):
     return json.dumps(x, sort_keys=True, default=repr)
+
+
+def typed_repr(x):
+    """Canonical, type-preserving text for compare="strict": a tuple stays a tuple, a set a set, 1 differs from "1".
+
+    Sets and dicts are ordered by their items' text so equal values always produce equal strings.
+    Generators are consumed so their values can be compared, but are still labelled as generators.
+    """
+    if x is None or isinstance(x, (bool, int, str, bytes, bytearray, complex, range)):
+        return repr(x)
+    if isinstance(x, float):
+        if math.isnan(x) or math.isinf(x):
+            return repr(x)
+        return repr(float(f"{x:.12g}"))
+    if isinstance(x, list):
+        return "[" + ", ".join(typed_repr(i) for i in x) + "]"
+    if isinstance(x, tuple):
+        inner = ", ".join(typed_repr(i) for i in x)
+        return f"({inner},)" if len(x) == 1 else f"({inner})"
+    if isinstance(x, (set, frozenset)):
+        items = sorted(typed_repr(i) for i in x)
+        body = "{" + ", ".join(items) + "}" if items else ""
+        if isinstance(x, frozenset):
+            return f"frozenset({body})"
+        return body or "set()"
+    if isinstance(x, dict):
+        items = sorted((typed_repr(k), typed_repr(v)) for k, v in x.items())
+        return "{" + ", ".join(f"{k}: {v}" for k, v in items) + "}"
+    if isinstance(x, _types.GeneratorType):
+        return f"<generator yielding {typed_repr(list(itertools.islice(x, 10_000)))}>"
+    return repr(x)
+
+
+# ---------------------------------------------------------------- task rules (require / forbid)
+class TaskRuleError(Exception):
+    """The code runs, but doesn't use (or uses) something the task is about."""
+
+
+_SYNTAX = {
+    "listcomp": (ast.ListComp,), "dictcomp": (ast.DictComp,), "setcomp": (ast.SetComp,), "genexp": (ast.GeneratorExp,),
+    "comprehension": (ast.ListComp, ast.DictComp, ast.SetComp, ast.GeneratorExp),
+    "lambda": (ast.Lambda,), "yield": (ast.Yield, ast.YieldFrom), "with": (ast.With,), "try": (ast.Try,),
+    "raise": (ast.Raise,), "while": (ast.While,), "for": (ast.For,), "if": (ast.If,), "class": (ast.ClassDef,),
+    "fstring": (ast.JoinedStr,), "walrus": (ast.NamedExpr,), "slicing": (ast.Slice,), "ternary": (ast.IfExp,),
+    "nonlocal": (ast.Nonlocal,), "global": (ast.Global,), "assert": (ast.Assert,), "del": (ast.Delete,),
+    "import": (ast.Import, ast.ImportFrom), "augassign": (ast.AugAssign,), "unpack": (ast.Starred,), "match": (ast.Match,),
+}
+_OPS = {
+    "+": ast.Add, "-": ast.Sub, "*": ast.Mult, "/": ast.Div, "//": ast.FloorDiv, "%": ast.Mod, "**": ast.Pow,
+    "&": ast.BitAnd, "|": ast.BitOr, "^": ast.BitXor, "<<": ast.LShift, ">>": ast.RShift, "~": ast.Invert,
+    "in": ast.In, "not in": ast.NotIn, "is": ast.Is, "==": ast.Eq, "!=": ast.NotEq, "<": ast.Lt, "<=": ast.LtE,
+    ">": ast.Gt, ">=": ast.GtE, "and": ast.And, "or": ast.Or, "not": ast.Not,
+}
+RULE_LABELS = {
+    "listcomp": "a list comprehension", "dictcomp": "a dict comprehension", "setcomp": "a set comprehension",
+    "genexp": "a generator expression", "comprehension": "a comprehension", "lambda": "a `lambda`", "yield": "`yield`",
+    "with": "a `with` block", "try": "`try`/`except`", "raise": "`raise`", "while": "a `while` loop", "for": "a `for` loop",
+    "if": "an `if` statement", "class": "a class", "fstring": "an f-string", "walrus": "the walrus operator `:=`",
+    "slicing": "slicing", "ternary": "a one-line `x if cond else y`", "nonlocal": "`nonlocal`", "global": "`global`",
+    "assert": "`assert`", "del": "`del`", "import": "an import", "augassign": "an augmented assignment like `+=`",
+    "unpack": "`*` unpacking", "match": "a `match` statement", "recursion": "recursion (a function that calls itself)", "decorator": "a decorator",
+}
+
+
+def rule_label(rule):
+    if rule in RULE_LABELS:
+        return RULE_LABELS[rule]
+    if rule.startswith("op:"):
+        return f"the `{rule[3:]}` operator"
+    if rule.startswith("."):
+        return f"the `{rule}()` method"
+    return f"`{rule}`"
+
+
+def _uses(tree, rule):
+    if rule in _SYNTAX:
+        return any(isinstance(n, _SYNTAX[rule]) for n in ast.walk(tree))
+    if rule.startswith("op:"):
+        op = _OPS[rule[3:]]
+        return any(isinstance(n, op) for n in ast.walk(tree))
+    if rule == "decorator":
+        return any(getattr(n, "decorator_list", None) for n in ast.walk(tree))
+    if rule == "recursion":
+        for fn in ast.walk(tree):
+            if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                for n in ast.walk(fn):
+                    if isinstance(n, ast.Call):
+                        f = n.func
+                        if (isinstance(f, ast.Name) and f.id == fn.name) or (isinstance(f, ast.Attribute) and f.attr == fn.name):
+                            return True
+        return False
+    if rule.startswith("."):
+        return any(isinstance(n, ast.Attribute) and n.attr == rule[1:] for n in ast.walk(tree))
+    # A plain name matches `name` or `module.name` (so `math.gcd` counts as using `gcd`).
+    return any((isinstance(n, ast.Name) and n.id == rule) or (isinstance(n, ast.Attribute) and n.attr == rule) for n in ast.walk(tree))
+
+
+def check_rules(code, spec):
+    """Raise TaskRuleError if the code skips a required tool or uses a forbidden one."""
+    require, forbid = spec.get("require") or [], spec.get("forbid") or []
+    if not require and not forbid:
+        return
+    tree = ast.parse(code)
+    for rule in require:
+        if not _uses(tree, rule):
+            raise TaskRuleError(f"This task is about {rule_label(rule)}. Use it in your solution.")
+    for rule in forbid:
+        if _uses(tree, rule):
+            raise TaskRuleError(f"This task asks you not to use {rule_label(rule)}. Write that part yourself.")
 
 
 def canon(x, mode):
@@ -226,7 +341,7 @@ def _compile_helper(src, fname):
 
 
 class Session:
-    def __init__(self, code, spec):
+    def __init__(self, code, spec, rules=True):
         self.spec = spec
         self.ns = {"__name__": "__main__", "__builtins__": __builtins__}
         exec(PRELUDE, self.ns)
@@ -234,13 +349,53 @@ class Session:
         self.driver = _compile_helper(spec.get("driver"), "driver")
         self.checker = _compile_helper(spec.get("checker"), "check")
         linecache.cache[USER_FILE] = (len(code), None, code.splitlines(True), USER_FILE)
-        exec(compile(code, USER_FILE, "exec"), self.ns)
+        compiled = compile(code, USER_FILE, "exec")
+        if rules:
+            check_rules(code, spec)
+        exec(compiled, self.ns)
+
+    def _invoke(self, fn, args):
+        """Call user code, applying the task's output mode (stdout capture, raises)."""
+        spec = self.spec
+        try:
+            if spec.get("out") == "stdout":
+                buf = io.StringIO()
+                with contextlib.redirect_stdout(buf):
+                    fn(*args)
+                return buf.getvalue()
+            return fn(*args)
+        except Exception as e:
+            if spec.get("raises"):
+                return {"raises": type(e).__name__}
+            raise
+
+    def _finish(self, result):
+        if isinstance(result, dict) and set(result) == {"raises"}:
+            return result
+        if self.spec.get("compare") == "strict":
+            return typed_repr(result)
+        return normalize(result)
+
+    def _feed_stdin(self, lines):
+        lines = [str(x) for x in lines]
+
+        def fake_input(prompt=""):
+            if prompt:
+                print(prompt, end="")
+            if not lines:
+                raise EOFError("EOF when reading a line (the test gave no more input)")
+            return lines.pop(0)
+
+        self.ns["input"] = fake_input
 
     def call(self, args):
         spec, ns = self.spec, self.ns
         args = copy.deepcopy(args)
+        if spec.get("stdin"):
+            self._feed_stdin(args[0])
+            args = args[1:]
         if self.driver:
-            return normalize(self.driver(ns, *args))
+            return self._finish(self.driver(ns, *args))
         if spec.get("kind") == "class":
             ops, op_args = args
             cls = resolve_class(ns, spec["cls"])
@@ -250,22 +405,24 @@ class Session:
                 method = getattr(obj, op, None)
                 if method is None:
                     raise AttributeError(f"{spec['cls']} has no method `{op}`")
-                out.append(normalize(method(*a)))
+                out.append(self._finish(self._invoke(method, a)))
             return out
         fn = resolve(ns, spec["fn"])
         ins = spec.get("in") or []
         conv = [IN_ADAPTERS[ins[i]](a) if i < len(ins) and ins[i] else a for i, a in enumerate(args)]
-        result = fn(*conv)
-        if spec.get("mutate") is not None:
+        result = self._invoke(fn, conv)
+        if spec.get("mutate") is not None and not isinstance(result, dict):
             result = conv[spec["mutate"]]
-        if spec.get("out"):
+        if spec.get("out") in OUT_ADAPTERS:
             result = OUT_ADAPTERS[spec["out"]](result)
-        return normalize(result)
+        return self._finish(result)
 
     def check(self, args, result, expected):
         if self.checker:
             return bool(self.checker(copy.deepcopy(args), result, expected))
         mode = self.spec.get("compare", "exact")
+        if mode == "strict" or self.spec.get("out") == "stdout":
+            return result == expected
         try:
             return eq(canon(result, mode), canon(expected, mode))
         except Exception:
@@ -298,6 +455,8 @@ def format_error(e):
             lines.append(f'  Line {f.lineno}, in {f.name}')
             if f.line:
                 lines.append(f"    {f.line.strip()}")
+    if isinstance(e, TaskRuleError):
+        return f"Task rule: {e}"
     if isinstance(e, SyntaxError):
         lines.append(f"SyntaxError: {e.msg} (line {e.lineno})")
         if e.text:
