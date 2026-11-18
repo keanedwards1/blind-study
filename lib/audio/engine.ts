@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS: AudioSettings = { music: true, sfx: true };
 const GENERATED: Record<TrackId, Track> = { forest: forestTrack, forestCalm: forestCalmTrack, fire: fireTrack, fireCalm: fireCalmTrack };
 const SLOT: Record<TrackId, Slot> = { forest: "menu", fire: "menu", forestCalm: "coding", fireCalm: "coding" };
 /** The generated fallback is quieter by nature, so it gets its own levels. */
-const GENERATED_LEVEL: Record<Slot, number> = { menu: 0.7, coding: 0.22 };
+const GENERATED_LEVEL: Record<Slot, number> = { menu: 0.22, coding: 0.22 };
 const FADE = 0.8;
 /** Per-effect volume. The celebration sounds on the in-between screens (stage cleared, world intro/complete) sit lower than clicks. */
 const SFX_LEVEL: Record<SfxName, number> = { click: 1, locked: 1, start: 0.45, star: 0.45, clear: 0.45, world: 0.45 };
@@ -84,15 +84,12 @@ class Engine {
       this.onsetFreq = new Uint8Array(this.onsetAnalyser.frequencyBinCount);
       this.musicBus.connect(this.onsetAnalyser);
       this.settings = load<AudioSettings>(SETTINGS_KEY, DEFAULT_SETTINGS);
+      // Music keeps playing while the tab is in the background. If the browser suspended the audio anyway (some do after
+      // a while), pick it back up when the tab is visible again.
       document.addEventListener("visibilitychange", () => {
-        if (!this.ctx) return;
-        if (document.hidden) {
-          this.playing?.pause?.();
-          void this.ctx.suspend();
-        } else {
-          void this.ctx.resume();
-          this.playing?.resume?.();
-        }
+        if (!this.ctx || document.hidden) return;
+        if (this.ctx.state !== "running") void this.ctx.resume().then(() => this.sync());
+        this.playing?.resume?.();
       });
       fetch("/api/local-music")
         .then((r) => (r.ok ? r.json() : null))

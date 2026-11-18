@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Concept, PatternGuide, Problem, RunOutcome } from "@/lib/types";
 import { type Attempt, NEW_ATTEMPT, scoreAttempt, stageStates } from "@/lib/game-score";
 import { useMusic } from "@/lib/audio/engine";
@@ -54,6 +54,9 @@ export default function GameStage({
   const results = useResults();
   const visualOn = useVisualEnabled();
   const [cleared, setCleared] = useState<ClearInfo | null>(null);
+  // Next keeps a page you leave alive but hidden. When this stage hides, drop its Stage Cleared screen so coming back
+  // starts a fresh attempt instead of showing the old result again.
+  useLayoutEffect(() => () => setCleared(null), []);
   const [workspaceKey, setWorkspaceKey] = useState(0);
   const attempt = useRef<Attempt>(NEW_ATTEMPT);
   const lastTick = useRef<number | null>(null);

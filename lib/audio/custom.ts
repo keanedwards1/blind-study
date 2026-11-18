@@ -10,5 +10,5 @@ export const CUSTOM_TRACKS: Record<"menu" | "coding", string | null> = {
   coding: "/audio/coding-another-august.m4a",
 };
 
-/** Music volume (0-1). Coding sits well below the menus so it stays in the background while you think. */
-export const MUSIC_VOLUME = { menu: 0.45, coding: 0.14 };
+/** Music volume (0-1) on menus and while coding. Both are the same, so moving between screens never changes the volume. */
+export const MUSIC_VOLUME = { menu: 0.14, coding: 0.14 };
