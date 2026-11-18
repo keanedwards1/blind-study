@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import GameStage from "@/components/game/GameStage";
-import { conceptById, patternById } from "@/lib/learn";
+import { conceptById } from "@/lib/learn";
 import { levelInfos, levelOf, levels, stageLabel, stageProblem } from "@/lib/python";
 
 type Params = PageProps<"/python/[slug]">["params"];
@@ -36,13 +36,16 @@ async function StageLoader({ params }: { params: Params }) {
     <GameStage
       key={slug}
       problem={problem}
-      pattern={level.kind === "blind" ? patternById[problem.pattern] : undefined}
       concepts={problem.concepts.map((id) => conceptById[id])}
       stage={{
         label: stageLabel(level, slug),
         world: { n: level.n, title: level.title },
         worldSlugs: level.problems,
         next: nextSlug ? { slug: nextSlug, label: stageLabel(level, nextSlug) } : undefined,
+        tags: [
+          level.kind === "python" ? (level.concepts.find((c) => c.problems.includes(slug))?.title.replace(/`/g, "") ?? level.title) : problem.category,
+          `World ${level.n}: ${level.title}`,
+        ],
       }}
       levelInfo={levelInfos()}
     />

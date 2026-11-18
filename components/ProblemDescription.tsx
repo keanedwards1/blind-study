@@ -39,7 +39,7 @@ function ruleLabel(rule: string): string {
   return rule;
 }
 
-function TaskRules({ problem }: { problem: Problem }) {
+export function TaskRules({ problem }: { problem: Problem }) {
   const { require = [], forbid = [], out, compare } = problem.spec;
   if (!require.length && !forbid.length && out !== "stdout" && compare !== "strict") return null;
   return (

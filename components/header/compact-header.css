@@ -1,0 +1,8 @@
+/* The compact header's height. Full-height pages subtract --header-h, so it's swapped in while the compact header shows. */
+:root {
+  --header-h-compact: 2.75rem;
+}
+
+body:has(> .site-header-compact) {
+  --header-h: var(--header-h-compact);
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { Concept, PatternGuide, Problem, RunOutcome } from "@/lib/types";
+import type { Concept, Problem, RunOutcome } from "@/lib/types";
 import { type Attempt, NEW_ATTEMPT, scoreAttempt, stageStates } from "@/lib/game-score";
 import { useMusic } from "@/lib/audio/engine";
 import {
@@ -17,7 +17,7 @@ import {
   worldAllOpen,
 } from "@/lib/python-progress";
 import { save, useSolved } from "@/lib/storage";
-import Workspace from "../Workspace";
+import StageIDE from "./StageIDE";
 import GameShell, { SoundButtons, useAudioUnlock } from "./GameShell";
 import { Lock } from "./icons";
 import MusicVisual, { useVisualEnabled, VisualToggle } from "./visual/MusicVisual";
@@ -30,18 +30,18 @@ export type StageContext = {
   world: { n: number; title: string };
   worldSlugs: string[];
   next?: { slug: string; label: string };
+  /** Shown as tags under the problem: the concept (or Blind 75 pattern) and the world. */
+  tags: string[];
 };
 
 /** A playable stage: the normal workspace plus sound switches, quiet tracking of time and tries, and the Stage Cleared screen. */
 export default function GameStage({
   problem,
-  pattern,
   concepts,
   stage,
   levelInfo,
 }: {
   problem: Problem;
-  pattern?: PatternGuide;
   concepts: Concept[];
   stage: StageContext;
   levelInfo: LevelInfo[];
@@ -169,16 +169,14 @@ export default function GameStage({
 
   return (
     <>
-      <Workspace
+      <StageIDE
         key={`${slug}:${workspaceKey}`}
         problem={problem}
-        pattern={pattern}
         concepts={concepts}
-        basePath="/python"
-        backHref={`/python/world/${stage.world.n}`}
-        backLabel={`World ${stage.world.n}`}
-        hud={hudView}
-        descFooter={visualOn ? <MusicVisual accent={WORLD_THEME[stage.world.n].color} /> : undefined}
+        tags={stage.tags}
+        back={{ href: `/python/world/${stage.world.n}`, label: `World ${stage.world.n}` }}
+        barRight={hudView}
+        visual={visualOn ? <MusicVisual accent={WORLD_THEME[stage.world.n].color} /> : undefined}
         onSubmitted={onSubmitted}
         onHintShown={() => bump({ hints: attempt.current.hints + 1 })}
         onSolutionRevealed={() => bump({ peeked: true })}

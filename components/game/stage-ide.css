@@ -1,0 +1,48 @@
+/*
+ * Colours for the Learn Python stage IDE (components/game/StageIDE.tsx).
+ * Light is the default; <html data-theme="dark"> switches to the dark set.
+ * The three pane backgrounds are --ide-problem, --ide-editor and --ide-console.
+ * (The code area itself uses Monaco's own light / vs-dark theme.)
+ */
+
+.stage-ide {
+  --ide-problem: #eef2f8; /* left pane (problem) */
+  --ide-editor: #fffffe; /* middle pane (around the editor) */
+  --ide-console: #e8edf5; /* right pane (console) */
+  --ide-line: #d5dce7;
+  --ide-example: #f7f9fc;
+  --ide-chip: #8fa9dd;
+  --ide-chip-fg: #ffffff;
+  --ide-btn: #6f95d8;
+  --ide-btn-fg: #ffffff;
+  --ide-run: #3dbb5a;
+  --ide-input: #f8fafd;
+  --ide-input-fg: #1b2230;
+  --ide-link: #4f7fd6;
+  --ide-text: #1b2230;
+  --ide-muted: #5f6b7d;
+  --ide-tab: #ffffff;
+  --ide-tab-fg: #33363d;
+  --ide-tab-on: #4f7fd6;
+}
+
+:root[data-theme="dark"] .stage-ide {
+  --ide-problem: #1e213b; /* left pane (problem) */
+  --ide-editor: #1e1e1e; /* middle pane (around the editor) */
+  --ide-console: #111418; /* right pane (console) */
+  --ide-line: #7e868c;
+  --ide-example: #33465a;
+  --ide-chip: #33465a;
+  --ide-chip-fg: #c8d3e2;
+  --ide-btn: #3a4658;
+  --ide-btn-fg: #e6ebf2;
+  --ide-run: #3dbb5a;
+  --ide-input: #dfe3e8;
+  --ide-input-fg: #12161c;
+  --ide-link: #87a8e8;
+  --ide-text: #e6e9ee;
+  --ide-muted: #9aa7b8;
+  --ide-tab: #2b3a4d;
+  --ide-tab-fg: #c8d3e2;
+  --ide-tab-on: #4f7fd6;
+}
