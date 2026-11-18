@@ -80,7 +80,7 @@ export function QuizCard({
   }
 
   return (
-    <div className={`rounded-lg border border-line bg-panel p-4 ${size === "large" ? "quiz-large" : ""}`} data-testid="quiz-card">
+    <div className={`rounded-md border border-line bg-panel p-4 ${size === "large" ? "quiz-large" : ""}`} data-testid="quiz-card">
       <div className="mb-2 flex items-center justify-between gap-2 text-xs text-subtle">
         <span>{label ?? kindLabel[question.kind]}</span>
         {answered && <span className={correct ? "font-medium text-ok" : "font-medium text-bad"}>{correct ? "Correct" : "Not quite"}</span>}

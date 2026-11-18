@@ -1,0 +1,51 @@
+/* The guardian's mini-games (components/game/boss/rounds.tsx). */
+
+/* A fuse that burns down from full to empty; its duration is set inline. onAnimationEnd fires when it runs out. */
+@keyframes boss-fuse {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+.boss-fuse {
+  animation-name: boss-fuse;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* An expression drifting down the sky to the forest floor. */
+@keyframes boss-fall {
+  from { transform: translate(-50%, -110%); }
+  to { transform: translate(-50%, 11.5rem); }
+}
+.boss-fall {
+  top: 0;
+  animation-name: boss-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  white-space: nowrap;
+}
+
+.boss-tile {
+  border-radius: 6px;
+  border: 1px solid rgba(244, 236, 220, 0.16);
+  background: rgba(0, 0, 0, 0.28);
+  color: #f4ecdc;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  text-align: left;
+  overflow-wrap: anywhere;
+  transition: background-color 120ms ease, border-color 120ms ease, opacity 200ms ease;
+}
+.boss-tile:not(:disabled):hover {
+  border-color: var(--world, #e9b44c);
+}
+.boss-tile.is-picked {
+  border-color: var(--world, #e9b44c);
+  background: color-mix(in srgb, var(--world, #e9b44c) 22%, transparent);
+}
+.boss-tile.is-done {
+  opacity: 0.35;
+  border-color: transparent;
+}
+.boss-tile.is-wrong {
+  border-color: #ff7a5c;
+}

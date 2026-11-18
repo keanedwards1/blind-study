@@ -4,7 +4,7 @@ import { ConceptCard, PatternCard } from "@/components/LearnCards";
 import { conceptGroups, concepts, patterns } from "@/lib/learn";
 import { summaries } from "@/lib/problems";
 
-export const metadata: Metadata = { title: "Learn · Drill" };
+export const metadata: Metadata = { title: "Learn · Blind 75 from Scratch" };
 
 export default function LearnPage() {
   const bySlug = Object.fromEntries(summaries().map((p) => [p.slug, p]));

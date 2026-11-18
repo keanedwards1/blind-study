@@ -30,6 +30,31 @@ COMMENTS = {
     "graph": "# Definition for a graph node (pre-defined):\n# class Node:\n#     def __init__(self, val=0, neighbors=None):\n#         self.val = val\n#         self.neighbors = neighbors if neighbors is not None else []\n",
 }
 DIFFICULTIES = {"Easy", "Medium", "Hard"}
+
+# Hints live in content/hints/*.py (HINTS = {slug: [...]}) and replace any inline `hints` on a problem or task.
+HINTS = {}
+for _path in sorted((ROOT / "content" / "hints").glob("*.py")):
+    for _slug, _hints in runpy.run_path(str(_path))["HINTS"].items():
+        assert _slug not in HINTS, f"{_path.name}: hints for {_slug} are defined twice"
+        HINTS[_slug] = list(_hints)
+
+
+def _norm(s):
+    return " ".join(s.replace("`", " ").split())
+
+
+def check_hints(slug, hints, solution):
+    """2-4 hints, none of which repeats a (non-trivial) line of the reference solution."""
+    assert 2 <= len(hints) <= 4, f"{slug}: needs 2-4 hints, has {len(hints)}"
+    lines = {_norm(line) for line in solution.splitlines()}
+    # Signatures, returns and control-flow headers ("for x in nums:") don't give an answer away; lines that compute do.
+    headers = ("def ", "class ", "return ", "for ", "while ", "if ", "elif ", "else", "try", "except", "with ", "finally")
+    lines = {line for line in lines if len(line) >= 14 and not line.startswith(headers)}
+    for h in hints:
+        assert h.strip(), f"{slug}: empty hint"
+        nh = _norm(h)
+        for line in lines:
+            assert line not in nh, f"{slug}: a hint gives away a solution line: {line!r}"
 SPEC_KEYS = ["fn", "kind", "cls", "in", "out", "compare", "mutate", "driver", "checker", "stdin", "raises", "require", "forbid"]
 
 
@@ -101,6 +126,10 @@ def build_one(p, category):
     for t in tests:
         starter.run(t["args"], t["expected"])
 
+    hints = HINTS.get(p["slug"], p.get("hints", []))
+    if not p["slug"].startswith("py-place-"):  # placement tasks are a test, so they have no hints
+        check_hints(p["slug"], hints, p["solution"])
+
     return {
         "slug": p["slug"],
         "title": p["title"],
@@ -109,7 +138,7 @@ def build_one(p, category):
         "desc": p["desc"].strip(),
         "params": p["params"],
         "starter": p["starter"],
-        "hints": p.get("hints", []),
+        "hints": hints,
         "solution": p["solution"].strip() + "\n",
         "explanation": p["explanation"].strip(),
         "spec": run_spec,

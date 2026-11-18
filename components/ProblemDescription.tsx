@@ -5,7 +5,7 @@ import Markdown from "./Markdown";
 export function ExampleBlock({ problem, index }: { problem: Problem; index: number }) {
   const ex = problem.examples[index];
   return (
-    <div className="rounded-lg border border-line bg-panel p-3 font-mono text-[13px] leading-6">
+    <div className="rounded-md border border-line bg-panel p-3 font-mono text-[13px] leading-6">
       <div>
         <span className="text-subtle">Input: </span>
         {problem.params.map((p, i) => (
@@ -43,12 +43,12 @@ export function TaskRules({ problem }: { problem: Problem }) {
   const { require = [], forbid = [], out, compare } = problem.spec;
   if (!require.length && !forbid.length && out !== "stdout" && compare !== "strict") return null;
   return (
-    <div className="space-y-1.5 rounded-lg border border-line bg-panel p-3 text-sm" data-testid="task-rules">
+    <div className="space-y-1.5 rounded-md border border-line bg-panel p-3 text-sm" data-testid="task-rules">
       {require.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-subtle">Must use:</span>
           {require.map((r) => (
-            <code key={r} className="rounded bg-ok/15 px-1.5 py-0.5 text-xs text-ok">{ruleLabel(r)}</code>
+            <code key={r} className="rounded-sm bg-ok/15 px-1.5 py-0.5 text-xs text-ok">{ruleLabel(r)}</code>
           ))}
         </div>
       )}
@@ -56,7 +56,7 @@ export function TaskRules({ problem }: { problem: Problem }) {
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-subtle">Don&apos;t use:</span>
           {forbid.map((r) => (
-            <code key={r} className="rounded bg-bad/15 px-1.5 py-0.5 text-xs text-bad">{ruleLabel(r)}</code>
+            <code key={r} className="rounded-sm bg-bad/15 px-1.5 py-0.5 text-xs text-bad">{ruleLabel(r)}</code>
           ))}
         </div>
       )}

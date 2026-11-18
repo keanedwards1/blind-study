@@ -38,7 +38,7 @@ export default function Playground({ code: initial, expected }: { code: string; 
   const shown = result ?? (expected !== undefined ? { stdout: expected, error: null } : null);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-line" data-testid="playground">
+    <div className="overflow-hidden rounded-md border border-line" data-testid="playground">
       <textarea
         value={code}
         onChange={(e) => setCode(e.target.value)}
@@ -62,7 +62,7 @@ export default function Playground({ code: initial, expected }: { code: string; 
               Reset
             </button>
           )}
-          <button onClick={run} disabled={running} className="rounded bg-btn px-3 py-1 text-xs font-medium text-fg hover:bg-btn-hover disabled:opacity-50">
+          <button onClick={run} disabled={running} className="rounded-sm bg-btn px-3 py-1 text-xs font-medium text-fg hover:bg-btn-hover disabled:opacity-50">
             {running ? "Running…" : "▶ Run"}
           </button>
         </div>

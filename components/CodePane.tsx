@@ -109,7 +109,7 @@ export default function CodePane({
         <button
           onClick={() => exec("submit")}
           disabled={busy}
-          className="rounded-md bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+          className="rounded-md bg-accent px-4 py-1.5 text-sm font-semibold text-on-accent hover:bg-accent-hover disabled:opacity-50"
         >
           {submitLabel}
         </button>

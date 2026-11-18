@@ -192,7 +192,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
 
   // ------------------------------------------------------------------ setup
   if (phase === "setup") {
-    const num = "h-11 w-24 justify-self-start rounded-lg border border-line bg-panel px-3 text-sm tabular-nums text-fg hover:border-line-strong";
+    const num = "h-11 w-24 justify-self-start rounded-md border border-line bg-panel px-3 text-sm tabular-nums text-fg hover:border-line-strong";
     return (
       <div className="page-shell page-mock">
         <h1 className="text-fg">Mock assessment</h1>
@@ -201,7 +201,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
           short webcam explanation of it. <b className="text-fg-2">The clock keeps running while you record</b>, so budget time for it. Hints and solutions are hidden.
         </p>
 
-        <div className="mt-8 grid gap-4 rounded-2xl border border-line p-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
+        <div className="mt-8 grid gap-4 rounded-md border border-line p-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
           <div className="grid content-start gap-4 sm:grid-cols-3">
             <label className="grid content-start gap-2 text-sm text-fg-2">
               Problems (1–5)
@@ -220,12 +220,12 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
               Include problems I&apos;ve solved
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-raised p-4 xl:flex-col xl:items-start xl:justify-center">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-md bg-raised p-4 xl:flex-col xl:items-start xl:justify-center">
             <div>
               <div className="text-sm font-semibold text-fg">Difficulty order</div>
               <div className="mt-1 text-sm text-muted">{difficultyPlan(count).join(" → ")}</div>
             </div>
-            <button onClick={start} className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover">
+            <button onClick={start} className="rounded-md bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover">
               Start ({minutes} min)
             </button>
           </div>
@@ -234,7 +234,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
         {history.length > 0 && (
           <div className="mt-10">
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-fg-2">Past sessions</h2>
-            <ul className="divide-y divide-line rounded-lg border border-line text-sm">
+            <ul className="divide-y divide-line rounded-md border border-line text-sm">
               {history.map((h) => {
                 const full = h.problems.filter((p) => p.passed === p.total).length;
                 return (
@@ -272,7 +272,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
             const codingSec = it.startedAt && it.submittedAt ? (it.submittedAt - it.startedAt) / 1000 : null;
             const full = it.passed !== undefined && it.passed === it.total;
             return (
-              <div key={it.problem.slug} className="rounded-lg border border-line p-4">
+              <div key={it.problem.slug} className="rounded-md border border-line p-4">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div className="flex items-baseline gap-3">
                     <span className="text-subtle">{i + 1}.</span>
@@ -305,7 +305,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
           })}
         </div>
         <p className="mt-4 text-xs text-subtle">Recordings exist only in this tab and disappear when you leave the page.</p>
-        <button onClick={reset} className="mt-6 rounded-full border border-line-strong px-5 py-2 text-sm font-semibold text-fg hover:bg-hover">
+        <button onClick={reset} className="mt-6 rounded-md border border-line-strong px-5 py-2 text-sm font-semibold text-fg hover:bg-hover">
           New mock assessment
         </button>
       </div>
@@ -382,7 +382,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
           </div>
           {timeUp && <div className="mb-4 rounded-md border border-rose-700/50 bg-rose-500/10 px-3 py-2 text-sm text-bad">Time&apos;s up. Finish this explanation, then see your results.</div>}
           <Recorder key={idx} maxSeconds={explainMin * 60} onRecorded={(r) => updateItem(idx, { rec: r })} />
-          <div className="mt-5 rounded-lg border border-line bg-panel p-4 text-sm text-muted">
+          <div className="mt-5 rounded-md border border-line bg-panel p-4 text-sm text-muted">
             <div className="mb-2 font-medium text-fg-2">Cover these points</div>
             <ul className="list-disc space-y-1 pl-5">
               <li>The approach in one sentence, and why you chose it</li>
@@ -392,7 +392,7 @@ export default function MockAssessment({ problems }: { problems: Problem[] }) {
               <li>What you&apos;d improve with more time, or why tests failed</li>
             </ul>
           </div>
-          <button onClick={next} className="mt-5 rounded-full bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
+          <button onClick={next} className="mt-5 rounded-md bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
             {timeUp || isLast ? "Finish & see results" : "Next problem →"}
           </button>
           {!item.rec && <span className="ml-3 text-xs text-subtle">You can continue without recording.</span>}

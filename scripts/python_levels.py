@@ -51,12 +51,62 @@ def _finish_problem(built: dict, raw: dict, category: str) -> dict:
     built["quiz"] = []
     built["pattern"] = ""
     built["grammar"] = learn.parse_grammar(built["slug"], raw["grammar"]) if raw.get("grammar") else []
+    learn.check_grammar(built["slug"], built["grammar"], built["solution"])
     built["category"] = category
     return built
 
 
 def _quiz(questions: list[dict], prefix: str) -> list[dict]:
     return [{"id": f"{prefix}:{i}", "kind": "python-basics", **learn._check_question(q, prefix)} for i, q in enumerate(questions)]
+
+
+def _boss_env() -> dict:
+    """What a guardian expression may use: the built-ins plus the tools pre-imported in the editor."""
+    import bisect, collections, functools, heapq, itertools, math
+    env = {"__builtins__": builtins, "math": math}
+    for mod in (collections, itertools, functools, heapq, bisect):
+        env.update({k: getattr(mod, k) for k in dir(mod) if not k.startswith("_")})
+    return env
+
+
+def _boss_data(n: int, boss: dict, quiz: list[dict], reps: list[dict], problems: list[dict]) -> dict:
+    """Guardian mini-game content for one world: falling expressions, lightning facts, match pairs and coding strikes."""
+    env = _boss_env()
+    exprs = []
+    for e in boss.get("exprs", []):
+        value = eval(e, dict(env))  # noqa: S307 - our own content, run at build time
+        alts = {repr(value)}
+        if isinstance(value, str):
+            alts |= {value, f'"{value}"'}
+        exprs.append({"expr": e, "answer": repr(value), "alts": sorted(alts)})
+    facts = []
+    for text, check in boss.get("facts", []):
+        truth = eval(check, dict(env))  # noqa: S307
+        assert isinstance(truth, bool), f"world {n} fact {text!r}: check must give True/False, got {truth!r}"
+        facts.append({"text": text, "truth": truth})
+    # Match pairs: short one-line predict questions, shown as `expression` → output.
+    pairs, seen = [], set()
+    for q in [*quiz, *reps]:
+        code, out = q.get("code", ""), q["options"][q["answer"]]
+        if "\n" in code or not code.startswith("print(") or not code.endswith(")") or "\n" in out or len(out) > 22 or out in seen:
+            continue
+        inner = code[len("print("):-1]
+        if len(inner) > 34 or "," in inner and inner.count("(") == 0:
+            continue
+        seen.add(out)
+        pairs.append({"left": inner, "right": out})
+    for e in exprs:  # the falling expressions make good pairs too
+        if e["answer"] not in seen and len(e["answer"]) <= 22 and len(e["expr"]) <= 34:
+            seen.add(e["answer"])
+            pairs.append({"left": e["expr"], "right": e["answer"]})
+    # Coding strikes: the world's shortest plain-function tasks (at most 3 lines in the body).
+    strikes = []
+    for p in problems:
+        spec = p.get("spec", {})
+        body = [line for line in p["solution"].strip().splitlines()[1:] if line.strip()]
+        if p["solution"].lstrip().startswith("def ") and len(body) <= 3 and not set(spec) & {"driver", "out", "stdin", "kind", "raises", "compare", "checker"}:
+            strikes.append(p["slug"])
+    return {"exprs": exprs, "facts": facts, "pairs": pairs, "strikes": strikes}
 
 
 def build_python(blind: list[dict], categories: list[str], build_one) -> dict:
@@ -73,6 +123,9 @@ def build_python(blind: list[dict], categories: list[str], build_one) -> dict:
 
     levels = []
     covered: set[str] = set()
+    boss_mod = runpy.run_path(str(CONTENT / "boss.py"))
+    BOSS, AUDIT = boss_mod["BOSS"], boss_mod["AUDIT"]
+    audited: set[str] = set()
     for n in PY_LEVELS:
         path = CONTENT / f"level{n:02d}.py"
         if not path.exists():
@@ -82,7 +135,31 @@ def build_python(blind: list[dict], categories: list[str], build_one) -> dict:
         assert lv["n"] == n, f"{path.name} says it is level {lv['n']}"
         category = f"Level {n}: {lv['title']}"
         concepts, quiz_pool = [], []
-        for c in lv["concepts"]:
+        # Extra practice (content/python/extra_levelNN.py): warm-ups before a concept's tasks, practice after them, rep
+        # questions for the rep room, whole new concepts, and a mixed review group at the end of the world.
+        extra_path = CONTENT / f"extra_level{n:02d}.py"
+        extra = runpy.run_path(str(extra_path)) if extra_path.exists() else {}
+        more = extra.get("EXTRA", {})
+        concept_list = list(lv["concepts"])
+        for nc in extra.get("NEW_CONCEPTS", []):
+            ids = [c["id"] for c in concept_list]
+            assert nc["after"] in ids, f"{extra_path.name}: {nc['id']} goes after unknown concept {nc['after']}"
+            concept_list.insert(ids.index(nc["after"]) + 1, nc)
+        if extra.get("REVIEW"):
+            concept_list.append({**extra["REVIEW"], "review": True})
+        # Beginner lessons (content/lessons/python_levelNN.py) replace the concepts' original intros.
+        lessons_path = ROOT / "content" / "lessons" / f"python_level{n:02d}.py"
+        lessons = runpy.run_path(str(lessons_path))["LESSONS"] if lessons_path.exists() else {}
+        no_lesson = [c["id"] for c in lv["concepts"] if c["id"] not in lessons]
+        assert not lessons or not no_lesson, f"{lessons_path.name}: missing lessons for {no_lesson}"
+        assert set(lessons) <= {c["id"] for c in lv["concepts"]}, f"{lessons_path.name}: lessons for unknown concepts {sorted(set(lessons) - {c['id'] for c in lv['concepts']})}"
+        concept_list = [{**c, "intro": lessons.get(c["id"], c["intro"])} for c in concept_list]
+        unknown_extra = set(more) - {c["id"] for c in concept_list}
+        assert not unknown_extra, f"{extra_path.name}: extras for unknown concepts {sorted(unknown_extra)}"
+        for c in concept_list:
+            e = more.get(c["id"], {})
+            c = {**c, "problems": [*e.get("warmup", []), *c.get("problems", []), *e.get("practice", [])],
+                 "reps": [*c.get("reps", []), *e.get("reps", [])]}
             where = f"level {n} / {c['id']}"
             names = set(c.get("builtins", [])) | set(c.get("quiz_only", []))
             unknown = names - all_builtins()
@@ -91,19 +168,35 @@ def build_python(blind: list[dict], categories: list[str], build_one) -> dict:
             assert not bad_quiz_only, f"{where}: {sorted(bad_quiz_only)} can be tested with code, so they need a problem, not quiz_only"
             assert c.get("problems") or c.get("quiz_only"), f"{where}: a concept needs at least one problem"
             covered |= names
-            qs = _quiz(c.get("quiz", []), f"py:{n}:{c['id']}")
+            raw_quiz = []
+            for i, q in enumerate(c.get("quiz", [])):
+                key = f"{n}:{c['id']}:{i}"
+                if key in AUDIT:
+                    audited.add(key)
+                    if AUDIT[key] is None:
+                        continue
+                    q = AUDIT[key]
+                raw_quiz.append(q)
+            qs = _quiz(raw_quiz, f"py:{n}:{c['id']}")
             assert qs, f"{where}: needs quiz questions for the level quiz"
             quiz_pool += qs
             concepts.append({
                 "id": c["id"], "title": c["title"], "intro": c["intro"].strip(),
                 "builtins": sorted(names),
                 "problems": [add(p, category) for p in c.get("problems", [])],
+                "reps": _quiz(c["reps"], f"py:{n}:{c['id']}:rep"),
+                "review": bool(c.get("review")),
             })
+        level_slugs = [s for c in concepts for s in c["problems"]]
+        by = {p["slug"]: p for p in problems}
+        boss = _boss_data(n, BOSS.get(n, {}), quiz_pool, [q for c in concepts for q in c["reps"]], [by[s] for s in level_slugs])
         levels.append({
             "n": n, "kind": "python", "title": lv["title"], "summary": lv["summary"].strip(), "ready": True,
-            "concepts": concepts, "problems": [s for c in concepts for s in c["problems"]], "quiz": quiz_pool,
+            "concepts": concepts, "problems": level_slugs, "quiz": quiz_pool, "boss": boss,
         })
 
+    unused = set(AUDIT) - audited
+    assert not unused, f"boss.py AUDIT has keys that match no question: {sorted(unused)}"
     by_slug = {p["slug"]: p for p in blind}
     titles = {8: ("Blind 75: Easy", "All 19 Easy problems from the Blind 75."),
               9: ("Blind 75: Medium I", "The first half of the Medium problems: arrays and hashing through trees."),

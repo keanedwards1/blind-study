@@ -16,65 +16,83 @@ body {
 }
 
 /*
- * Drill palette. Light is the default; <html data-theme="dark"> switches to dark.
+ * Blind 75 from Scratch palette. Light is the default; <html data-theme="dark"> switches to dark.
  * Surfaces step up in brightness (page → panel → raised → hover) so modules read as stacked cards.
- * Accent is "Ember" (#FFB224); --accent-text is the same hue tuned to pass contrast as text.
+ * Accent is "Lapis" (#3366E6) with "Lagoon" (#22B59A) for done; neutrals are tinted navy. --accent-text passes contrast as text.
  */
 :root {
   color-scheme: light;
-  --page: #f2f3f5;
+  --page: #f3f5f9;
   --panel: #ffffff;
-  --raised: #f6f7f9;
-  --hover: #eceef1;
-  --line: #e3e5e9;
-  --line-strong: #cdd1d7;
-  --fg: #111216;
-  --fg-2: #33363d;
-  --muted: #5a5e68;
-  --subtle: #80848e;
-  --btn: #e6e8ec;
-  --btn-hover: #d9dce1;
-  --ok: #0a8f63;
+  --raised: #f7f9fc;
+  --hover: #ecf0f6;
+  --line: #dde3ec;
+  --line-strong: #ccd5e2;
+  --fg: #0e1a2b;
+  --fg-2: #2b3850;
+  --muted: #5b6577;
+  --subtle: #7f8a9c;
+  --btn: #e6ebf3;
+  --btn-hover: #d9e0eb;
+  --ok: #127a66;
   --bad: #d21f4a;
   --warn: #b26a00;
   --tle: #c2410c;
-  --accent: #ffb224;
-  --accent-hover: #ffc14f;
-  --accent-text: #a35f00;
-  --on-accent: #1a1203;
-  --code-bg: #f1f2f5;
+  --accent: #3366e6;
+  --accent-hover: #2a58d0;
+  --accent-text: #3366e6;
+  --on-accent: #ffffff;
+  --code-bg: #eef2f8;
   /* Inline code chips in prose (problem statements, lessons): visible against the page and panel colours. */
-  --code-inline-bg: #e4e7ed;
-  --code-inline-line: #d3d8e0;
-  --code-fg: #111216;
+  --code-inline-bg: #e3e9f2;
+  --code-inline-line: #d3dbe6;
+  --code-fg: #0e1a2b;
+  /* Done: the Solved / Mastered badge (Lagoon, with dark text). */
+  --done: #22b59a;
+  --on-done: #0e1a2b;
+  /* Category icon shades (four groups: Sky blue, Lagoon, Ember orange, Slate) and difficulty text colours, all from the Lapis / Lagoon palette. */
+  --cat-sky: #3a92d0;
+  --cat-lagoon: #1a9c84;
+  --cat-ember: #d9702f;
+  --cat-slate: #4f5f7e;
+  --diff-easy: #127a66;
+  --diff-medium: #3366e6;
+  --diff-hard: #c23e36;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: #0b0c0e;
-  --panel: #16171a;
-  --raised: #1e2024;
-  --hover: #26282d;
-  --line: #26282d;
-  --line-strong: #363940;
-  --fg: #f5f5f7;
-  --fg-2: #cfd1d6;
-  --muted: #a0a3ab;
-  --subtle: #6f727b;
-  --btn: #2a2c32;
-  --btn-hover: #34373e;
-  --ok: #2dd4a0;
+  --page: #0e1a2b;
+  --panel: #16233a;
+  --raised: #1f2e44;
+  --hover: #2c3e58;
+  --line: #2a3b55;
+  --line-strong: #33496a;
+  --fg: #eef2f8;
+  --fg-2: #c8d3e2;
+  --muted: #9aa7ba;
+  --subtle: #6f7d92;
+  --btn: #2c3e58;
+  --btn-hover: #34496a;
+  --ok: #4bd9bc;
   --bad: #ff5c7a;
   --warn: #ffb224;
   --tle: #ff8a3d;
-  --accent: #ffb224;
-  --accent-hover: #ffc14f;
-  --accent-text: #ffb224;
-  --on-accent: #1a1203;
-  --code-bg: #1e2024;
-  --code-inline-bg: #272a31;
-  --code-inline-line: #383c45;
-  --code-fg: #f5f5f7;
+  --accent: #3366e6;
+  --accent-hover: #4677ee;
+  --accent-text: #7fa2f5;
+  --on-accent: #ffffff;
+  --code-bg: #16233a;
+  --code-inline-bg: #22324a;
+  --code-inline-line: #33496a;
+  --code-fg: #eef2f8;
+  --cat-sky: #5eb0e8;
+  --cat-lagoon: #34c4a6;
+  --cat-ember: #f29a5c;
+  --cat-slate: #9aa9c4;
+  --diff-easy: #4bd9bc;
+  --diff-medium: #7fa2f5;
+  --diff-hard: #ff7b6e;
 }
 
 @theme inline {
@@ -98,6 +116,11 @@ body {
   --color-accent-hover: var(--accent-hover);
   --color-accent-text: var(--accent-text);
   --color-on-accent: var(--on-accent);
+  --color-done: var(--done);
+  --color-on-done: var(--on-done);
+  --color-diff-easy: var(--diff-easy);
+  --color-diff-medium: var(--diff-medium);
+  --color-diff-hard: var(--diff-hard);
   --font-sans: var(--font-figtree);
   --font-mono: var(--font-jetbrains-mono);
 }
@@ -242,7 +265,7 @@ select:not([multiple]):focus-visible {
 
 .page-panel {
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: 6px;
   background: var(--panel);
   box-shadow: 0 12px 36px color-mix(in srgb, var(--fg) 4%, transparent);
 }
@@ -261,13 +284,13 @@ select:not([multiple]):focus-visible {
   width: clamp(12rem, 17vw, 16rem);
   padding: 1.2rem 1rem;
   border: 1px solid var(--line);
-  border-radius: 0.9rem;
+  border-radius: 6px;
   background: var(--panel);
 }
 
 .page-learn > nav ul a {
   display: block;
-  border-radius: 0.45rem;
+  border-radius: 6px;
   padding: 0.35rem 0.5rem;
   line-height: 1.4;
   text-decoration: none;
@@ -280,7 +303,7 @@ select:not([multiple]):focus-visible {
 .page-learn > div > header {
   padding: clamp(1.5rem, 3vw, 2.5rem);
   border: 1px solid var(--line);
-  border-radius: 1.1rem;
+  border-radius: 6px;
   background: var(--panel);
 }
 
@@ -300,7 +323,7 @@ select:not([multiple]):focus-visible {
 }
 
 .page-learn article {
-  border-radius: 0.85rem;
+  border-radius: 6px;
   box-shadow: 0 8px 24px color-mix(in srgb, var(--fg) 3%, transparent);
 }
 
@@ -320,7 +343,7 @@ select:not([multiple]):focus-visible {
 }
 
 .page-mock > div {
-  border-radius: 1rem;
+  border-radius: 6px;
   background: var(--panel);
   box-shadow: 0 12px 32px color-mix(in srgb, var(--fg) 4%, transparent);
 }
@@ -397,7 +420,7 @@ select:not([multiple]):focus-visible {
 @media (min-width: 640px) {
   .quiz-large {
     padding: 1.75rem 2rem;
-    border-radius: 1rem;
+    border-radius: 6px;
   }
   .quiz-large > div:first-child {
     font-size: 0.875rem;
@@ -417,7 +440,7 @@ select:not([multiple]):focus-visible {
   }
   .quiz-large .quiz-opts > button {
     padding: 0.9rem 1.25rem;
-    border-radius: 0.75rem;
+    border-radius: 6px;
     font-size: 1.2rem;
     line-height: 1.45;
   }
@@ -455,11 +478,11 @@ select:not([multiple]):focus-visible {
   font-size: 0.85em;
   background: var(--code-inline-bg);
   box-shadow: inset 0 0 0 1px var(--code-inline-line);
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 0.12em 0.4em;
   color: var(--code-fg);
 }
-.md pre { background: var(--code-bg); border-radius: 8px; padding: 0.8em 1em; overflow-x: auto; }
+.md pre { background: var(--code-bg); border-radius: 6px; padding: 0.8em 1em; overflow-x: auto; }
 .md pre code { background: none; padding: 0; box-shadow: none; }
 .md h1, .md h2, .md h3 { color: var(--fg); font-weight: 600; margin: 1em 0 0.4em; }
 .md table { border-collapse: collapse; margin: 0.6em 0; font-size: 0.875rem; }

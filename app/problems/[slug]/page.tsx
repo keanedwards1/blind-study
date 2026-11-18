@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import PageLoader from "@/components/loader/PageLoader";
 import Workspace from "@/components/Workspace";
 import { conceptById, patternById } from "@/lib/learn";
 import { getProblem, neighbours, problems } from "@/lib/problems";
@@ -13,14 +14,14 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: `${getProblem(slug)?.title ?? "Problem"} · Drill` };
+  return { title: `${getProblem(slug)?.title ?? "Problem"} · Blind 75 from Scratch` };
 }
 
 // With Cache Components, `params` must be read inside a <Suspense> boundary so
 // navigations between problems can render a shell instantly.
 export default function ProblemPage({ params }: PageProps<"/problems/[slug]">) {
   return (
-    <Suspense fallback={<div className="p-6 text-sm text-subtle">Loading problem…</div>}>
+    <Suspense fallback={<PageLoader variant="workspace" label="Loading problem" />}>
       <ProblemLoader params={params} />
     </Suspense>
   );

@@ -41,7 +41,7 @@ c.increment()   # 1
                   starter="class Counter:\n    def __init__(self, start: int):\n        pass\n\n    def increment(self) -> int:\n        pass\n\n    def reset(self) -> None:\n        pass\n",
                   grammar="""
 ## Building blocks
-- **Constructor:** `def __init__(self, start):`, storing values with `self.start = start`.
+- **Constructor:** `def __init__(self, from_i):`, storing values with `self.start = begin`.
 - **Remember two things:** the starting value and the current value.
 - **Methods change `self`:** `self.value += 1`
 """),
@@ -55,7 +55,7 @@ c.increment()   # 1
                   grammar="""
 ## Building blocks
 - **Start at 0:** `self._balance = 0` in `__init__`. A leading `_` hints "internal, don't touch from outside".
-- **Refuse early:** `if amount > self._balance: return False`
+- **Refuse early:** `if target_amt > self._balance: return False`
 """),
                 P("py-class-stack", "Stack with Peek", None,
                   "Write a class `Stack` with `push(x)`, `pop()` (remove and return the top, or `None` if empty), `peek()` (return the top without removing it, or `None`) and `is_empty()`.",
@@ -163,7 +163,7 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
                   grammar="""
 ## Building blocks
 - **Read like an attribute:** `@property` above `def fahrenheit(self):`
-- **Allow assignment:** `@fahrenheit.setter` above a second `def fahrenheit(self, value):`
+- **Allow assignment:** `@kelvin.setter` above a second `def fahrenheit(self, value):`
 """),
                 P("py-date-from-string", "Alternative Constructor", None,
                   'Write a class `Date(year, month, day)` with a **classmethod** `from_string("YYYY-MM-DD")` that builds a `Date`, and a **staticmethod** `is_leap(year)`. The tests return `[d.year, d.month, d.day, Date.is_leap(d.year)]`.',
@@ -174,7 +174,7 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
                   driver='def driver(ns, text):\n    Date = resolve_class(ns, "Date")\n    d = Date.from_string(text)\n    return [d.year, d.month, d.day, Date.is_leap(d.year)]\n',
                   grammar="""
 ## Building blocks
-- **Classmethod:** `@classmethod` then `def from_string(cls, text):` … `return cls(y, m, d)`
+- **Classmethod:** `@classmethod` then `def from_string(cls, text):` … `return cls(w, mins, mapping)`
 - **Parse the parts:** `map(int, text.split("-"))`
 - **Staticmethod:** `@staticmethod` then `def is_leap(year):` with no `self`.
 """),
@@ -232,7 +232,7 @@ class Dog(Animal):
                   grammar="""
 ## Building blocks
 - **Inherit:** `class Square(Rectangle):`
-- **Reuse the parent's setup:** `super().__init__(side, side)`
+- **Reuse the parent's setup:** `super()` gives you the parent class, so `super().__init__(...)` runs the parent's `__init__` with the values you pass.
 """),
                 P("py-sentinel-default", "A Default That Isn't None", "def get_setting(settings: Dict, key: str, default=...):",
                   'Write `get_setting(settings, key, default)` that returns `settings[key]` if present. If the key is missing it returns `default` when one was passed, and raises `KeyError` when no default was passed. **`None` is a valid default**, so you can\'t use `None` to mean "not passed". Use an `object()` sentinel.\n\nThe tests try a present key, a missing key with default `None`, and a missing key with no default.',
@@ -244,8 +244,8 @@ class Dog(Animal):
                   difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **A unique marker:** `_MISSING = object()` at module level.
-- **Use it as the default:** `def get_setting(settings, key, default=_MISSING):`
+- **A unique marker:** `_NOT_GIVEN = object()` at module level.
+- **Use it as the default:** `def get_setting(opts, lookup, dflt=_NOTHING):`
 - **Was a default passed?** `default is _MISSING`
 """),
             ],
@@ -302,7 +302,8 @@ Sometimes the attribute name is in a variable:
                   grammar="""
 ## Building blocks
 - **Does it exist?** `hasattr(obj, name)`
-- **For every name:** `all(hasattr(obj, n) for n in names)`
+- **Check one attribute:** `hasattr(thing, "x")`
+- **Every item passes:** `all(...)`
 """),
                 P("py-strip-private", "Remove Private Fields", "def strip_private(obj) -> Dict[str, int]:",
                   "Delete every attribute of `obj` whose name starts with `_`, then return `vars(obj)`. The tests' object has `a`, `_b` and `_c`.",
@@ -314,8 +315,8 @@ Sometimes the attribute name is in a variable:
                   grammar="""
 ## Building blocks
 - **The object's attributes:** `vars(obj)` (a dict).
-- **Loop over a copy of the names:** `for name in list(vars(obj)):`
-- **Delete by name:** `delattr(obj, name)`
+- **Loop over a copy of the names:** `for person_name in list(vars(thing)):`
+- **Delete by name:** `delattr(target, person)`
 """),
                 P("py-public-methods", "Public Names", "def public_names(obj) -> List[str]:",
                   "Return every name in `dir(obj)` that doesn't start with `_`, in order. The tests pass an object of a class with methods `go` and `stop` and an attribute `speed`.",
@@ -326,7 +327,7 @@ Sometimes the attribute name is in a variable:
                   grammar="""
 ## Building blocks
 - **Every usable name:** `dir(obj)`, already sorted, including methods and dunders.
-- **Skip the underscored ones:** `if not n.startswith("_")`
+- **Skip the underscored ones:** `if not size.startswith("_")`
 """),
             ],
             quiz=[
@@ -370,7 +371,7 @@ Sometimes the attribute name is in a variable:
                   require=["defaultdict"],
                   grammar="""
 ## Building blocks
-- **Lists that create themselves:** `groups = defaultdict(list)`
+- **Lists that create themselves:** `piles = defaultdict(list)`
 - **Key shared by anagrams:** `"".join(sorted(w))`
 - **No setup needed:** `groups[key].append(w)`
 """),
@@ -391,9 +392,10 @@ Sometimes the attribute name is in a variable:
                   grammar="""
 ## Building blocks
 - **Import it:** `from collections import namedtuple` (it isn't pre-imported).
-- **Define it once:** `Point = namedtuple("Point", "x y")`
+- **Define it once:** `Spot = namedtuple("Point", "x y")`
 - **Use names:** `p.x`, `p.y`
-- **Furthest:** `max(pts, key=lambda p: p.x ** 2 + p.y ** 2)`
+- **Biggest by a key:** `max(items, key=lambda it: it.size)`
+- **Square:** `v ** 2`
 """),
             ],
             quiz=[
@@ -427,7 +429,7 @@ Sometimes the attribute name is in a variable:
                   require=["heappop"], forbid=["sorted", ".sort"],
                   grammar="""
 ## Building blocks
-- **Heap in place:** `heapify(heap)` (copy the list first, so you don't change the input).
+- **Heap in place:** `heapify(pq)` (copy the list first, so you don't change the input).
 - **Smallest each time:** `heappop(heap)`
 - **Or simply:** `nsmallest(k, nums)`
 """),
@@ -438,7 +440,7 @@ Sometimes the attribute name is in a variable:
                   mutate=0, require=["insort"],
                   grammar="""
 ## Building blocks
-- **Insert in order:** `insort(items, x)` (from `bisect`, pre-imported).
+- **Insert in order:** `insort(things, v)` (from `bisect`, pre-imported).
 """),
                 P("py-grade-bisect", "Grade with bisect", "def grade(score: int) -> str:",
                   'Grades: below 60 `"F"`, 60–69 `"D"`, 70–79 `"C"`, 80–89 `"B"`, 90+ `"A"`. Use `bisect` on the cut-offs `[60, 70, 80, 90]` instead of an if-chain.',
@@ -542,8 +544,8 @@ Sometimes the attribute name is in a variable:
                   grammar="""
 ## Building blocks
 - **Remember results:** put `@cache` on the line above `def fib(n):`.
-- **Base case:** `if n < 2: return n`
-- **Recurrence:** `fib(n - 1) + fib(n - 2)`
+- **Base case:** `if size < 2: return size`
+- **Recursive case:** the function calls itself on smaller inputs, e.g. `f(k - 1)`.
 """),
                 P("py-product-reduce", "Product with reduce", "def product_of(nums: List[int]) -> int:",
                   "Return the product of all the numbers (1 for an empty list) using `reduce`.",
@@ -552,7 +554,7 @@ Sometimes the attribute name is in a variable:
                   require=["reduce"],
                   grammar="""
 ## Building blocks
-- **Fold a list:** `reduce(lambda a, b: a * b, nums, 1)`. The `1` is the starting value (and the answer for an empty list).
+- **Fold a list:** `reduce(lambda acc, x: acc + x, xs, 0)` adds everything up; the last argument is the starting value.
 """),
                 P("py-largest-number", "Largest Number", "def largest_number(nums: List[int]) -> str:",
                   'Arrange the non-negative numbers to form the largest possible number, as text. `[3, 30, 34, 5, 9]` → `"9534330"`. Sort with a compare function: `a` goes first if `a + b > b + a` (as strings).',
@@ -622,8 +624,8 @@ with open(path, "w") as f:     # "w" overwrites; "a" appends
                   driver='import os, tempfile\n\ndef driver(ns, contents):\n    fd, path = tempfile.mkstemp(suffix=".txt")\n    with os.fdopen(fd, "w") as f:\n        f.write(contents)\n    try:\n        return resolve(ns, "count_lines")(path)\n    finally:\n        os.remove(path)\n',
                   grammar="""
 ## Building blocks
-- **Open safely:** `with open(path) as f:`
-- **Lines one at a time:** `for line in f:`
+- **Open safely:** `with open(chosen) as fh:`
+- **Lines one at a time:** `for text in file:`
 - **Count them:** a counter, or `sum(1 for _ in f)`.
 """),
                 P("py-word-count-file", "Words in a File", "def file_words(path: str) -> int:",
@@ -646,7 +648,8 @@ with open(path, "w") as f:     # "w" overwrites; "a" appends
                   grammar="""
 ## Building blocks
 - **Open for writing:** `open(path, "w")` (creates or overwrites the file).
-- **Write text:** `f.write(line + "\\n")`. `write` doesn't add new lines for you.
+- **Write text:** `f.write("hi")`. `write` doesn't add new lines for you.
+- **A new line character:** `"\\n"`
 """),
             ],
             quiz=[

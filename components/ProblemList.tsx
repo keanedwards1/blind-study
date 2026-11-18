@@ -29,13 +29,13 @@ function IconBox({ children, hue, className = "h-10 w-10" }: { children: React.R
     ? { color: hue, backgroundColor: `color-mix(in oklab, ${hue} 12%, transparent)`, borderColor: `color-mix(in oklab, ${hue} 22%, transparent)` }
     : undefined;
   return (
-    <span className={`grid shrink-0 place-items-center rounded-lg border border-line bg-raised text-muted ${className}`} style={style}>
+    <span className={`grid shrink-0 place-items-center rounded-md border border-line bg-raised text-muted ${className}`} style={style}>
       {children}
     </span>
   );
 }
 
-const diffBar: Record<string, string> = { Easy: "bg-ok", Medium: "bg-warn", Hard: "bg-bad" };
+const diffBar: Record<string, string> = { Easy: "bg-diff-easy", Medium: "bg-diff-medium", Hard: "bg-diff-hard" };
 
 function ProgressRing({ value, total }: { value: number; total: number }) {
   const r = 42;
@@ -62,7 +62,7 @@ function ProgressRing({ value, total }: { value: number; total: number }) {
   );
 }
 
-const tile = "flex h-14 min-w-0 items-center gap-3 rounded-lg border border-line bg-panel px-2 text-left text-sm transition-colors hover:border-line-strong hover:bg-hover";
+const tile = "flex h-14 min-w-0 items-center gap-3 rounded-md border border-line bg-panel px-2 text-left text-sm transition-colors hover:border-line-strong hover:bg-hover";
 
 export default function ProblemList({ problems, categories }: { problems: ProblemSummary[]; categories: string[] }) {
   const solved = useSolved();
@@ -118,7 +118,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
     const blob = new Blob([exportAll()], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `drill-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `blind75fromscratch-progress-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
   }
@@ -132,19 +132,19 @@ export default function ProblemList({ problems, categories }: { problems: Proble
   }
 
   const pillSelect =
-    "h-11 cursor-pointer rounded-full border border-line bg-panel px-4 text-sm font-medium text-fg-2 hover:border-line-strong focus:border-fg-2 focus:outline-none";
+    "h-11 cursor-pointer rounded-md border border-line bg-panel px-4 text-sm font-medium text-fg-2 hover:border-line-strong focus:border-fg-2 focus:outline-none";
 
   return (
     <div className="page-shell space-y-10">
       {/* ------------------------------------------------ summary */}
-      <section className="relative flex flex-wrap items-center gap-8 overflow-hidden rounded-2xl border border-line bg-panel p-6 sm:p-8">
+      <section className="relative flex flex-wrap items-center gap-8 overflow-hidden rounded-md border border-line bg-panel p-6 sm:p-8">
         {/* Background image: a tilted wall of category tiles, faded out toward the text. */}
         <div
-          className="pointer-events-none absolute -right-10 -top-28 hidden rotate-12 grid-cols-6 gap-3 opacity-80 [mask-image:linear-gradient(to_left,black_45%,transparent_95%)] lg:grid"
+          className="pointer-events-none absolute -right-10 -top-28 hidden rotate-12 grid-cols-6 gap-3 opacity-50 [mask-image:linear-gradient(to_left,black_45%,transparent_95%)] lg:grid"
           aria-hidden="true"
         >
           {[...categories, ...categories].slice(0, 30).map((c, i) => (
-            <IconBox key={i} hue={categoryHue(c)} className="h-20 w-20 rounded-2xl">
+            <IconBox key={i} hue={categoryHue(c)} className="h-20 w-20 rounded-md">
               <CategoryIcon category={c} className="h-9 w-9" />
             </IconBox>
           ))}
@@ -156,18 +156,18 @@ export default function ProblemList({ problems, categories }: { problems: Proble
             {total} problems in {categories.length} categories. Solutions are written in Python and run in the browser.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button onClick={pickRandom} className="flex h-11 items-center gap-2 rounded-full bg-fg px-5 text-sm font-semibold text-page transition-opacity hover:opacity-85">
+            <button onClick={pickRandom} className="flex h-11 items-center gap-2 rounded-md bg-fg px-5 text-sm font-semibold text-page transition-opacity hover:opacity-85">
               <ShuffleIcon className="h-4.5 w-4.5" />
               Random unsolved
             </button>
-            <Link href="/mock" className="flex h-11 items-center gap-2 rounded-full border border-line-strong px-5 text-sm font-semibold text-fg transition-colors hover:bg-hover">
+            <Link href="/mock" className="flex h-11 items-center gap-2 rounded-md border border-line-strong px-5 text-sm font-semibold text-fg transition-colors hover:bg-hover">
               <TimerIcon className="h-4.5 w-4.5" />
               Start mock assessment
             </Link>
           </div>
         </div>
 
-        <div className="relative flex w-full flex-wrap items-center gap-6 rounded-xl border border-line bg-panel/70 p-5 backdrop-blur-md sm:w-auto">
+        <div className="relative flex w-full flex-wrap items-center gap-6 rounded-md border border-line bg-panel/70 p-5 backdrop-blur-md sm:w-auto">
           <ProgressRing value={solvedCount} total={total} />
           <div className="min-w-44 space-y-3">
             <p className="text-sm font-semibold text-fg">
@@ -181,8 +181,8 @@ export default function ProblemList({ problems, categories }: { problems: Proble
                     {done}/{t}
                   </span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-line">
-                  <div className={`h-full rounded-full ${diffBar[d]}`} style={{ width: `${t ? (done / t) * 100 : 0}%` }} />
+                <div className="h-1.5 overflow-hidden rounded-md bg-line">
+                  <div className={`h-full rounded-md ${diffBar[d]}`} style={{ width: `${t ? (done / t) * 100 : 0}%` }} />
                 </div>
               </div>
             ))}
@@ -204,26 +204,26 @@ export default function ProblemList({ problems, categories }: { problems: Proble
           </button>
         ) : (
           <Link href="/quiz#crash-course" className={tile}>
-            <IconBox hue="#1F9E89">
+            <IconBox hue="var(--cat-lagoon)">
               <CodeIcon className="h-5 w-5" />
             </IconBox>
             <span className="truncate font-semibold text-fg">Python crash course</span>
           </Link>
         )}
         <Link href="/learn" className={tile}>
-          <IconBox hue="#8D63D2">
+          <IconBox hue="var(--cat-ember)">
             <BookIcon className="h-5 w-5" />
           </IconBox>
           <span className="truncate font-semibold text-fg">Learn</span>
         </Link>
         <Link href="/quiz" className={tile}>
-          <IconBox hue="#D9912B">
+          <IconBox hue="var(--cat-slate)">
             <BoltIcon className="h-5 w-5" />
           </IconBox>
           <span className="truncate font-semibold text-fg">Quiz</span>
         </Link>
         <Link href="/mock" className={tile}>
-          <IconBox hue="#4A78D6">
+          <IconBox hue="var(--cat-sky)">
             <TimerIcon className="h-5 w-5" />
           </IconBox>
           <span className="truncate font-semibold text-fg">Mock assessment</span>
@@ -264,7 +264,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search problems"
               aria-label="Search problems"
-              className="h-11 w-full rounded-full border border-line bg-panel pl-10 pr-4 text-sm text-fg placeholder:text-subtle hover:border-line-strong focus:border-fg-2 focus:outline-none"
+              className="h-11 w-full rounded-md border border-line bg-panel pl-10 pr-4 text-sm text-fg placeholder:text-subtle hover:border-line-strong focus:border-fg-2 focus:outline-none"
             />
           </label>
           <select value={diff} onChange={(e) => setDiff(e.target.value)} className={pillSelect} aria-label="Difficulty">
@@ -286,7 +286,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
             if (!items.length) return null;
             const { done, total: t } = catStats(cat);
             return (
-              <section key={cat} id={categoryId(cat)} className="mb-4 scroll-mt-20 break-inside-avoid rounded-2xl border border-line bg-panel p-3 sm:p-4">
+              <section key={cat} id={categoryId(cat)} className="mb-4 scroll-mt-20 break-inside-avoid rounded-md border border-line bg-panel p-3 sm:p-4">
                 <div className="mb-2 flex items-center gap-3 px-1">
                   <IconBox hue={categoryHue(cat)}>
                     <CategoryIcon category={cat} className="h-5 w-5" />
@@ -296,13 +296,13 @@ export default function ProblemList({ problems, categories }: { problems: Proble
                     {done}/{t}
                   </span>
                 </div>
-                <div className="mx-1 mb-2 h-0.5 overflow-hidden rounded-full bg-line">
-                  <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${(done / t) * 100}%`, backgroundColor: categoryHue(cat) }} />
+                <div className="mx-1 mb-2 h-0.5 overflow-hidden rounded-md bg-line">
+                  <div className="h-full rounded-md transition-[width] duration-500" style={{ width: `${(done / t) * 100}%`, backgroundColor: categoryHue(cat) }} />
                 </div>
                 <ul>
                   {items.map((p) => (
                     <li key={p.slug}>
-                      <Link href={`/problems/${p.slug}`} className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-hover">
+                      <Link href={`/problems/${p.slug}`} className="group flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-hover">
                         <span className="w-6 shrink-0 text-center font-mono text-xs tabular-nums text-subtle">{problems.indexOf(p) + 1}</span>
                         <span className="min-w-0 flex-1 truncate text-sm font-medium text-fg-2 group-hover:text-fg">{p.title}</span>
                         <span className={`text-xs font-medium ${difficultyColor[p.difficulty]}`}>{p.difficulty}</span>
@@ -324,7 +324,7 @@ export default function ProblemList({ problems, categories }: { problems: Proble
           })}
         </div>
         {!filtered.length && (
-          <div className="rounded-2xl border border-dashed border-line-strong p-10 text-center">
+          <div className="rounded-md border border-dashed border-line-strong p-10 text-center">
             <p className="text-sm text-subtle">No problems match.</p>
           </div>
         )}
@@ -332,11 +332,11 @@ export default function ProblemList({ problems, categories }: { problems: Proble
 
       <footer className="flex flex-wrap items-center gap-2 border-t border-line pt-6 text-xs text-subtle">
         <span className="mr-2">Progress is saved in this browser.</span>
-        <button onClick={doExport} className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 font-medium hover:border-line-strong hover:text-fg-2">
+        <button onClick={doExport} className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 font-medium hover:border-line-strong hover:text-fg-2">
           <DownloadIcon className="h-3.5 w-3.5" />
           Export
         </button>
-        <button onClick={() => fileRef.current?.click()} className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 font-medium hover:border-line-strong hover:text-fg-2">
+        <button onClick={() => fileRef.current?.click()} className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 font-medium hover:border-line-strong hover:text-fg-2">
           <UploadIcon className="h-3.5 w-3.5" />
           Import
         </button>

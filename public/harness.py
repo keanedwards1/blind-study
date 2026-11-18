@@ -231,6 +231,7 @@ _SYNTAX = {
     "fstring": (ast.JoinedStr,), "walrus": (ast.NamedExpr,), "slicing": (ast.Slice,), "ternary": (ast.IfExp,),
     "nonlocal": (ast.Nonlocal,), "global": (ast.Global,), "assert": (ast.Assert,), "del": (ast.Delete,),
     "import": (ast.Import, ast.ImportFrom), "augassign": (ast.AugAssign,), "unpack": (ast.Starred,), "match": (ast.Match,),
+    "break": (ast.Break,), "continue": (ast.Continue,),
 }
 _OPS = {
     "+": ast.Add, "-": ast.Sub, "*": ast.Mult, "/": ast.Div, "//": ast.FloorDiv, "%": ast.Mod, "**": ast.Pow,
@@ -246,6 +247,7 @@ RULE_LABELS = {
     "slicing": "slicing", "ternary": "a one-line `x if cond else y`", "nonlocal": "`nonlocal`", "global": "`global`",
     "assert": "`assert`", "del": "`del`", "import": "an import", "augassign": "an augmented assignment like `+=`",
     "unpack": "`*` unpacking", "match": "a `match` statement", "recursion": "recursion (a function that calls itself)", "decorator": "a decorator",
+    "break": "`break`", "continue": "`continue`",
 }
 
 

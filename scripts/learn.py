@@ -176,6 +176,80 @@ def problem_quiz(p: dict, categories: list[str], insight: dict | None) -> list[d
     return qs
 
 
+_KEEP_NAMES = None
+
+
+def _code_shape(code: str):
+    """Code with every user-chosen name replaced by V and whitespace dropped, or None if it isn't Python."""
+    import builtins
+    import keyword
+    import tokenize
+
+    global _KEEP_NAMES
+    if _KEEP_NAMES is None:
+        _KEEP_NAMES = set(dir(builtins)) | {"self"}
+    try:
+        toks = list(tokenize.generate_tokens(io.StringIO(code.strip()).readline))
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        return None
+    skip = {tokenize.NEWLINE, tokenize.NL, tokenize.ENDMARKER, tokenize.INDENT, tokenize.DEDENT, tokenize.COMMENT}
+    out, prev = [], None
+    for tok in toks:
+        if tok.type in skip:
+            continue
+        s = tok.string
+        if tok.type == tokenize.NAME and s not in _KEEP_NAMES and not keyword.iskeyword(s) and prev != ".":
+            s = "V"
+        out.append(s)
+        prev = tok.string
+    return "".join(out)
+
+
+def _ops(node) -> int:
+    """How many operations an expression does. A chain of indexes (`a[i][j]`) and a negative constant (`-1`) count as reads, not work."""
+    kinds = (ast.Call, ast.BinOp, ast.Compare, ast.BoolOp, ast.comprehension, ast.IfExp, ast.Lambda)
+    n = 0
+    for sub in ast.walk(node):
+        if isinstance(sub, kinds):
+            n += 1
+        elif isinstance(sub, ast.Subscript) and not isinstance(sub.value, ast.Subscript):
+            n += 1
+        elif isinstance(sub, ast.UnaryOp) and not isinstance(sub.operand, ast.Constant):
+            n += 1
+    return n
+
+
+def check_grammar(slug: str, sections: list[dict], solution: str) -> None:
+    """Learn-mode blocks must be single pieces, not ready-made solution steps.
+
+    A block fails when one of its code spans has the same shape (ignoring variable names) as a whole statement of the
+    solution that does 2+ operations, or a sub-expression that does 3+ (e.g. `counts[w] = counts.get(w, 0) + 1`).
+    """
+    banned = set()
+    for node in ast.walk(ast.parse(solution)):
+        stmt = isinstance(node, (ast.Assign, ast.AugAssign, ast.AnnAssign, ast.Return, ast.Expr)) and _ops(node) >= 2
+        if stmt or (isinstance(node, ast.expr) and _ops(node) >= 3):
+            seg = ast.get_source_segment(solution, node)
+            if seg:
+                banned.add(_code_shape(seg))
+    banned.discard(None)
+    # Lines of the solution that use its own variable names (e.g. `index_of[n] = i`) can't appear word for word either:
+    # blocks show the syntax with other names, so they never snap together into the answer.
+    tree = ast.parse(solution)
+    own = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
+    own |= {a.arg for a in ast.walk(tree) if isinstance(a, ast.arg)}
+    own -= {"self", "cls", "_"}
+    verbatim = {" ".join(line.split()) for line in solution.splitlines()}
+    verbatim = {line for line in verbatim if not line.startswith(("def ", "class ")) and set(re.findall(r"[A-Za-z_]\w*", line)) & own}
+    for s in sections:
+        for item in s["items"]:
+            for span in re.findall(r"`([^`]+)`", item):
+                if _code_shape(span) in banned:
+                    raise AssertionError(f"{slug}: learn-mode block hands over a solution step; split it into single pieces: {span!r}")
+                if " ".join(span.split()) in verbatim:
+                    raise AssertionError(f"{slug}: learn-mode block repeats a solution line word for word; use different names: {span!r}")
+
+
 def parse_grammar(slug: str, text: str) -> list[dict]:
     """Turn a learn-mode entry ('## Title' lines followed by '- item' lines) into [{title, items}]."""
     sections: list[dict] = []
@@ -230,6 +304,7 @@ def load_learn(problems: list[dict], categories: list[str]):
     assert not unknown, f"grammar.py has entries for unknown problems: {sorted(unknown)}"
     for p in problems:
         p["grammar"] = parse_grammar(p["slug"], grammar[p["slug"]])
+        check_grammar(p["slug"], p["grammar"], p["solution"])
 
     out_concepts = []
     for c in concepts:

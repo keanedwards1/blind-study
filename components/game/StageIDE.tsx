@@ -23,7 +23,7 @@ import "./stage-ide.css";
  * - Console: "Run Code" runs your function on arguments you type; "Run Test Cases" checks the examples; "Submit" runs every test.
  */
 
-type View = "problem" | "hints" | "learn" | "solution";
+type View = "problem" | "lesson" | "hints" | "learn" | "solution";
 /** One console row: plain text, or a labelled value ("in", "out", "print"…). */
 type Row = { text: string; label?: string; tone?: "head" | "good" | "bad" | "dim" };
 
@@ -33,6 +33,7 @@ export default function StageIDE({
   problem,
   concepts,
   tags,
+  lesson,
   back,
   barRight,
   visual,
@@ -44,6 +45,8 @@ export default function StageIDE({
   concepts: Concept[];
   /** The concept (or Blind 75 pattern) and the world. */
   tags: string[];
+  /** The lesson for this stage's concept group (Learn Python worlds 1-7), shown in the Lesson tab. */
+  lesson?: { title: string; intro: string };
   back: { href: string; label: string };
   /** Controls for the top bar's right side (visual and sound switches). */
   barRight?: React.ReactNode;
@@ -202,6 +205,7 @@ export default function StageIDE({
               <span className={`rounded px-2 py-0.5 text-sm text-white lowercase ${DIFFICULTY_PILL[problem.difficulty] ?? "bg-subtle"}`}>{problem.difficulty}</span>
               <div className="flex flex-wrap gap-2" role="tablist" aria-label="Problem panel">
                 {tabBtn("problem", "Problem")}
+                {lesson && tabBtn("lesson", "Lesson")}
                 {tabBtn("hints", `Hints${problem.hints.length ? ` (${problem.hints.length})` : ""}`)}
                 {problem.grammar.length > 0 && tabBtn("learn", "Learn mode")}
                 {tabBtn("solution", "Solution")}
@@ -260,6 +264,14 @@ export default function StageIDE({
                     Show hint {hintsShown + 1}
                   </button>
                 )}
+              </div>
+            )}
+
+            {view === "lesson" && lesson && (
+              <div className="flex flex-col gap-3">
+                <p className="text-xs tracking-wide text-(--ide-muted) uppercase">Lesson</p>
+                <h2 className="text-lg font-bold text-(--ide-text)">{lesson.title}</h2>
+                <Markdown>{lesson.intro}</Markdown>
               </div>
             )}
 

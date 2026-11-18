@@ -103,7 +103,17 @@ export type RunOutcome = {
 };
 
 // ---- Learn Python
-export type PyConcept = { id: string; title: string; intro: string; builtins: string[]; problems: string[] };
+export type PyConcept = {
+  id: string;
+  title: string;
+  intro: string;
+  builtins: string[];
+  problems: string[];
+  /** Extra predict-the-output questions for the rep room (the concept's quiz questions are in the level's pool). */
+  reps: QuizQuestion[];
+  /** The mixed review group at the end of a world. */
+  review: boolean;
+};
 
 export type PyLevel = {
   n: number;
@@ -117,6 +127,20 @@ export type PyLevel = {
   problems: string[];
   /** Pool the level quiz draws from. */
   quiz: QuizQuestion[];
+  /** Guardian mini-game content (Learn Python worlds only). */
+  boss?: BossData;
+};
+
+/** Content for the guardian's mini-games, built and checked by scripts/python_levels.py. */
+export type BossData = {
+  /** Falling expressions: type the value. `alts` are other accepted spellings (a string without quotes). */
+  exprs: { expr: string; answer: string; alts: string[] }[];
+  /** Lightning round statements, each verified true or false at build time. */
+  facts: { text: string; truth: boolean }[];
+  /** Match pairs: an expression and what it gives. */
+  pairs: { left: string; right: string }[];
+  /** Slugs of short tasks for the coding strike. */
+  strikes: string[];
 };
 
 export type PlacementTask = { level: number; slug: string };

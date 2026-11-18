@@ -11,7 +11,7 @@ const links = [
   { href: "/mock", label: "Mock assessment", short: "Mock" },
 ];
 
-/** Pill-style top navigation; the current section is filled. */
+/** Top navigation; the current section is underlined in the accent colour. */
 export default function NavLinks() {
   const path = usePathname();
   return (
@@ -23,8 +23,8 @@ export default function NavLinks() {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition-colors sm:px-4 sm:py-2 sm:text-base lg:px-5 lg:text-lg ${
-              active ? "bg-fg text-page" : "text-muted hover:bg-hover hover:text-fg"
+            className={`whitespace-nowrap border-b-2 px-1 py-1 text-sm font-medium transition-colors sm:text-[15px] ${
+              active ? "border-accent text-fg" : "border-transparent text-muted hover:text-fg"
             }`}
           >
             {short ? (

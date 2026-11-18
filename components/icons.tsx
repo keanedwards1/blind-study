@@ -1,5 +1,5 @@
 /**
- * Drill's own icon set: hand-drawn 24×24 stroke icons (no icon library).
+ * Blind 75 from Scratch's own icon set: hand-drawn 24×24 stroke icons (no icon library).
  * Each category has its own line icon.
  */
 import type { SVGProps } from "react";
@@ -178,32 +178,32 @@ const categoryIcons: Record<string, (p: IconProps) => React.JSX.Element> = {
 };
 
 /**
- * One muted mid-tone hue per category. Mid lightness keeps them legible as icon strokes on both
- * the light (#FFFFFF) and dark (#16171A) panels; tints are made with color-mix at low strength.
+ * Category colours: four shades from the site palette (theme tokens in globals.css), one per group of related categories:
+ * sequences (Sky blue), structures and graphs (Lagoon), pointer and choice problems (Ember orange), DP and maths (Slate).
  */
 const categoryHues: Record<string, string> = {
-  "Arrays & Hashing": "#E0684B",
-  "Two Pointers": "#D9912B",
-  "Sliding Window": "#1F9E89",
-  Stack: "#6A72D9",
-  "Binary Search": "#C2549A",
-  "Linked List": "#2F8FD0",
-  Trees: "#3E9F5A",
-  Tries: "#B8952A",
-  "Heap / Priority Queue": "#D06A5A",
-  Backtracking: "#8D63D2",
-  Graphs: "#219AA8",
-  "Advanced Graphs": "#4A78D6",
-  "1-D Dynamic Programming": "#D5763A",
-  "2-D Dynamic Programming": "#A75BC9",
-  Greedy: "#6C9F3A",
-  Intervals: "#CC5577",
-  "Math & Geometry": "#3C94B8",
-  "Bit Manipulation": "#7C8494",
+  "Arrays & Hashing": "var(--cat-sky)",
+  "Two Pointers": "var(--cat-sky)",
+  "Sliding Window": "var(--cat-sky)",
+  Stack: "var(--cat-sky)",
+  "Binary Search": "var(--cat-sky)",
+  Trees: "var(--cat-lagoon)",
+  Tries: "var(--cat-lagoon)",
+  "Heap / Priority Queue": "var(--cat-lagoon)",
+  Graphs: "var(--cat-lagoon)",
+  "Advanced Graphs": "var(--cat-lagoon)",
+  "Linked List": "var(--cat-ember)",
+  Backtracking: "var(--cat-ember)",
+  Intervals: "var(--cat-ember)",
+  Greedy: "var(--cat-ember)",
+  "1-D Dynamic Programming": "var(--cat-slate)",
+  "2-D Dynamic Programming": "var(--cat-slate)",
+  "Math & Geometry": "var(--cat-slate)",
+  "Bit Manipulation": "var(--cat-slate)",
 };
 
 export function categoryHue(category: string): string {
-  return categoryHues[category] ?? "#7C8494";
+  return categoryHues[category] ?? "var(--cat-slate)";
 }
 
 /** The line icon for a category (falls back to the arrays icon). */
@@ -259,14 +259,19 @@ export const UploadIcon = (p: IconProps) => (
   </Svg>
 );
 
-/** Logo: a prompt chevron and cursor on a flat tile that follows the theme. */
-export function DrillMark({ className = "" }: { className?: string }) {
+/**
+ * Logo: a sliding window. Five array cells, corner brackets framing the middle three (Lapis), and an arrow (Lagoon) moving
+ * the window along. Brackets and the outer cells use the text colour, so the mark follows the theme.
+ * Keep in sync with app/icon.svg (the favicon).
+ */
+export function SiteMark({ className = "" }: { className?: string }) {
   return (
-    // Geometric lowercase "d" on an amber tile. Keep in sync with app/icon.svg (the favicon).
     <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <rect width="32" height="32" rx="8" className="fill-accent" />
-      <circle cx="16" cy="18.5" r="6.25" fill="none" className="stroke-on-accent" strokeWidth="3.5" />
-      <path d="M22.25 7.5v17.25" fill="none" className="stroke-on-accent" strokeWidth="3.5" strokeLinecap="round" />
+      {[1.5, 7.5, 13.5, 19.5, 25.5].map((x, i) => (
+        <rect key={x} x={x} y="13" width="5" height="6" className={i >= 1 && i <= 3 ? "fill-accent" : "fill-current opacity-35"} />
+      ))}
+      <path d="M6 13V8.5H10.5M21.5 8.5H26V13M26 19V23.5H21.5M10.5 23.5H6V19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="square" />
+      <path d="M9 28.5H22.5M19.5 25.5L22.5 28.5L19.5 31.5" fill="none" className="stroke-done" strokeWidth="2.2" strokeLinecap="square" />
     </svg>
   );
 }

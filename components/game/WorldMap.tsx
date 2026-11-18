@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { audio, sfx, useMusic } from "@/lib/audio/engine";
 import { load, save, useSolved } from "@/lib/storage";
-import { type LevelInfo, type LevelState, levelStates, savePlacement, useHydrated, usePlacement, useQuizPassed, useResults } from "@/lib/python-progress";
+import { type LevelInfo, type LevelState, levelStates, loadAttempt, savePlacement, useHydrated, usePlacement, useQuizPassed, useResults } from "@/lib/python-progress";
+import { struggles, useMisses, useRepClears } from "@/lib/concept-progress";
 import GameShell from "./GameShell";
 import { Leaf, Lock } from "./icons";
 import Scenery from "./Scenery";
 import { type Biome, BIOME_NAME, WORLD_THEME } from "./theme";
 import { Button } from "./ui";
 
-export type MapWorld = LevelInfo & { title: string; kind: "python" | "blind" };
+export type MapWorld = LevelInfo & { title: string; kind: "python" | "blind"; concepts: { id: string; title: string; problems: string[] }[] };
 
 const WELCOME_KEY = "python:welcomed";
 
@@ -59,6 +60,8 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
   const solved = useSolved();
   const quiz = useQuizPassed();
   const results = useResults();
+  const misses = useMisses();
+  const reps = useRepClears();
   const [welcomed, setWelcomed] = useState(false);
   const [shaking, setShaking] = useState<number | null>(null);
   useMusic("forest");
@@ -82,6 +85,7 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
 
   const states = levelStates(worlds, placement, solved, quiz);
   const leaves = (w: MapWorld) => w.problems.reduce((s, slug) => s + (results[slug]?.stars ?? 0), 0);
+  const shakyCount = (w: MapWorld) => (w.kind === "python" ? struggles(w.n, w.concepts, results, loadAttempt, misses, reps, (s) => s).length : 0);
 
   function open(w: MapWorld, state: LevelState) {
     if (state === "locked" || state === "coming-soon") {
@@ -128,6 +132,11 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
           <Leaf size={13} /> {leaves(w)}/{leavesTotal[n]}
         </span>
         {STATE_NOTE[state] && <span className="text-[11px] text-[#8f8470]">{STATE_NOTE[state]}</span>}
+        {!locked && shakyCount(w) > 0 && (
+          <span className="rounded-md bg-[#ff7a2f]/20 px-1.5 py-0.5 text-[11px] font-semibold text-[#ffb27a]" title="Concepts that could use a few reps">
+            {shakyCount(w)} to rep
+          </span>
+        )}
       </button>
     );
   };

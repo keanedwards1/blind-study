@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Same mark as DrillMark in components/icons.tsx: geometric lowercase "d" on an amber tile. -->
-  <rect width="32" height="32" rx="8" fill="#FFB224"/>
-  <circle cx="16" cy="18.5" r="6.25" fill="none" stroke="#1A1203" stroke-width="3.5"/>
-  <path d="M22.25 7.5v17.25" fill="none" stroke="#1A1203" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Same mark as SiteMark in components/icons.tsx: a sliding window. The ink follows the browser's light or dark theme. -->
+  <style>
+    .ink { fill: #0E1A2B; stroke: #0E1A2B; }
+    @media (prefers-color-scheme: dark) { .ink { fill: #EEF2F8; stroke: #EEF2F8; } }
+  </style>
+  <rect class="ink" x="1.5" y="13" width="5" height="6" fill-opacity=".35" stroke="none"/>
+  <rect x="7.5" y="13" width="5" height="6" fill="#3366E6"/>
+  <rect x="13.5" y="13" width="5" height="6" fill="#3366E6"/>
+  <rect x="19.5" y="13" width="5" height="6" fill="#3366E6"/>
+  <rect class="ink" x="25.5" y="13" width="5" height="6" fill-opacity=".35" stroke="none"/>
+  <path class="ink" d="M6 13V8.5H10.5M21.5 8.5H26V13M26 19V23.5H21.5M10.5 23.5H6V19" fill="none" style="fill:none" stroke-width="2.2" stroke-linecap="square"/>
+  <path d="M9 28.5H22.5M19.5 25.5L22.5 28.5L19.5 31.5" fill="none" stroke="#22B59A" stroke-width="2.2" stroke-linecap="square"/>
 </svg>

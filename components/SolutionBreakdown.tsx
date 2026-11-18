@@ -12,7 +12,7 @@ export default function SolutionBreakdown({ code, lineTags, concepts }: { code: 
 
   return (
     <div className="space-y-3">
-      <div className="overflow-x-auto rounded-lg border border-line bg-raised py-2 font-mono text-[13px] leading-6" data-testid="solution-breakdown">
+      <div className="overflow-x-auto rounded-md border border-line bg-raised py-2 font-mono text-[13px] leading-6" data-testid="solution-breakdown">
         {lines.map((line, i) => {
           const tags = lineTags[String(i + 1)] ?? [];
           const indent = line.length - line.trimStart().length;
@@ -27,7 +27,7 @@ export default function SolutionBreakdown({ code, lineTags, concepts }: { code: 
                       <button
                         key={t}
                         onClick={() => setOpen(open === t ? null : t)}
-                        className={`rounded-full border px-1.5 text-[11px] leading-5 ${open === t ? "border-accent bg-accent/20 text-fg" : "border-line-strong text-muted hover:text-fg"}`}
+                        className={`rounded-md border px-1.5 text-[11px] leading-5 ${open === t ? "border-accent bg-accent/20 text-fg" : "border-line-strong text-muted hover:text-fg"}`}
                       >
                         {concepts[t] ? shortTitle(concepts[t]) : t}
                       </button>

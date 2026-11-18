@@ -53,7 +53,7 @@ len(s)      # 6
                   grammar="""
 ## Building blocks
 - **Middle index:** `len(s) // 2`. Floor division keeps it a whole number.
-- **Index with an expression:** `s[len(s) // 2]`
+- **Index with an expression:** `word[2 + 1]` works; anything that gives a whole number can go in the brackets.
 """),
                 P("py-repeat-text", "Repeat It", "def repeat(s: str, n: int) -> str:",
                   'Return `s` repeated `n` times. `"ab"`, `3` → `"ababab"`.',
@@ -142,7 +142,7 @@ s[::-1]   # 'fedcba' reversed
 - **First character safely:** `s[:1]` is `""` for an empty string, where `s[0]` would crash.
 - **Upper case:** `.upper()`
 - **The rest:** `s[1:]`
-- **Rebuild:** strings can't be edited, so return a new one: `s[:1].upper() + s[1:]`.
+- **Rebuild:** strings can't be edited, so build a new one by joining pieces with `+`.
 """),
             ],
             quiz=[
@@ -252,7 +252,7 @@ Methods can be chained: `s.strip().lower()`.
                   grammar="""
 ## Building blocks
 - **Count occurrences:** `t.count("a")`
-- **A variable for the lower-case copy:** `t = s.lower()`, so you only convert once.
+- **A variable for the lower-case copy:** `partner = text.lower()`, so you only convert once.
 - **Add the counts:** `t.count("a") + t.count("e") + …`
 - **Later:** a loop or `sum(c in "aeiou" for c in t)` does this in one line (levels 3 and 5).
 """),
@@ -344,7 +344,7 @@ Methods can be chained: `s.strip().lower()`.
                   grammar="""
 ## Building blocks
 - **Split into words:** `name.split()`
-- **Unpack two items into two names:** `first, last = name.split()`
+- **Unpack two items into two names:** `leader, ultimate = who.split()`
 - **Rebuild:** `last + ", " + first`
 """),
                 P("py-snake-to-camel", "snake_case to camelCase", "def camel(s: str) -> str:",
@@ -357,8 +357,8 @@ Methods can be chained: `s.strip().lower()`.
                   grammar="""
 ## Building blocks
 - **Pieces:** `s.split("_")`
-- **Option A:** `t = s.title().replace("_", "")`, then `t[:1].lower() + t[1:]`.
-- **Option B (preview of level 5):** `first, *rest = parts` and `"".join(w.capitalize() for w in rest)`.
+- **Option A:** `pattern = word.title().replace("_", "")`, then `pattern[:1].lower() + pattern[1:]`.
+- **Option B (preview of level 5):** star unpacking, `head, *remainder = [1, 2, 3]`, puts the leftovers in a list.
 """),
             ],
             quiz=[
@@ -479,7 +479,7 @@ The letters are consecutive, so `ord(c) - ord("a")` turns `'a'…'z'` into `0…
                   hints=["Turn the letter into 0–25, add 1, wrap with `% 26`, then turn it back."],
                   grammar="""
 ## Building blocks
-- **Letter to 0–25:** `ord(c) - ord("a")`
+- **Letter to 0-25:** a letter's code minus the code of `"a"`.
 - **Wrap around:** `% 26`
 - **Back to a letter:** `chr(n + ord("a"))`
 """),
@@ -522,7 +522,7 @@ These methods return `True`/`False` about **every** character in the string (and
                   grammar="""
 ## Building blocks
 - **Only digits:** `pin.isdigit()`
-- **Length check:** `len(pin) == 4 or len(pin) == 6`, or `len(pin) in (4, 6)`.
+- **Is it one of several values?** `x in (1, 2)`
 - **Brackets around the `or`:** `(a or b) and c`
 """),
                 P("py-is-word", "Just Letters", "def is_word(s: str) -> bool:",

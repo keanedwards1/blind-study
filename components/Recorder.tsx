@@ -94,14 +94,14 @@ export default function Recorder({ maxSeconds, onRecorded }: { maxSeconds: numbe
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-line bg-black">
+      <div className="relative aspect-video w-full overflow-hidden rounded-md border border-line bg-black">
         <video ref={liveRef} autoPlay muted playsInline className={`h-full w-full -scale-x-100 object-cover ${phase === "preview" || phase === "recording" ? "" : "hidden"}`} />
         {phase === "done" && url && <video src={url} controls playsInline className="h-full w-full object-contain" />}
         {phase === "off" && (
           <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-sm text-subtle">Camera is off. Turning it on also checks your camera and mic.</div>
         )}
         {phase === "recording" && (
-          <div className="absolute left-2 top-2 flex items-center gap-2 rounded bg-black/70 px-2 py-1 text-xs text-white">
+          <div className="absolute left-2 top-2 flex items-center gap-2 rounded-sm bg-black/70 px-2 py-1 text-xs text-white">
             <span className="h-2 w-2 animate-pulse rounded-full bg-rose-500" /> REC {clock(elapsed)} / {clock(maxSeconds)}
           </div>
         )}

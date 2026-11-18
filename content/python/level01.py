@@ -49,7 +49,7 @@ def add_two(n):
                   grammar="""
 ## Building blocks
 - **Multiply:** `n * 2`
-- **Return it:** `return n * 2`
+- **Return it:** `return num * 2`
 """),
                 P("py-rectangle-area", "Rectangle Area", "def area(width: int, height: int) -> int:",
                   "Return the area of a rectangle that is `width` wide and `height` tall (width × height).",
@@ -69,7 +69,7 @@ def add_two(n):
 ## Building blocks
 - **Order of operations:** `*` and `/` happen before `+` and `-`, so `paid - price * items` multiplies first.
 - **Brackets:** `(price * items)` makes the order obvious, if you prefer.
-- **A variable for a step:** `total = price * items` then `return paid - total`.
+- **A variable for a step:** `acc = cost * elems` then `return handed - acc`.
 """),
             ],
             quiz=[
@@ -133,7 +133,7 @@ Python has three kinds of division, and they're used constantly:
                   grammar="""
 ## Building blocks
 - **Remainder:** `n % 2` is `0` for even numbers and `1` for odd ones.
-- **Compare:** `==` gives `True` or `False`, so `return n % 2 == 0` returns the answer directly.
+- **Compare:** `==` gives `True` or `False`, so you can return a comparison directly.
 """),
                 P("py-power-of", "Power Of", "def power(base: int, exp: int) -> int:",
                   "Return `base` raised to the power `exp`. `exp` is never negative.",
@@ -175,7 +175,7 @@ Comparisons give back `True` or `False` (a **bool**):
                   grammar="""
 ## Building blocks
 - **At least:** `>=`
-- **Return the comparison itself:** `return age >= 18` already is `True` or `False`.
+- **Return the comparison itself:** `return years >= 18` already is `True` or `False`.
 """),
                 P("py-not-equal", "Different Values", "def different(a: int, b: int) -> bool:",
                   "Return `True` if `a` and `b` are different numbers.",
@@ -235,7 +235,7 @@ def describe(n):
                   require=["if"],
                   grammar="""
 ## Building blocks
-- **Three cases:** `if n > 0:` … `elif n < 0:` … `else:`
+- **Three cases:** `if num > 0:` … `elif num < 0:` … `else:`
 - **Colons and indentation:** each condition line ends with `:`, and its block is indented 4 more spaces.
 - **Return inside a branch:** `return 1` ends the function right there.
 """),
@@ -304,7 +304,7 @@ Python also lets you chain comparisons: `lo <= x <= hi` means `lo <= x and x <= 
                   require=["op:or"],
                   grammar="""
 ## Building blocks
-- **Either one:** `day == 6 or day == 7`. Each side needs its own full comparison; `day == 6 or 7` is a classic bug.
+- **Either one:** `or`. Each side needs its own full comparison: `x == 1 or x == 2`, never `x == 1 or 2`.
 """),
                 P("py-exactly-one", "Exactly One", "def exactly_one(a: bool, b: bool) -> bool:",
                   "Return `True` if exactly one of `a` and `b` is `True` (not both, not neither).",
@@ -316,7 +316,7 @@ Python also lets you chain comparisons: `lo <= x <= hi` means `lo <= x and x <= 
 ## Building blocks
 - **At least one:** `a or b`
 - **Not both:** `not (a and b)`
-- **Combine with brackets:** `(a or b) and not (a and b)`
+- **Group with brackets:** `(p or q)` is worked out before whatever is outside the brackets.
 - **Shortcut you'll see later:** `a != b` gives the same answer for bools.
 """),
             ],
@@ -494,7 +494,7 @@ Handy built-in functions for numbers:
                   grammar="""
 ## Building blocks
 - **Several values:** `print(a, b, c)` puts spaces between them.
-- **Change the separator:** `sep="-"`
+- **Change the separator:** `between="-"`
 """),
                 P("py-same-line", "Same Line", "def same_line(a: str, b: str) -> None:",
                   "Print `a` and then `b` using **two** `print` calls, so they appear together on one line with nothing between them, followed by a single new line.\n\nFor `\"ab\"` and `\"cd\"` the output is `abcd`.",
@@ -503,7 +503,7 @@ Handy built-in functions for numbers:
                   out="stdout", require=["print"], difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **Stay on the same line:** `print(a, end="")`. The next `print` continues right after it.
+- **Stay on the same line:** `print(p, end="")`. The next `print` continues right after it.
 - **The second print** ends normally with a new line.
 """),
             ],
@@ -539,8 +539,8 @@ age = int(input())   # convert, because input() is always text
                   out="stdout", stdin=True, require=["input"],
                   grammar="""
 ## Building blocks
-- **Read a line:** `name = input()`
-- **Print two values with a space:** `print("Hello", name)`
+- **Read a line:** `person_name = input()`
+- **Print two values with a space:** `print("Hello", person)`
 """),
                 P("py-add-inputs", "Add Two Inputs", "def main() -> None:",
                   "Read two whole numbers, one per line, and print their sum.",
@@ -550,9 +550,10 @@ age = int(input())   # convert, because input() is always text
                   hints=["`input()` gives text. `\"3\" + \"4\"` is `\"34\"`, not 7."],
                   grammar="""
 ## Building blocks
-- **Read and convert in one step:** `a = int(input())`
+- **Read a line:** `input()` gives the typed text as a string.
+- **Text to number:** `int("7")` gives `7`.
 - **Call `input()` once per line.**
-- **Print the result:** `print(a + b)`
+- **Print a value:** `print(x)`
 """),
             ],
             quiz=[

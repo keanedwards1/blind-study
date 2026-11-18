@@ -33,7 +33,7 @@ function ContextPanel({ context, href }: { context: DrillContext; href: string }
   const heading = { problem: "Problem", pattern: "Pattern", concept: "Python concept" }[context.kind];
   const code = context.kind === "problem" ? context.solution : context.kind === "pattern" ? context.template : context.snippet;
   return (
-    <div className="mt-3 rounded-xl border border-line bg-raised/60 p-4" data-testid="quiz-context">
+    <div className="mt-3 rounded-md border border-line bg-raised/60 p-4" data-testid="quiz-context">
       <div className="mb-1 flex items-baseline justify-between gap-2">
         <div className="text-xs font-semibold uppercase tracking-wide text-subtle">{heading}</div>
         <Link href={href} className="text-xs text-subtle underline hover:text-fg-2">
@@ -66,7 +66,7 @@ function ContextPanel({ context, href }: { context: DrillContext; href: string }
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {context.usedIn.map((p) => (
-                  <Link key={p.slug} href={`/problems/${p.slug}`} className="rounded-full border border-line bg-panel px-2.5 py-0.5 text-xs text-fg-2 hover:border-line-strong hover:text-fg">
+                  <Link key={p.slug} href={`/problems/${p.slug}`} className="rounded-md border border-line bg-panel px-2.5 py-0.5 text-xs text-fg-2 hover:border-line-strong hover:text-fg">
                     {p.title}
                   </Link>
                 ))}
@@ -135,7 +135,7 @@ function ProgressBar({ t, className = "h-2" }: { t: Tally; className?: string })
   const w = (n: number) => `${t.total ? (n / t.total) * 100 : 0}%`;
   return (
     <div
-      className={`flex overflow-hidden rounded-full bg-line ${className}`}
+      className={`flex overflow-hidden rounded-md bg-line ${className}`}
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={t.total}
@@ -148,7 +148,7 @@ function ProgressBar({ t, className = "h-2" }: { t: Tally; className?: string })
   );
 }
 
-const smallBtn = "rounded-full border border-line px-3 py-1 text-xs font-semibold text-fg-2 hover:border-line-strong hover:bg-hover hover:text-fg disabled:opacity-40";
+const smallBtn = "rounded-md border border-line px-3 py-1 text-xs font-semibold text-fg-2 hover:border-line-strong hover:bg-hover hover:text-fg disabled:opacity-40";
 
 function QuizSetCard({
   set,
@@ -178,12 +178,12 @@ function QuizSetCard({
 
   return (
     // h-full + equal grid rows keep every card the same height; mt-auto pins the progress block to the bottom so bars line up.
-    <section className="flex h-full flex-col gap-4 rounded-2xl border border-line bg-panel p-5" data-testid="quiz-set">
+    <section className="flex h-full flex-col gap-4 rounded-md border border-line bg-panel p-5" data-testid="quiz-set">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="flex flex-wrap items-center gap-2 text-base font-semibold text-fg">
             {set.title}
-            {complete && <span className="rounded-full bg-ok/15 px-2 py-0.5 text-xs font-semibold text-ok">Mastered</span>}
+            {complete && <span className="rounded-sm bg-done px-2 py-0.5 text-xs font-semibold text-on-done">Mastered</span>}
           </h3>
           <p className="mt-1 text-sm leading-6 text-muted">{set.description}</p>
         </div>
@@ -206,7 +206,7 @@ function QuizSetCard({
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={() => onPractice()}
-          className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-bold ${
+          className={`whitespace-nowrap rounded-md px-5 py-2 text-sm font-bold ${
             complete ? "border border-line-strong text-fg hover:border-fg-2 hover:bg-hover" : "bg-accent text-on-accent hover:bg-accent-hover"
           }`}
         >
@@ -229,7 +229,7 @@ function QuizSetCard({
         ref={dialog}
         onClick={(e) => e.target === e.currentTarget && dialog.current?.close()}
         aria-labelledby={`${set.source}-cats`}
-        className="m-auto max-h-[85vh] w-[min(36rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-line bg-panel p-0 text-fg shadow-2xl backdrop:bg-black/40"
+        className="m-auto max-h-[85vh] w-[min(36rem,calc(100vw-2rem))] overflow-y-auto rounded-md border border-line bg-panel p-0 text-fg shadow-2xl backdrop:bg-black/40"
         data-testid="quiz-set-categories"
       >
         <div className="flex items-start justify-between gap-4 border-b border-line p-5">
@@ -365,12 +365,12 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
         <div className="mb-5 flex items-center justify-between gap-3">
           <button
             onClick={() => setRound(null)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-panel px-4 py-2 text-sm font-semibold text-fg-2 hover:bg-hover hover:text-fg"
+            className="inline-flex items-center gap-1.5 rounded-md border border-line-strong bg-panel px-4 py-2 text-sm font-semibold text-fg-2 hover:bg-hover hover:text-fg"
           >
             <span aria-hidden="true">←</span> Back
           </button>
           {!done && (
-            <button onClick={endRound} className="rounded-full border border-bad/50 bg-panel px-4 py-2 text-sm font-semibold text-bad hover:bg-bad/10">
+            <button onClick={endRound} className="rounded-md border border-bad/50 bg-panel px-4 py-2 text-sm font-semibold text-bad hover:bg-bad/10">
               End round
             </button>
           )}
@@ -378,7 +378,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
         <div className="mb-2 text-sm tabular-nums text-muted">
           Question {idx + 1} of {round.length} · {right} correct
         </div>
-        <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-raised">
+        <div className="mb-4 h-1.5 overflow-hidden rounded-md bg-raised">
           <div className="h-full bg-accent transition-all" style={{ width: `${(results.length / round.length) * 100}%` }} />
         </div>
         <QuizCard
@@ -391,14 +391,14 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
         />
         {results.length > idx && !done && (
           <div className="mt-3 flex justify-end">
-            <button onClick={() => setIdx(idx + 1)} className="rounded-full bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
+            <button onClick={() => setIdx(idx + 1)} className="rounded-md bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
               Next question →
             </button>
           </div>
         )}
         {q.context && q.href && <ContextPanel key={"ctx" + q.id + idx} context={q.context} href={q.href} />}
         {done && (
-          <div className="mt-6 rounded-lg border border-line bg-panel p-5 text-center">
+          <div className="mt-6 rounded-md border border-line bg-panel p-5 text-center">
             <div className="text-2xl font-semibold text-fg">
               {right} / {round.length}
             </div>
@@ -429,14 +429,14 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
                 );
               })()}
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <button onClick={repeatRound} className="rounded-full bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
+              <button onClick={repeatRound} className="rounded-md bg-accent px-5 py-2 text-sm font-bold text-on-accent hover:bg-accent-hover">
                 {(() => {
                   if (!roundSet) return "Another round";
                   const t = tally(setQuestions(roundSet.set, roundSet.category), stats);
                   return t.right === t.total ? "Practice again" : `Continue · ${t.total - t.right} left`;
                 })()}
               </button>
-              <button onClick={() => setRound(null)} className="rounded-full border border-line-strong px-5 py-2 text-sm font-semibold text-fg-2 hover:bg-hover">
+              <button onClick={() => setRound(null)} className="rounded-md border border-line-strong px-5 py-2 text-sm font-semibold text-fg-2 hover:bg-hover">
                 Change settings
               </button>
             </div>
@@ -446,7 +446,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
     );
   }
 
-  const select = "h-11 rounded-lg border border-line bg-panel px-3 text-sm text-fg";
+  const select = "h-11 rounded-md border border-line bg-panel px-3 text-sm text-fg";
   const sourceQuestions = source === "all" ? questions : questions.filter((q) => q.source === source);
   const sourceCategories = [...new Set(sourceQuestions.flatMap((q) => (q.category ? [q.category] : [])))];
   const availableCategories = source === "all" ? [...categories, ...sourceCategories.filter((c) => !categories.includes(c))] : sourceCategories;
@@ -465,7 +465,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
             ["Last answer right", String(mastered)],
             ["To review", String(missed)],
           ].map(([k, v]) => (
-            <div key={k} className="flex min-w-0 flex-col gap-0.5 rounded-xl border border-line bg-panel px-4 py-3">
+            <div key={k} className="flex min-w-0 flex-col gap-0.5 rounded-md border border-line bg-panel px-4 py-3">
               <div className="text-lg font-semibold tabular-nums text-fg">{v}</div>
               <div className="text-xs text-subtle">{k}</div>
             </div>
@@ -473,7 +473,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
         </div>
       </div>
 
-      <div className="mt-8 grid gap-4 rounded-2xl border border-line bg-panel p-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
+      <div className="mt-8 grid gap-4 rounded-md border border-line bg-panel p-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
         <div className="grid items-end gap-x-4 gap-y-4 sm:grid-cols-2 xl:self-center xl:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1fr)_minmax(7rem,0.5fr)_minmax(13rem,1fr)]">
           <label className="grid min-w-0 gap-2 text-sm text-fg-2">
             Questions about
@@ -521,7 +521,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
             </select>
           </label>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-raised p-4 xl:flex-col xl:items-start xl:justify-center">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-md bg-raised p-4 xl:flex-col xl:items-start xl:justify-center">
           <div>
             <div className="text-sm font-semibold text-fg">Ready for a round?</div>
             <div className="mt-1 text-xs text-subtle">{pool.length} questions match these filters.</div>
@@ -529,7 +529,7 @@ export default function QuizDrill({ questions, categories }: { questions: DrillQ
           <button
             onClick={start}
             disabled={!pool.length}
-            className="rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover disabled:opacity-40"
+            className="rounded-md bg-accent px-6 py-2.5 text-sm font-bold text-on-accent hover:bg-accent-hover disabled:opacity-40"
           >
             Start ({Math.min(size, pool.length)} questions)
           </button>

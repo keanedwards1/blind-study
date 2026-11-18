@@ -12,7 +12,7 @@ export function shortTitle(c: Concept) {
 
 export function ConceptDetail({ concept, onClose }: { concept: Concept; onClose?: () => void }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-4" data-testid="concept-detail">
+    <div className="rounded-md border border-line bg-panel p-4" data-testid="concept-detail">
       <div className="mb-1 flex items-start justify-between gap-2">
         <h4 className="font-semibold text-fg">{concept.title}</h4>
         {onClose && (
@@ -67,7 +67,7 @@ export default function LearnTab({ problem, pattern, concepts }: { problem: Prob
             <button
               key={c.id}
               onClick={() => setOpen(open === c.id ? null : c.id)}
-              className={`rounded-full border px-2.5 py-0.5 text-xs ${open === c.id ? "border-accent bg-accent/15 text-fg" : "border-line text-fg-2 hover:bg-hover"}`}
+              className={`rounded-md border px-2.5 py-0.5 text-xs ${open === c.id ? "border-accent bg-accent/15 text-fg" : "border-line text-fg-2 hover:bg-hover"}`}
             >
               {shortTitle(c)}
             </button>

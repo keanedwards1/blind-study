@@ -32,6 +32,8 @@ export type StageContext = {
   next?: { slug: string; label: string };
   /** Shown as tags under the problem: the concept (or Blind 75 pattern) and the world. */
   tags: string[];
+  /** The concept group's lesson (Learn Python worlds only). */
+  lesson?: { title: string; intro: string };
 };
 
 /** A playable stage: the normal workspace plus sound switches, quiet tracking of time and tries, and the Stage Cleared screen. */
@@ -174,6 +176,7 @@ export default function GameStage({
         problem={problem}
         concepts={concepts}
         tags={stage.tags}
+        lesson={stage.lesson}
         back={{ href: `/python/world/${stage.world.n}`, label: `World ${stage.world.n}` }}
         barRight={hudView}
         visual={visualOn ? <MusicVisual accent={WORLD_THEME[stage.world.n].color} /> : undefined}

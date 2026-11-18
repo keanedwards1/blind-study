@@ -30,8 +30,12 @@ export function placedLevel(taskLevels: number[], results: (boolean | null)[], t
   return lowest;
 }
 
-export function isMastered(level: LevelInfo, solved: Progress, quiz: QuizPassed): boolean {
-  return level.ready && level.problems.length > 0 && level.problems.every((s) => solved[s]) && Boolean(quiz[level.n]);
+/**
+ * Beating a world's guardian masters it. (You can only fight the guardian once every stage is cleared, so this also means
+ * the stages were done, and stages added to a world later never take away a mastery you already earned.)
+ */
+export function isMastered(level: LevelInfo, _solved: Progress, quiz: QuizPassed): boolean {
+  return level.ready && level.problems.length > 0 && Boolean(quiz[level.n]);
 }
 
 /**

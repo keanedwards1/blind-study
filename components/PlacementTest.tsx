@@ -7,6 +7,7 @@ import { loadDraft, placedLevel, saveDraft, savePlacement, useHydrated, usePlace
 import { useMusic } from "@/lib/audio/engine";
 import CodePane from "./CodePane";
 import ProblemDescription from "./ProblemDescription";
+import PageLoader from "./loader/PageLoader";
 
 type Task = { level: number; problem: Problem };
 type Results = (boolean | null)[];
@@ -14,7 +15,7 @@ type Results = (boolean | null)[];
 export default function PlacementTest({ tasks, levelTitles }: { tasks: Task[]; levelTitles: Record<number, string> }) {
   // Everything here comes from localStorage, so render it only after hydration.
   const hydrated = useHydrated();
-  if (!hydrated) return <div className="page-shell text-sm text-subtle">Loading…</div>;
+  if (!hydrated) return <PageLoader variant="workspace" label="Loading placement test" />;
   return <PlacementFlow tasks={tasks} levelTitles={levelTitles} />;
 }
 

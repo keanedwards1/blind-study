@@ -36,7 +36,7 @@ export function clock(totalSeconds: number): string {
 }
 
 export const difficultyColor: Record<string, string> = {
-  Easy: "text-ok",
-  Medium: "text-warn",
-  Hard: "text-bad",
+  Easy: "text-diff-easy",
+  Medium: "text-diff-medium",
+  Hard: "text-diff-hard",
 };

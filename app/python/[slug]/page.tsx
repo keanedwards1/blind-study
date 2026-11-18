@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import PageLoader from "@/components/loader/PageLoader";
 import GameStage from "@/components/game/GameStage";
 import { conceptById } from "@/lib/learn";
 import { levelInfos, levelOf, levels, stageLabel, stageProblem } from "@/lib/python";
@@ -14,12 +15,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: `${stageProblem(slug)?.title ?? "Stage"} · Learn Python · Drill` };
+  return { title: `${stageProblem(slug)?.title ?? "Stage"} · Learn Python · Blind 75 from Scratch` };
 }
 
 export default function StagePage({ params }: PageProps<"/python/[slug]">) {
   return (
-    <Suspense fallback={<div className="p-6 text-sm text-subtle">Loading stage…</div>}>
+    <Suspense fallback={<PageLoader variant="workspace" label="Loading stage" />}>
       <StageLoader params={params} />
     </Suspense>
   );
@@ -32,6 +33,7 @@ async function StageLoader({ params }: { params: Params }) {
   if (!level || !problem) notFound();
   const i = level.problems.indexOf(slug);
   const nextSlug = level.problems[i + 1];
+  const concept = level.kind === "python" ? level.concepts.find((c) => c.problems.includes(slug)) : undefined;
   return (
     <GameStage
       key={slug}
@@ -43,9 +45,10 @@ async function StageLoader({ params }: { params: Params }) {
         worldSlugs: level.problems,
         next: nextSlug ? { slug: nextSlug, label: stageLabel(level, nextSlug) } : undefined,
         tags: [
-          level.kind === "python" ? (level.concepts.find((c) => c.problems.includes(slug))?.title.replace(/`/g, "") ?? level.title) : problem.category,
+          level.kind === "python" ? (concept?.title.replace(/`/g, "") ?? level.title) : problem.category,
           `World ${level.n}: ${level.title}`,
         ],
+        lesson: concept ? { title: concept.title, intro: concept.intro } : undefined,
       }}
       levelInfo={levelInfos()}
     />

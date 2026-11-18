@@ -1,6 +1,6 @@
-# drill
+# Blind 75 from Scratch
 
-A personal coding-interview practice site: 75 classic problems in Python. Code runs in the browser
+A personal coding-interview practice site: learn Python from scratch, then the 75 classic Blind 75 problems. Code runs in the browser
 (Pyodide in a Web Worker), so there is no backend and nothing to configure on Vercel.
 
 - **Problems** (`/`): grouped by pattern, with solved/attempted tracking, search, and filters.

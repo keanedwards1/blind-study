@@ -32,10 +32,10 @@ for x in [3, 1, 4]:
                   require=["for"], forbid=["sum"],
                   grammar="""
 ## Building blocks
-- **Start a running total:** `t = 0` before the loop.
-- **Loop over values:** `for x in nums:`
-- **Add as you go:** `t += x`
-- **Return after the loop:** `return t`, at the function's indentation level.
+- **Start a running total:** `partner = 0` before the loop.
+- **Loop over values:** `for entry in xs:`
+- **Add as you go:** `partner += val`
+- **Return after the loop:** `return pattern`, at the function's indentation level.
 """),
                 P("py-count-negatives", "Count the Negatives", "def negatives(nums: List[int]) -> int:",
                   "Return how many numbers in `nums` are below zero.",
@@ -44,9 +44,9 @@ for x in [3, 1, 4]:
                   require=["for"],
                   grammar="""
 ## Building blocks
-- **Counter:** `count = 0`
+- **Counter:** `counter = 0`
 - **An `if` inside the loop:** indent it one more level than the `for`.
-- **Count one:** `count += 1`
+- **Count one:** `sum_so_far += 1`
 """),
                 P("py-loop-max", "Largest Without max", "def largest(nums: List[int]) -> int:",
                   "Return the largest number in `nums` (which isn't empty) without using `max`.",
@@ -56,8 +56,8 @@ for x in [3, 1, 4]:
                   hints=["Start with the first item as the best so far, not with 0 (all the numbers could be negative)."],
                   grammar="""
 ## Building blocks
-- **Best so far:** `best = nums[0]`. Starting at `0` breaks on all-negative lists.
-- **Replace when bigger:** `if x > best: best = x`
+- **Best so far:** `high_mark = values[0]`. Starting at `0` breaks on all-negative lists.
+- **Replace when bigger:** `if val > record: record = val`
 """),
                 P("py-count-letter", "Count a Letter", "def count_letter(s: str, letter: str) -> int:",
                   "Count how many times `letter` appears in `s`, using a loop over the characters.",
@@ -66,7 +66,7 @@ for x in [3, 1, 4]:
                   forbid=[".count"],
                   grammar="""
 ## Building blocks
-- **Loop over a string:** `for c in s:` gives one character at a time.
+- **Loop over a string:** `for symbol in text:` gives one character at a time.
 - **Compare:** `c == letter`
 """),
             ],
@@ -129,7 +129,7 @@ for x in [3, 1, 4]:
                   require=["for", "range"],
                   grammar="""
 ## Building blocks
-- **Loop over numbers:** `for i in range(1, n + 1):`
+- **Loop over numbers:** `for kk in range(1, num + 1):`
 - **Square:** `i * i` or `i ** 2`
 """),
                 P("py-multiplication-row", "Times Table Row", "def times_row(n: int) -> None:",
@@ -139,8 +139,8 @@ for x in [3, 1, 4]:
                   out="stdout",
                   grammar="""
 ## Building blocks
-- **Five rounds:** `for i in range(1, 6):`
-- **One line each round:** `print(f"{i} x {n} = {i * n}")`
+- **Five rounds:** `for kk in range(1, 6):`
+- **Calculations inside an f-string:** `f"{a} + {b} = {a + b}"`
 """),
             ],
             quiz=[
@@ -178,8 +178,8 @@ while n > 0:
                   grammar="""
 ## Building blocks
 - **Last digit:** `n % 10`
-- **Drop the last digit:** `n //= 10`
-- **Until nothing's left:** `while n > 0:`
+- **Drop the last digit:** `number //= 10`
+- **Until nothing's left:** `while size > 0:`
 """),
                 P("py-first-negative", "First Negative", "def first_negative(nums: List[int]) -> int:",
                   "Return the index of the first negative number, or `-1` if there isn't one. Stop looking as soon as you find it.",
@@ -187,9 +187,9 @@ while n > 0:
                   [([[3, 1, -4, -1]], 2), ([[1, 2]], -1), ([[-1]], 0)], [[[]], [[0, 0, -0, -7]]],
                   grammar="""
 ## Building blocks
-- **Index-based loop:** `i = 0`, `while i < len(nums):`, `i += 1`
+- **Index-based loop:** `kk = 0`, `while kk < len(values):`, `kk += 1`
 - **Stop early:** `break`
-- **Or return early:** `return i` inside the loop, and `return -1` after it.
+- **Or return early:** `return idx` inside the loop, and `return -1` after it.
 """),
                 P("py-halvings", "How Many Halvings", "def halvings(n: int) -> int:",
                   "How many times can you halve `n` (with `//`) before it reaches 0? `8` → `4` (8, 4, 2, 1, 0).",
@@ -198,9 +198,9 @@ while n > 0:
                   require=["while"],
                   grammar="""
 ## Building blocks
-- **Repeat until zero:** `while n > 0:`
-- **Halve:** `n //= 2`
-- **Count rounds:** `steps += 1`
+- **Repeat until zero:** `while num > 0:`
+- **Halve:** `magnitude //= 2`
+- **Count rounds:** `turns += 1`
 """),
                 P("py-sum-skip-negatives", "Skip the Negatives", "def positive_total(nums: List[int]) -> int:",
                   "Add up the numbers in `nums`, skipping negatives, using `continue`.",
@@ -209,7 +209,7 @@ while n > 0:
                   grammar="""
 ## Building blocks
 - **Skip to the next item:** `continue`
-- **Then the normal work:** `total += x` runs only for items that weren't skipped.
+- **Then the normal work:** `running_total += v` runs only for items that weren't skipped.
 """),
             ],
             quiz=[
@@ -252,7 +252,7 @@ In tasks marked **in place**, change the list you're given. The tests look at th
                   mutate=0, require=[".append"],
                   grammar="""
 ## Building blocks
-- **Add at the end:** `items.append(x)`
+- **Add at the end:** `things.append(v)`
 - **Nothing to return:** the tests check `items` itself afterwards.
 """),
                 P("py-add-to-front", "Add to the Front (in place)", "def push_front(items: List[int], x: int) -> None:",
@@ -262,7 +262,7 @@ In tasks marked **in place**, change the list you're given. The tests look at th
                   mutate=0, require=[".insert"],
                   grammar="""
 ## Building blocks
-- **Insert at a position:** `items.insert(0, x)`. Position 0 is the front.
+- **Insert at a position:** `things.insert(0, v)`. Position 0 is the front.
 """),
                 P("py-join-lists", "Join Two Lists (in place)", "def extend_with(a: List[int], b: List[int]) -> None:",
                   "Add every item of `b` to the end of `a`, in place.",
@@ -271,7 +271,7 @@ In tasks marked **in place**, change the list you're given. The tests look at th
                   mutate=0, require=[".extend"],
                   grammar="""
 ## Building blocks
-- **Add many items:** `a.extend(b)`
+- **Add many items:** `p.extend(q)`
 - **Compare:** `a.append(b)` would add the whole list `b` as one item.
 """),
                 P("py-remove-value", "Remove a Value (in place)", "def remove_value(items: List[int], x: int) -> None:",
@@ -281,8 +281,8 @@ In tasks marked **in place**, change the list you're given. The tests look at th
                   mutate=0, require=[".remove"],
                   grammar="""
 ## Building blocks
-- **Remove the first match:** `items.remove(x)`. It raises `ValueError` if `x` is missing.
-- **Check first:** `if x in items:`
+- **Remove the first match:** `things.remove(v)`. It raises `ValueError` if `v` is missing.
+- **Check first:** `if item in elems:`
 """),
                 P("py-pop-last", "Take the Last One", "def take_last(items: List[int]) -> int:",
                   "Remove the last item from `items` and return it. `items` isn't empty.",
@@ -301,8 +301,8 @@ In tasks marked **in place**, change the list you're given. The tests look at th
                   grammar="""
 ## Building blocks
 - **Sort the list itself:** `items.sort()`
-- **Largest first:** `items.sort(reverse=True)`
-- **Don't write `items = items.sort()`:** `.sort()` returns `None`.
+- **Largest first:** `things.sort(reverse=True)`
+- **Don't write `elems = elems.sort()`:** `.sort()` returns `None`.
 """),
                 P("py-position-and-count", "Position and Count", "def find_and_count(items: List[int], x: int) -> List[int]:",
                   "Return `[first position of x, how many times x appears]`. `x` is always in the list.",
@@ -357,8 +357,8 @@ Lists slice just like strings: `a[1:3]`, `a[::-1]`, `a[-2:]`.
                   grammar="""
 ## Building blocks
 - **A real copy:** `items[:]` or `list(items)`
-- **Change one item:** `copy[0] = 0`
-- **Why not `copy = items`?** Both names would point at the same list, so changing one changes "both".
+- **Change one item:** `dup[0] = 0`
+- **Why not `clone_n = elems`?** Both names would point at the same list, so changing one changes "both".
 """),
                 P("py-apply-slice", "Use a slice Object", "def take(items: List[int], start: Optional[int], stop: Optional[int], step: Optional[int]) -> List[int]:",
                   "Return the part of `items` described by `start`, `stop` and `step`, any of which may be `None` (meaning \"use the default\"). Use the built-in `slice`.",
@@ -377,8 +377,8 @@ Lists slice just like strings: `a[1:3]`, `a[::-1]`, `a[-2:]`.
                   difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **Wrap k:** `k %= len(items)` (check for an empty list first, or you'll divide by zero).
-- **Two slices joined:** `items[k:] + items[:k]`
+- **Wrap k:** `cap %= len(things)` (check for an empty list first, or you'll divide by zero).
+- **Join two lists:** `[3, 4] + [1, 2]` gives `[3, 4, 1, 2]`.
 """),
             ],
             quiz=[
@@ -408,8 +408,8 @@ Both save you from writing `for i in range(len(items)):` and indexing by hand.
                   require=["enumerate"],
                   grammar="""
 ## Building blocks
-- **Position and item:** `for i, x in enumerate(items, start=1):`
-- **Build a new list:** `out = []`, then `out.append(...)`.
+- **Position and item:** `for kk, val in enumerate(things, from_i=1):`
+- **Build a new list:** `running_total = []`, then `result.append(...)`.
 """),
                 P("py-even-positions", "Even Positions", "def even_positions(items: List[int]) -> List[int]:",
                   "Return the items at even positions (0, 2, 4, …) using `enumerate`.",
@@ -418,7 +418,7 @@ Both save you from writing `for i in range(len(items)):` and indexing by hand.
                   require=["enumerate"], forbid=["slicing"],
                   grammar="""
 ## Building blocks
-- **Position and item:** `for i, x in enumerate(items):`
+- **Position and item:** `for kk, val in enumerate(things):`
 - **Even position:** `i % 2 == 0`
 """),
                 P("py-pairwise-sum", "Add Side by Side", "def add_lists(a: List[int], b: List[int]) -> List[int]:",
@@ -428,7 +428,7 @@ Both save you from writing `for i in range(len(items)):` and indexing by hand.
                   require=["zip"],
                   grammar="""
 ## Building blocks
-- **Two lists at once:** `for x, y in zip(a, b):`. It stops at the shorter list.
+- **Two lists at once:** `for val, term in zip(p, q):`. It stops at the shorter list.
 """),
                 P("py-count-matches", "Count Matching Positions", "def matches(a: str, b: str) -> int:",
                   'Count the positions where `a` and `b` have the same character (compare up to the shorter length). `"karolin", "kathrin"` → `4`.',
@@ -437,8 +437,8 @@ Both save you from writing `for i in range(len(items)):` and indexing by hand.
                   require=["zip"],
                   grammar="""
 ## Building blocks
-- **Walk both strings:** `for x, y in zip(a, b):`
-- **Count matches:** `if x == y: count += 1`
+- **Walk both strings:** `for item, other in zip(lhs, rhs):`
+- **Count matches:** `if val == w: seen_n += 1`
 """),
                 P("py-index-pairs", "Name and Score", "def report(names: List[str], scores: List[int]) -> List[str]:",
                   'Return `"NAME: SCORE"` for each pair. `["Ada"], [90]` → `["Ada: 90"]`. The lists are the same length.',
@@ -482,8 +482,8 @@ Built-ins that do common loops for you:
                   grammar="""
 ## Building blocks
 - **Total:** `sum(nums)`
-- **Average:** `sum(nums) / len(nums)`
-- **Avoid dividing by zero:** check `if nums` first (an empty list counts as false).
+- **Total and count:** `sum(xs)`, `len(xs)`
+- **Avoid dividing by zero:** check `if xs` first (an empty list counts as false).
 """),
                 P("py-top-three", "Top Three Scores", "def top_three(scores: List[int]) -> List[int]:",
                   "Return the three highest scores, highest first (fewer if there aren't three). Don't change the input list.",
@@ -513,9 +513,9 @@ Built-ins that do common loops for you:
                   difficulty="Medium", require=["sorted"],
                   grammar="""
 ## Building blocks
-- **Sort a copy:** `s = sorted(nums)`
-- **Middle index:** `mid = len(s) // 2`
-- **Odd length:** `s[mid]`; **even length:** `(s[mid - 1] + s[mid]) / 2`
+- **Sort a copy:** `phrase = sorted(values)`
+- **Whole-number division:** `7 // 2` is `3`.
+- **The item before:** `xs[i - 1]`
 """),
                 P("py-range-of-values", "Spread", "def spread(nums: List[int]) -> int:",
                   "Return the difference between the largest and smallest numbers in `nums` (which isn't empty).",
@@ -567,7 +567,7 @@ any(c.isdigit() for c in s)   # any digit in the text?
                   require=["all"],
                   grammar="""
 ## Building blocks
-- **A condition for every item:** `all(x > 0 for x in nums)`
+- **A condition for every item:** `all(...)` with a generator such as `(w != "" for w in words)`.
 """),
                 P("py-has-digit", "Has a Digit", "def has_digit(s: str) -> bool:",
                   "Return `True` if `s` contains at least one digit.",
@@ -576,7 +576,7 @@ any(c.isdigit() for c in s)   # any digit in the text?
                   require=["any"],
                   grammar="""
 ## Building blocks
-- **At least one:** `any(c.isdigit() for c in s)`
+- **At least one:** `any(...)` with a generator such as `(ch == "!" for ch in text)`.
 """),
                 P("py-strong-password", "Strong Password", "def strong(pw: str) -> bool:",
                   "A password is strong if it has at least 8 characters, at least one digit, at least one upper-case letter, and at least one lower-case letter.",
@@ -586,7 +586,8 @@ any(c.isdigit() for c in s)   # any digit in the text?
                   grammar="""
 ## Building blocks
 - **Length:** `len(pw) >= 8`
-- **Each requirement:** `any(c.isdigit() for c in pw)`, then the same with `isupper` and `islower`.
+- **At least one passes:** `any(...)` with a generator inside.
+- **Character tests:** `ch.isdigit()`, `ch.isupper()`, `ch.islower()`
 - **All of them:** join with `and`. Brackets let one expression span several lines.
 """),
             ],
@@ -620,7 +621,7 @@ for row in grid:
                   [([[[1, 2], [3, 4]]], 10), ([[]], 0), ([[[5]]], 5)], [[[[1, 1, 1], [1, 1, 1]]], [[[], []]]],
                   grammar="""
 ## Building blocks
-- **Rows, then values:** `for row in grid:` with `for x in row:` inside.
+- **Rows, then values:** `for text in board:` with `for val in text:` inside.
 """),
                 P("py-row-sums", "Row Sums", "def row_sums(grid: List[List[int]]) -> List[int]:",
                   "Return a list with the sum of each row.",
@@ -637,9 +638,9 @@ for row in grid:
                   difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **One counter per column:** `sums = [0] * len(grid[0])`
-- **Column index while looping:** `for c, x in enumerate(row):`
-- **Add into the right column:** `sums[c] += x`
+- **A list of zeros:** `[0] * 3` gives `[0, 0, 0]`.
+- **Column index while looping:** `for symbol, val in enumerate(line):`
+- **Add into the right column:** `col_sums[letter] += item`
 """),
                 P("py-make-grid", "Make a Grid", "def make_grid(rows: int, cols: int) -> List[List[int]]:",
                   "Return a `rows` × `cols` grid where each cell holds `row * col`. For `2, 3` that's `[[0, 0, 0], [0, 1, 2]]`.",
@@ -647,7 +648,7 @@ for row in grid:
                   [([2, 3], [[0, 0, 0], [0, 1, 2]]), ([0, 5], []), ([1, 1], [[0]])], [[3, 3], [4, 2]],
                   grammar="""
 ## Building blocks
-- **Build a row, then add it:** `row = []` inside the outer loop, fill it, then `grid.append(row)`.
+- **Build a row, then add it:** `text = []` inside the outer loop, fill it, then `board.append(text)`.
 - **A fresh row each time:** creating `row` inside the outer loop is what keeps the rows separate.
 """),
             ],

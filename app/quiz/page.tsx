@@ -6,7 +6,7 @@ import { categories, problems } from "@/lib/problems";
 import { programmingTermQuestions, pythonBasicsQuestions } from "@/lib/quiz-courses";
 import type { Problem } from "@/lib/types";
 
-export const metadata: Metadata = { title: "Quiz drill · Drill" };
+export const metadata: Metadata = { title: "Quiz drill · Blind 75 from Scratch" };
 
 /** The statement without constraints/footnotes, so the context box stays short. */
 function statement(p: Problem) {

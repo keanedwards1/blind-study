@@ -7,6 +7,7 @@ import { sfx, useMusic } from "@/lib/audio/engine";
 import {
   type LevelInfo,
   levelStates,
+  loadAttempt,
   markIntroSeen,
   useHydrated,
   usePlacement,
@@ -16,6 +17,7 @@ import {
   worldAllOpen,
 } from "@/lib/python-progress";
 import type { Zone } from "@/lib/python";
+import { struggles, useMisses, useRepClears } from "@/lib/concept-progress";
 import { useSolved } from "@/lib/storage";
 import Markdown from "../Markdown";
 import GameShell from "./GameShell";
@@ -100,6 +102,8 @@ export default function StageSelect({
   const results = useResults();
   const intros = useSeenIntros();
   const [lesson, setLesson] = useState<Zone | null>(null);
+  const misses = useMisses();
+  const reps = useRepClears();
   const [shaking, setShaking] = useState<string | null>(null);
   const { Icon, color, biome } = WORLD_THEME[world.n];
   useMusic(ambienceFor(world.n, false));
@@ -124,6 +128,20 @@ export default function StageSelect({
   );
   const stateOf = Object.fromEntries(slugs.map((s, i) => [s, states[i]]));
   const boss = bossOpen(states);
+  const shaky =
+    world.kind === "python"
+      ? Object.fromEntries(
+          struggles(
+            world.n,
+            world.zones.map((z) => ({ id: z.id, title: z.title, problems: z.stages.map((s) => s.slug) })),
+            results,
+            loadAttempt,
+            misses,
+            reps,
+            (slug) => world.zones.flatMap((z) => z.stages).find((s) => s.slug === slug)?.title ?? slug,
+          ).map((s) => [s.id, s]),
+        )
+      : {};
   const leafCount = slugs.reduce(
     (s, slug) => s + (results[slug]?.stars ?? 0),
     0,
@@ -208,18 +226,44 @@ export default function StageSelect({
               <h2 className="font-display text-lg font-semibold">
                 {zone.title}
               </h2>
-              {zone.intro && (
-                <Button
-                  ghost
-                  className="px-3! py-1.5! text-xs!"
-                  onClick={() => setLesson(zone)}
-                >
-                  {world.kind === "python"
-                    ? "Read the lesson"
-                    : "About this pattern"}
-                </Button>
-              )}
+              <div className="flex flex-wrap items-center gap-2">
+                {shaky[zone.id] && (
+                  <span
+                    className="rounded-md bg-[#ff7a2f]/20 px-2 py-1 text-[11px] font-semibold text-[#ffb27a]"
+                    title={`Why: ${shaky[zone.id].reasons.join("; ")}.`}
+                  >
+                    Shaky · rep it
+                  </span>
+                )}
+                {zone.intro && (
+                  <Button
+                    ghost
+                    className="px-3! py-1.5! text-xs!"
+                    onClick={() => setLesson(zone)}
+                  >
+                    {world.kind === "python"
+                      ? "Read the lesson"
+                      : "About this pattern"}
+                  </Button>
+                )}
+                {world.kind === "python" && playable && (
+                  <Button
+                    ghost={!shaky[zone.id]}
+                    color={shaky[zone.id] ? "#ff7a2f" : undefined}
+                    className="px-3! py-1.5! text-xs!"
+                    href={`/python/reps/${world.n}/${zone.id}`}
+                    title="A short practice set: questions and coding reps for this concept"
+                  >
+                    {shaky[zone.id] ? "Rep it" : "Practice"}
+                  </Button>
+                )}
+              </div>
             </div>
+            {shaky[zone.id] && (
+              <p className="-mt-1 text-xs text-[#ffb27a]">
+                Why: {shaky[zone.id].reasons.join("; ")}.
+              </p>
+            )}
             <div className="flex flex-wrap gap-4">
               {zone.stages.map((s) => {
                 const state = stateOf[s.slug];

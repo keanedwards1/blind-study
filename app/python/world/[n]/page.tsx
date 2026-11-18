@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import PageLoader from "@/components/loader/PageLoader";
 import StageSelect from "@/components/game/StageSelect";
 import { levelInfos, levels, zonesFor } from "@/lib/python";
 
@@ -12,12 +13,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { n } = await params;
-  return { title: `World ${n} · Learn Python · Drill` };
+  return { title: `World ${n} · Learn Python · Blind 75 from Scratch` };
 }
 
 export default function WorldPage({ params }: PageProps<"/python/world/[n]">) {
   return (
-    <Suspense fallback={<div className="p-6 text-sm text-subtle">Loading world…</div>}>
+    <Suspense fallback={<PageLoader variant="game" label="Loading world" />}>
       <WorldLoader params={params} />
     </Suspense>
   );

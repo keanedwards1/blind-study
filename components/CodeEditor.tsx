@@ -2,6 +2,7 @@
 
 import { loader, type Monaco, type OnMount } from "@monaco-editor/react";
 import { useEffect, useRef, useState } from "react";
+import PageLoader from "./loader/PageLoader";
 import { useTheme } from "./ThemeToggle";
 
 type Editor = Parameters<OnMount>[0];
@@ -207,7 +208,11 @@ export default function CodeEditor({
         // Vim's mode line (-- NORMAL --, -- INSERT --, :commands), filled in by monaco-vim.
         <div ref={statusRef} className="h-6 shrink-0 border-t border-line px-3 font-mono text-xs leading-6 text-muted" aria-live="polite" />
       )}
-      {!ready && <div className="absolute inset-0 p-4 text-sm text-subtle">Loading editor…</div>}
+      {!ready && (
+        <div className="absolute inset-0">
+          <PageLoader variant="inline" label="Loading editor" />
+        </div>
+      )}
     </div>
   );
 }

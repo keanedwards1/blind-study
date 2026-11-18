@@ -30,13 +30,13 @@ function Label({ children }: { children: React.ReactNode }) {
 
 export function ConceptCard({ concept, bySlug }: { concept: Concept; bySlug: Record<string, ProblemSummary> }) {
   return (
-    <article id={`py-${concept.id}`} className="scroll-mt-16 space-y-4 rounded-xl border border-line bg-panel p-5">
+    <article id={`py-${concept.id}`} className="scroll-mt-16 space-y-4 rounded-md border border-line bg-panel p-5">
       <header>
         <div className="text-xs text-subtle">{concept.group}</div>
         <h2 className="text-lg font-semibold text-fg">{concept.title}</h2>
       </header>
       <Markdown>{concept.summary}</Markdown>
-      <div className="rounded-lg border border-line bg-raised/60 p-3.5">
+      <div className="rounded-md border border-line bg-raised/60 p-3.5">
         <Label>Example question</Label>
         <Markdown>{concept.exampleQuestion}</Markdown>
         <Link href={`/problems/${concept.exampleSlug}`} className="mt-2 inline-block text-xs font-medium text-fg underline">
@@ -45,7 +45,7 @@ export function ConceptCard({ concept, bySlug }: { concept: Concept; bySlug: Rec
       </div>
       <div>
         <Label>Template, broken down line by line</Label>
-        <pre className="overflow-auto whitespace-pre-wrap break-words rounded-lg bg-raised p-4 font-mono text-[13px] leading-6 text-fg">{concept.template}</pre>
+        <pre className="overflow-auto whitespace-pre-wrap break-words rounded-md bg-raised p-4 font-mono text-[13px] leading-6 text-fg">{concept.template}</pre>
       </div>
       <div>
         <Label>Try it (edit and run)</Label>
@@ -68,7 +68,7 @@ export function ConceptCard({ concept, bySlug }: { concept: Concept; bySlug: Rec
 
 export function PatternCard({ pattern, bySlug }: { pattern: PatternGuide; bySlug: Record<string, ProblemSummary> }) {
   return (
-    <article id={`pattern-${pattern.id}`} className="scroll-mt-16 space-y-4 rounded-xl border border-line bg-panel p-5">
+    <article id={`pattern-${pattern.id}`} className="scroll-mt-16 space-y-4 rounded-md border border-line bg-panel p-5">
       <header>
         <div className="text-xs text-subtle">Pattern</div>
         <h2 className="text-lg font-semibold text-fg">{pattern.category}</h2>
@@ -86,7 +86,7 @@ export function PatternCard({ pattern, bySlug }: { pattern: PatternGuide; bySlug
       </div>
       <div>
         <Label>Template</Label>
-        <pre className="overflow-auto rounded-lg bg-raised p-4 font-mono text-[13px] leading-6 text-fg">{pattern.template}</pre>
+        <pre className="overflow-auto rounded-md bg-raised p-4 font-mono text-[13px] leading-6 text-fg">{pattern.template}</pre>
       </div>
       <div>
         <Label>Typical complexity</Label>
