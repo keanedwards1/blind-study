@@ -3,6 +3,8 @@
  * so they can be unit-tested and shared by the server and the client.
  */
 
+import { DEV_UNLOCK_ALL } from "./dev-unlock";
+
 /** An attempt in progress: active milliseconds, Submit presses, hints opened, and whether the solution was revealed. */
 export type Attempt = { ms: number; tries: number; hints: number; peeked: boolean };
 export type Stars = 0 | 1 | 2 | 3;
@@ -58,7 +60,7 @@ export function stageStates(slugs: string[], cleared: (slug: string) => boolean,
 }
 
 export function bossOpen(states: StageState[]): boolean {
-  return states.length > 0 && states.every((s) => s === "cleared");
+  return states.length > 0 && (DEV_UNLOCK_ALL || states.every((s) => s === "cleared"));
 }
 
 /** "m:ss" for a duration in milliseconds. */

@@ -1,36 +1,31 @@
-# Extra practice for Learn Python level 4 (Dicts, sets & tuples): the forest market. See extra_level03.py for the format.
+# Extra practice for Learn Python level 4 (Dicts, sets & tuples). See extra_level03.py for the format.
 from _helpers import P, Q
 
 EXTRA = {
     "dict-basics": dict(
         warmup=[
-            P("py-stall-owner", "Who Runs This Stall?", "def owner(stalls: Dict[str, str], stall: str) -> str:",
+            P("py-service-owner", "Who Owns This Service?", "def owner(teams: Dict[str, str], service: str) -> str:",
               """
-The market office has a dict from stall name to the person who runs it. Every stall you ask about is in it.
+An on-call tool keeps a dict from each service name to the team that owns it. Write `owner(teams, service)` to return the team for `service`. Every service you're asked about is in the dict.
 
-- **You get:** `stalls` and a `stall` name.
-- **Return:** the name of the person who runs that stall.
-- **Example:** `{"jam": "Ada", "tea": "Bo"}` and `"tea"` → `"Bo"`.
+Example: `owner({"billing": "Ada", "search": "Bo"}, "search")` returns `"Bo"`.
 """,
-              "def owner(stalls: Dict[str, str], stall: str) -> str:\n    return stalls[stall]\n",
-              [([{"jam": "Ada", "tea": "Bo"}, "tea"], "Bo")], [[{"x": "y"}, "x"]],
+              "def owner(teams: Dict[str, str], service: str) -> str:\n    return teams[service]\n",
+              [([{"billing": "Ada", "search": "Bo"}, "search"], "Bo")], [[{"x": "y"}, "x"]],
               hints=["A dict looks things up by key: put the key in square brackets after the dict.",
-                     "Here the key is the stall name, and the value you get back is the owner.",
-                     "The stall is always there, so plain square brackets are safe."],
+                     "Here the key is the service name, and the value you get back is the team.",
+                     "The service is always there, so plain square brackets are safe."],
               grammar="""
 ## Building blocks
 - **Look up a key:** `ages["ada"]`
 """),
         ],
         practice=[
-            P("py-restock-list", "Restock List", "def restock(stock: Dict[str, int], wanted: List[str]) -> List[str]:",
+            P("py-restock-list", 'Items to Reorder', "def restock(stock: Dict[str, int], wanted: List[str]) -> List[str]:",
               """
-Before market day, check each wanted item against the stock. Anything with 0 crates, or missing from the stock entirely, goes on the restock list.
+Before an order goes out, a warehouse script checks each requested item against stock. Anything with 0 units, or missing from the stock dict entirely, needs reordering. Write `restock(stock, wanted)` to return those items in the order they were requested.
 
-- **You get:** `stock` (item → crates) and `wanted` (items, in order).
-- **Return:** the wanted items that need restocking, in the same order.
-- **Example:** `{"jam": 2, "tea": 0}` and `["jam", "tea", "honey"]` → `["tea", "honey"]`.
-- **Watch out:** a missing item must not crash; treat it as 0.
+Example: `restock({"jam": 2, "tea": 0}, ["jam", "tea", "honey"])` returns `["tea", "honey"]`. A missing item must not crash; treat it as 0.
 """,
               "def restock(stock: Dict[str, int], wanted: List[str]) -> List[str]:\n    out = []\n    for item in wanted:\n        if stock.get(item, 0) == 0:\n            out.append(item)\n    return out\n",
               [([{"jam": 2, "tea": 0}, ["jam", "tea", "honey"]], ["tea", "honey"]), ([{}, []], [])], [[{"a": 1}, ["a"]], [{}, ["x", "y"]]],
@@ -57,16 +52,14 @@ Before market day, check each wanted item against the stock. Anything with 0 cra
     ),
     "dict-methods": dict(
         warmup=[
-            P("py-stall-names", "List the Stalls", "def stall_names(stalls: Dict[str, int]) -> List[str]:",
+            P("py-registry-names", "List the Registered Names", "def names(registry: Dict[str, int]) -> List[str]:",
               """
-The market crier needs every stall name in the order the stalls were registered.
+A plugin registry maps each plugin's name to its load order. Write `names(registry)` to return the plugin names as a list, in the order they were registered.
 
-- **You get:** `stalls` (name → pitch number).
-- **Return:** a list of the names, in the dict's order.
-- **Example:** `{"jam": 3, "tea": 1}` → `["jam", "tea"]`.
+Example: `names({"auth": 3, "cache": 1})` returns `["auth", "cache"]`.
 """,
-              "def stall_names(stalls: Dict[str, int]) -> List[str]:\n    return list(stalls.keys())\n",
-              [([{"jam": 3, "tea": 1}], ["jam", "tea"]), ([{}], [])], [[{"a": 1}]],
+              "def names(registry: Dict[str, int]) -> List[str]:\n    return list(registry.keys())\n",
+              [([{"auth": 3, "cache": 1}], ["auth", "cache"]), ([{}], [])], [[{"a": 1}]],
               hints=["Dicts remember the order keys were added.",
                      "`.keys()` gives the keys, but as a view rather than a list.",
                      "Wrap it in `list(...)` to get a real list."],
@@ -77,19 +70,17 @@ The market crier needs every stall name in the order the stalls were registered.
 """),
         ],
         practice=[
-            P("py-cheapest-stall", "The Cheapest Stall", "def cheapest(prices: Dict[str, int]) -> str:",
+            P("py-cheapest-supplier", 'Cheapest Supplier', "def cheapest(prices: Dict[str, int]) -> str:",
               """
-Which stall sells for the least? Several stalls may tie; pick the one that comes first alphabetically.
+A purchasing tool compares quotes from several suppliers. Write `cheapest(prices)`, where `prices` maps supplier names to their price, to return the cheapest supplier. If several tie, return the one that comes first alphabetically. There's at least one supplier.
 
-- **You get:** `prices` (stall → price), with at least one stall.
-- **Return:** the name of the cheapest stall.
-- **Example:** `{"tea": 3, "jam": 2, "bun": 2}` → `"bun"`.
+Example: `cheapest({"tea": 3, "jam": 2, "bun": 2})` returns `"bun"`.
 """,
               "def cheapest(prices: Dict[str, int]) -> str:\n    best = None\n    for name, cost in sorted(prices.items()):\n        if best is None or cost < prices[best]:\n            best = name\n    return best\n",
               [([{"tea": 3, "jam": 2, "bun": 2}], "bun"), ([{"x": 1}], "x")], [[{"b": 1, "a": 1}], [{"z": 5, "y": 9}]],
-              hints=["`.items()` gives each stall together with its price.",
-                     "Sorting the items puts the stall names in alphabetical order, so on a tie the first one you see is the right one.",
-                     "Keep the best stall so far, and replace it only when a price is strictly lower."],
+              hints=["`.items()` gives each supplier together with its price.",
+                     "Sorting the items puts the names in alphabetical order, so on a tie the first one you see is the right one.",
+                     "Keep the best supplier so far, and replace it only when a price is strictly lower."],
               grammar="""
 ## Building blocks
 - **Key and value together:** `for k, v in d.items():`
@@ -110,13 +101,11 @@ Which stall sells for the least? Several stalls may tie; pick the one that comes
     ),
     "sets": dict(
         warmup=[
-            P("py-has-repeat-visitor", "A Returning Visitor?", "def any_repeat(visitors: List[str]) -> bool:",
+            P("py-has-repeat-visitor", 'Any Repeat Visitors?', "def any_repeat(visitors: List[str]) -> bool:",
               """
-Did anyone visit the market more than once today?
+An analytics report flags whether anyone visited the site more than once today. Write `any_repeat(visitors)`, where `visitors` lists user names in the order they arrived, to return `True` if any name appears more than once.
 
-- **You get:** `visitors`, names in the order they arrived.
-- **Return:** `True` if any name appears more than once.
-- **Example:** `["ada", "bo", "ada"]` → `True`; `["ada", "bo"]` → `False`.
+Example: `any_repeat(["ada", "bo", "ada"])` returns `True`, and `any_repeat(["ada", "bo"])` returns `False`.
 """,
               "def any_repeat(visitors: List[str]) -> bool:\n    return len(set(visitors)) < len(visitors)\n",
               [([["ada", "bo", "ada"]], True), ([["ada", "bo"]], False)], [[[]], [["x", "x"]]],
@@ -130,13 +119,11 @@ Did anyone visit the market more than once today?
 """),
         ],
         practice=[
-            P("py-new-faces", "New Faces Today", "def new_today(regulars: List[str], today: List[str]) -> int:",
+            P("py-new-faces", 'Count New Users', "def new_today(regulars: List[str], today: List[str]) -> int:",
               """
-How many **different** people came today who aren't regulars?
+A growth report counts how many different people used the app today who aren't regular users. Write `new_today(regulars, today)`, where `today` can contain the same person more than once, to return that count.
 
-- **You get:** `regulars` and `today` (today's visitors, with repeats).
-- **Return:** how many different non-regulars visited.
-- **Example:** `["ada"]` and `["ada", "cy", "cy", "di"]` → `2`.
+Example: `new_today(["ada"], ["ada", "cy", "cy", "di"])` returns `2`.
 """,
               "def new_today(regulars: List[str], today: List[str]) -> int:\n    known = set(regulars)\n    fresh = set()\n    for name in today:\n        if name not in known:\n            fresh.add(name)\n    return len(fresh)\n",
               [([["ada"], ["ada", "cy", "cy", "di"]], 2), ([[], []], 0)], [[["a"], ["a"]], [[], ["x", "y", "x"]]],
@@ -159,13 +146,11 @@ How many **different** people came today who aren't regulars?
     ),
     "set-operations": dict(
         warmup=[
-            P("py-common-stalls", "Shared Suppliers", "def shared(a: Set[str], b: Set[str]) -> Set[str]:",
+            P("py-shared-deps", 'Shared Dependencies', "def shared(a: Set[str], b: Set[str]) -> Set[str]:",
               """
-Two markets each have a set of suppliers. Which suppliers work with both?
+Two services each have a set of the libraries they depend on. Write `shared(a, b)` to return the libraries both services use, with the `&` operator.
 
-- **You get:** two sets, `a` and `b`.
-- **Return:** the suppliers in both, using `&`.
-- **Example:** `{"x", "y"}` and `{"y", "z"}` → `{"y"}`.
+Example: `shared({"x", "y"}, {"y", "z"})` returns `{"y"}`.
 """,
               "def shared(a: Set[str], b: Set[str]) -> Set[str]:\n    return a & b\n",
               [([["x", "y"], ["y", "z"]], ["y"]), ([[], ["a"]], [])], [[["a"], ["a"]]],
@@ -179,16 +164,14 @@ Two markets each have a set of suppliers. Which suppliers work with both?
 """),
         ],
         practice=[
-            P("py-unvisited-stalls", "Stalls You Missed", "def missed(stalls: List[str], visited: List[str]) -> int:",
+            P("py-unvisited-pages", "Pages Nobody Visited", "def unvisited(pages: List[str], visited: List[str]) -> int:",
               """
-At the end of the day, how many stalls did you never get to?
+A site audit compares every page with the pages that got traffic. Both lists can contain repeats. Write `unvisited(pages, visited)` to return how many different pages got no visits at all.
 
-- **You get:** `stalls` (every stall, possibly listed twice) and `visited` (where you went, with repeats).
-- **Return:** how many different stalls you didn't visit.
-- **Example:** `["jam", "tea", "bun", "tea"]` and `["tea"]` → `2`.
+Example: `unvisited(["home", "about", "blog", "about"], ["about"])` returns `2`.
 """,
-              "def missed(stalls: List[str], visited: List[str]) -> int:\n    return len(set(stalls) - set(visited))\n",
-              [([["jam", "tea", "bun", "tea"], ["tea"]], 2), ([[], []], 0)], [[["a"], ["a"]], [["a", "b"], []]],
+              "def unvisited(pages: List[str], visited: List[str]) -> int:\n    return len(set(pages) - set(visited))\n",
+              [([["home", "about", "blog", "about"], ["about"]], 2), ([[], []], 0)], [[["a"], ["a"]], [["a", "b"], []]],
               hints=["Repeats don't matter, so sets fit.",
                      "With sets, `-` gives the items in the first set that aren't in the second.",
                      "Count what's left with `len`."],
@@ -206,13 +189,11 @@ At the end of the day, how many stalls did you never get to?
     ),
     "tuples": dict(
         warmup=[
-            P("py-make-pair", "Bundle a Pair", "def bundle(item: str, price: int) -> Tuple[str, int]:",
+            P("py-make-pair", 'Return a Pair', "def bundle(item: str, price: int) -> Tuple[str, int]:",
               """
-Every sale is recorded as an `(item, price)` tuple.
+An order system records each sale as an `(item, price)` tuple. Write `bundle(item, price)` to return that tuple.
 
-- **You get:** `item` and `price`.
-- **Return:** the tuple `(item, price)`.
-- **Example:** `"jam", 3` → `("jam", 3)`.
+Example: `bundle("jam", 3)` returns `("jam", 3)`.
 """,
               "def bundle(item: str, price: int) -> Tuple[str, int]:\n    return (item, price)\n",
               [(["jam", 3], ["jam", 3])], [["tea", 0]],
@@ -225,13 +206,11 @@ Every sale is recorded as an `(item, price)` tuple.
 """),
         ],
         practice=[
-            P("py-best-sale", "Best Sale of the Day", "def best_sale(sales: List[Tuple[str, int]]) -> str:",
+            P("py-best-sale", 'Biggest Single Sale', "def best_sale(sales: List[Tuple[str, int]]) -> str:",
               """
-Each sale is an `(item, price)` tuple. Which item made the single biggest sale?
+A sales report highlights the item behind the largest single sale. Each sale is an `(item, price)` tuple. Write `best_sale(sales)` to return the item from the sale with the highest price, or the first one if several tie. There's at least one sale.
 
-- **You get:** `sales` (at least one).
-- **Return:** the item from the sale with the highest price (the first one if tied).
-- **Example:** `[("jam", 3), ("tea", 7), ("bun", 7)]` → `"tea"`.
+Example: `best_sale([("jam", 3), ("tea", 7), ("bun", 7)])` returns `"tea"`.
 """,
               "def best_sale(sales: List[Tuple[str, int]]) -> str:\n    best_item, best_price = sales[0]\n    for item, price in sales:\n        if price > best_price:\n            best_item, best_price = item, price\n    return best_item\n",
               [([[("jam", 3), ("tea", 7), ("bun", 7)]], "tea"), ([[("x", 1)]], "x")], [[[("a", 2), ("b", 1)]]],
@@ -255,34 +234,30 @@ Each sale is an `(item, price)` tuple. Which item made the single biggest sale?
     ),
     "hashing": dict(
         warmup=[
-            P("py-tuple-key", "Map Grid Lookup", "def at(spots: List[List], x: int, y: int) -> str:",
+            P("py-tuple-key", 'Look Up a Grid Cell', "def at(spots: List[List], x: int, y: int) -> str:",
               """
-The market surveyor wrote down what stands where as `[x, y, thing]` entries. Turn them into a dict keyed by `(x, y)` tuples, then look up one spot.
+A floor-plan tool receives what's placed where as `[x, y, thing]` entries. Write `at(spots, x, y)` to turn the entries into a dict keyed by `(x, y)` tuples and return what's at the requested position, or `"empty"` if nothing is recorded there.
 
-- **You get:** `spots` (a list of `[x, y, thing]`) and a position `x`, `y`.
-- **Return:** what's at that spot, or `"grass"` if nothing is recorded there.
-- **Example:** `[[0, 0, "well"]]` with `0, 0` → `"well"`; with `1, 0` → `"grass"`.
+Example: `at([[0, 0, "desk"]], 0, 0)` returns `"desk"`, and `at([[0, 0, "desk"]], 1, 0)` returns `"empty"`.
 """,
-              "def at(spots: List[List], x: int, y: int) -> str:\n    where = {}\n    for a, b, thing in spots:\n        where[(a, b)] = thing\n    return where.get((x, y), \"grass\")\n",
-              [([[[0, 0, "well"]], 0, 0], "well"), ([[[0, 0, "well"]], 1, 0], "grass")], [[[], 3, 4], [[[1, 2, "tree"], [3, 4, "cart"]], 3, 4]],
+              "def at(spots: List[List], x: int, y: int) -> str:\n    where = {}\n    for a, b, thing in spots:\n        where[(a, b)] = thing\n    return where.get((x, y), \"empty\")\n",
+              [([[[0, 0, "desk"]], 0, 0], "desk"), ([[[0, 0, "desk"]], 1, 0], "empty")], [[[], 3, 4], [[[1, 2, "lamp"], [3, 4, "chair"]], 3, 4]],
               hints=["Tuples can be dict keys because they can't change; lists can't.",
                      "Loop over the entries, unpacking each into its two coordinates and the thing, and store the thing under the `(x, y)` tuple.",
-                     "Look up the asked-for position with `.get`, using `\"grass\"` as the default."],
+                     "Look up the asked-for position with `.get`, using `\"empty\"` as the default."],
               grammar="""
 ## Building blocks
-- **A tuple as a key:** `table[(2, 3)] = "cart"`
+- **A tuple as a key:** `table[(2, 3)] = "chair"`
 - **Unpack three values:** `for a, b, c in rows:`
 - **Read with a default:** `d.get(key, "none")`
 """),
         ],
         practice=[
-            P("py-visited-squares", "Squares You've Walked", "def squares_walked(steps: str) -> int:",
+            P("py-visited-squares", 'Cells a Robot Visited', "def squares_walked(steps: str) -> int:",
               """
-You start at `(0, 0)` on the market grid. Each letter in `steps` moves you one square: `N`, `S`, `E` or `W`. How many **different** squares did you stand on, counting the start?
+A warehouse robot starts at `(0, 0)` and moves one cell per command: `N`, `S`, `E` or `W`. Write `squares_walked(steps)` to return how many different cells it stood on, counting the start.
 
-- **You get:** `steps`, a string of moves.
-- **Return:** the number of different squares visited.
-- **Example:** `"NESW"` → `4` (you walk a little square and end where you started).
+Example: `squares_walked("NESW")` returns `4`, because the robot walks a small square and ends where it started.
 """,
               "def squares_walked(steps: str) -> int:\n    x = y = 0\n    seen = {(x, y)}\n    moves = {\"N\": (0, 1), \"S\": (0, -1), \"E\": (1, 0), \"W\": (-1, 0)}\n    for s in steps:\n        dx, dy = moves[s]\n        x, y = x + dx, y + dy\n        seen.add((x, y))\n    return len(seen)\n",
               [(["NESW"], 4), ([""], 1)], [["NNNN"], ["NSNS"], ["EEWW"]],
@@ -333,13 +308,11 @@ You now know four ways to keep a group of values together. Each one is good at d
 **Common mistakes:** checking `x in some_list` inside a loop over a long list (use a set instead); trying to put a list in a set or use it as a dict key (use a tuple); and expecting a set to remember order (it doesn't, so sort it or use a list).
 """,
         problems=[
-            P("py-ds-guest-check", "The Fast Guest Check", "def arrived(guest_list: List[str], arrivals: List[str]) -> List[bool]:",
+            P("py-ds-guest-check", 'Fast Membership Checks', "def arrived(guest_list: List[str], arrivals: List[str]) -> List[bool]:",
               """
-The guest list is huge, and the door staff check every arrival against it. A list makes each check slow; pick a better structure.
+A door scanner checks every arriving badge against a very long guest list. Checking a list one item at a time is slow, so pick a better structure. Write `arrived(guest_list, arrivals)` to return, for each arrival in order, `True` if they're on the guest list.
 
-- **You get:** `guest_list` and `arrivals`.
-- **Return:** for each arrival, in order, `True` if they're on the guest list.
-- **Example:** `["ada", "bo"]` and `["bo", "cy"]` → `[True, False]`.
+Example: `arrived(["ada", "bo"], ["bo", "cy"])` returns `[True, False]`.
 """,
               "def arrived(guest_list: List[str], arrivals: List[str]) -> List[bool]:\n    guests = set(guest_list)\n    return [name in guests for name in arrivals]\n",
               [([["ada", "bo"], ["bo", "cy"]], [True, False]), ([[], []], [])],
@@ -353,13 +326,11 @@ The guest list is huge, and the door staff check every arrival against it. A lis
 - **Is it in the set?** `name in group`
 - **A list built from a loop:** `[f(x) for x in xs]`
 """),
-            P("py-ds-tally-and-order", "Tally in Arrival Order", "def tally(orders: List[str]) -> List[Tuple[str, int]]:",
+            P("py-ds-tally-and-order", 'Count Orders in Arrival Order', "def tally(orders: List[str]) -> List[Tuple[str, int]]:",
               """
-Count how many times each item was ordered, and report the items in the order they were **first** ordered.
+A kitchen display counts how many times each dish has been ordered and lists the dishes in the order they were first ordered. Write `tally(orders)` to return a list of `(dish, count)` tuples in that order.
 
-- **You get:** `orders`, item names in order.
-- **Return:** a list of `(item, count)` tuples, in first-order order.
-- **Example:** `["tea", "jam", "tea"]` → `[("tea", 2), ("jam", 1)]`.
+Example: `tally(["tea", "jam", "tea"])` returns `[("tea", 2), ("jam", 1)]`.
 """,
               "def tally(orders: List[str]) -> List[Tuple[str, int]]:\n    counts = {}\n    for item in orders:\n        counts[item] = counts.get(item, 0) + 1\n    return list(counts.items())\n",
               [([["tea", "jam", "tea"]], [["tea", 2], ["jam", 1]]), ([[]], [])], [[["x"]], [["a", "b", "a", "c", "b", "a"]]],
@@ -372,13 +343,11 @@ Count how many times each item was ordered, and report the items in the order th
 - **Store under a key:** `d[k] = v`
 - **Key and value pairs as a list:** `list(d.items())`
 """),
-            P("py-ds-pick-structure", "Pick the Right Tool", "def pick(task: str) -> str:",
+            P("py-ds-pick-structure", 'Pick the Right Structure', "def pick(task: str) -> str:",
               """
-A quick quiz from the market manager. For each job, name the best structure: `"list"`, `"tuple"`, `"set"` or `"dict"`.
+Write `pick(task)` to name the best structure for each job: `"list"`, `"tuple"`, `"set"` or `"dict"`. The `task` is one of `"queue"` (customers in arrival order), `"point"` (a fixed `(x, y)` position), `"dedupe"` (remove repeated names) or `"phonebook"` (look up a number by name).
 
-- **You get:** `task`, one of: `"queue"` (customers in arrival order), `"point"` (a fixed `(x, y)` position), `"dedupe"` (remove repeated names), `"phonebook"` (look up a number by name).
-- **Return:** the best structure's name.
-- **Example:** `"queue"` → `"list"`.
+Example: `pick("queue")` returns `"list"`, and `pick("phonebook")` returns `"dict"`.
 """,
               "def pick(task: str) -> str:\n    best = {\"queue\": \"list\", \"point\": \"tuple\", \"dedupe\": \"set\", \"phonebook\": \"dict\"}\n    return best[task]\n",
               [(["queue"], "list"), (["phonebook"], "dict")], [["point"], ["dedupe"]],
@@ -409,23 +378,21 @@ A quick quiz from the market manager. For each job, name the best structure: `"l
 ]
 
 REVIEW = dict(
-    id="review-4", title="Review: the market accounts",
+    id="review-4", title="Review: dicts, sets and tuples",
     intro="""
-A mix of everything from the market: dicts for looking up and counting, sets for uniqueness, tuples for fixed bundles, and choosing between them.
+A mix of everything from this world: dicts for looking up and counting, sets for uniqueness, tuples for fixed bundles, and choosing between them.
 """,
     problems=[
-        P("py-review-loyal-customers", "Loyal Customers", "def loyal(days: List[List[str]]) -> List[str]:",
+        P("py-review-loyal-customers", 'Users Active Every Day', "def loyal(days: List[List[str]]) -> List[str]:",
           """
-Each inner list is one market day's customers. A loyal customer came on **every** day.
+A retention report wants the users who were active on **every** day in the period. Write `loyal(days)`, where each inner list holds one day's active users, to return those users in alphabetical order. There's at least one day.
 
-- **You get:** `days`, at least one day.
-- **Return:** the loyal customers in alphabetical order.
-- **Example:** `[["ada", "bo"], ["bo", "ada", "cy"], ["bo", "ada"]]` → `["ada", "bo"]`.
+Example: `loyal([["ada", "bo"], ["bo", "ada", "cy"], ["bo", "ada"]])` returns `["ada", "bo"]`.
 """,
           "def loyal(days: List[List[str]]) -> List[str]:\n    common = set(days[0])\n    for day in days[1:]:\n        common &= set(day)\n    return sorted(common)\n",
           [([[["ada", "bo"], ["bo", "ada", "cy"], ["bo", "ada"]]], ["ada", "bo"]), ([[["x"]]], ["x"])],
           [[[["a"], ["b"]]], [[["a", "b"], ["b", "a"]]]],
-          hints=["Start with everyone from the first day as possible loyal customers.",
+          hints=["Start with everyone from the first day as possible answers.",
                  "Each following day, keep only the people who also came that day: that's the intersection, `&`.",
                  "Sort what's left at the end."],
           grammar="""
@@ -434,20 +401,18 @@ Each inner list is one market day's customers. A loyal customer came on **every*
 - **All but the first:** `xs[1:]`
 - **Sorted list from a set:** `sorted(s)`
 """),
-        P("py-review-price-changes", "Price Changes", "def changes(old: Dict[str, int], new: Dict[str, int]) -> List[Tuple[str, int]]:",
+        P("py-review-price-changes", 'Price Changes', "def changes(old: Dict[str, int], new: Dict[str, int]) -> List[Tuple[str, int]]:",
           """
-Compare yesterday's and today's price boards. For every item on **both** boards whose price changed, report `(item, change)` where change = new − old.
+A pricing job compares yesterday's and today's price lists. For every product on **both** lists whose price changed, report `(product, change)`, where change is new minus old. Write `changes(old, new)` to return those pairs sorted by product name.
 
-- **You get:** `old` and `new`, item → price.
-- **Return:** the changes sorted by item name.
-- **Example:** `{"jam": 3, "tea": 2}` and `{"jam": 4, "tea": 2, "bun": 1}` → `[("jam", 1)]`.
+Example: `changes({"jam": 3, "tea": 2}, {"jam": 4, "tea": 2, "bun": 1})` returns `[("jam", 1)]`.
 """,
           "def changes(old: Dict[str, int], new: Dict[str, int]) -> List[Tuple[str, int]]:\n    out = []\n    for item in sorted(old.keys() & new.keys()):\n        if old[item] != new[item]:\n            out.append((item, new[item] - old[item]))\n    return out\n",
           [([{"jam": 3, "tea": 2}, {"jam": 4, "tea": 2, "bun": 1}], [["jam", 1]]), ([{}, {}], [])],
           [[{"a": 5}, {"a": 2}], [{"a": 1, "b": 2}, {"b": 5, "a": 1}]],
-          hints=["Only items on both boards matter. Dict key views support set operations, so `&` finds the shared keys.",
-                 "Go through the shared items in alphabetical order.",
-                 "Skip items whose price didn't change; for the rest, record the item with the new price minus the old one."],
+          hints=["Only products on both lists matter. Dict key views support set operations, so `&` finds the shared keys.",
+                 "Go through the shared products in alphabetical order.",
+                 "Skip products whose price didn't change; for the rest, record the product with the new price minus the old one."],
           grammar="""
 ## Building blocks
 - **The keys of a dict:** `d.keys()` (they work like a set).
@@ -455,21 +420,19 @@ Compare yesterday's and today's price boards. For every item on **both** boards 
 - **Not equal:** `!=`
 - **A pair in a list:** `out.append((name, diff))`
 """),
-        P("py-review-busiest-stall", "Busiest Stall", "def busiest(visits: List[Tuple[str, str]]) -> str:",
-          """
-Each visit is a `(customer, stall)` tuple. The busiest stall had the most **different** customers (a customer who visits twice only counts once).
+        P("py-review-busiest-page", "Most Popular Page", "def busiest(visits: List[Tuple[str, str]]) -> str:",
+              """
+An analytics job finds the page with the most **different** visitors. Each visit is a `(user, page)` tuple, and a user who visits a page twice only counts once. Write `busiest(visits)` to return that page; if pages tie, return the one that comes first alphabetically. There's at least one visit.
 
-- **You get:** `visits` (at least one).
-- **Return:** the busiest stall; if tied, the one that comes first alphabetically.
-- **Example:** `[("ada", "jam"), ("ada", "jam"), ("bo", "tea"), ("cy", "tea")]` → `"tea"`.
+Example: `busiest([("ada", "home"), ("ada", "home"), ("bo", "blog"), ("cy", "blog")])` returns `"blog"`.
 """,
-          "def busiest(visits: List[Tuple[str, str]]) -> str:\n    people = {}\n    for who, stall in visits:\n        people.setdefault(stall, set()).add(who)\n    return min(people, key=lambda s: (-len(people[s]), s))\n",
-          [([[("ada", "jam"), ("ada", "jam"), ("bo", "tea"), ("cy", "tea")]], "tea"), ([[("x", "a")]], "a")],
-          [[[("a", "z"), ("b", "y")]], [[("a", "s"), ("b", "s"), ("a", "t")]]],
-          hints=["For each stall, keep a **set** of its customers so repeat visits only count once.",
-                 "A dict from stall to set works well; `setdefault(stall, set())` creates each set the first time.",
-                 "Pick the stall with the biggest set. To break ties alphabetically, compare `(-size, name)` with `min`."],
-          grammar="""
+              "def busiest(visits: List[Tuple[str, str]]) -> str:\n    people = {}\n    for who, page in visits:\n        people.setdefault(page, set()).add(who)\n    return min(people, key=lambda p: (-len(people[p]), p))\n",
+              [([[("ada", "home"), ("ada", "home"), ("bo", "blog"), ("cy", "blog")]], "blog"), ([[("x", "a")]], "a")],
+              [[[("a", "z"), ("b", "y")]], [[("a", "s"), ("b", "s"), ("a", "t")]]],
+              hints=["For each page, keep a **set** of its visitors so repeat visits only count once.",
+                     "A dict from page to set works well; `setdefault(page, set())` creates each set the first time.",
+                     "Pick the page with the biggest set. To break ties alphabetically, compare `(-size, name)` with `min`."],
+              grammar="""
 ## Building blocks
 - **Get or create a value:** `d.setdefault(k, set())` returns the stored set, creating it the first time.
 - **Add to a set:** `s.add(x)`

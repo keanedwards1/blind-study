@@ -23,14 +23,11 @@ A **dict** maps keys to values: `ages = {"ada": 36, "bo": 4}`.
 The **counting pattern**: `counts[x] = counts.get(x, 0) + 1`.
 """,
             problems=[
-                P("py-price-lookup", 'The Market Price Board', "def price(prices: Dict[str, int], item: str) -> int:",
+                P("py-price-lookup", 'Look Up a Price', "def price(prices: Dict[str, int], item: str) -> int:",
                   """
-The forest market keeps its prices on a board: a dict from item name to price in acorns. Customers ask about all sorts of things, including items the market doesn't sell.
+A checkout service keeps its prices in a dict from product name to price. Write `price(prices, item)` to return the price of `item`, or `0` if the store doesn't sell it.
 
-- **You get:** `prices` (item name → price) and the `item` someone asked about.
-- **Return:** that item's price, or `0` if it isn't on the board.
-- **Example:** `{"tea": 3, "jam": 5}` and `"jam"` → `5`; asking for `"cake"` → `0`.
-- **Watch out:** asking for a missing item must not crash.
+Example: `price({"tea": 3, "jam": 5}, "jam")` returns `5`, and `price({"tea": 3}, "cake")` returns `0`.
 """,
                   "def price(prices: Dict[str, int], item: str) -> int:\n    return prices.get(item, 0)\n",
                   [([{"tea": 3, "jam": 5}, "jam"], 5), ([{"tea": 3}, "cake"], 0)], [[{}, "x"], [{"a": 0}, "a"]],
@@ -40,14 +37,11 @@ The forest market keeps its prices on a board: a dict from item name to price in
 - **Read with a default:** `prices.get(item, 0)`
 - **Compare:** `prices[item]` raises `KeyError` if it's missing.
 """),
-                P("py-word-frequencies", 'Tally the Shouts', "def frequencies(words: List[str]) -> Dict[str, int]:",
+                P("py-word-frequencies", 'Count Word Frequencies', "def frequencies(words: List[str]) -> Dict[str, int]:",
                   """
-Stallholders shout what they're selling all morning, and you've written every shout down. Now count how often each word came up.
+A search feature needs to know how often each word appears in a document. Write `frequencies(words)` to return a dict from each word to the number of times it appears. Count with a plain dict (don't use `Counter`).
 
-- **You get:** `words`, a list of words in the order you heard them.
-- **Return:** a dict mapping each word to how many times it appears.
-- **Example:** `["a", "b", "a"]` → `{"a": 2, "b": 1}`.
-- **Watch out:** an empty list gives an empty dict. Count it yourself (don't use `Counter`).
+Example: `frequencies(["a", "b", "a"])` returns `{"a": 2, "b": 1}`. An empty list gives `{}`.
 """,
                   "def frequencies(words: List[str]) -> Dict[str, int]:\n    counts = {}\n    for w in words:\n        counts[w] = counts.get(w, 0) + 1\n    return counts\n",
                   [([["a", "b", "a"]], {"a": 2, "b": 1}), ([[]], {})], [[["x"] * 5], [["to", "be", "or", "not", "to", "be"]]],
@@ -58,13 +52,11 @@ Stallholders shout what they're selling all morning, and you've written every sh
 - **Read with a default:** `d.get(key, 0)`
 - **Store under a key:** `d[key] = value`
 """),
-                P("py-invert-dict", 'The Translation Card', "def invert(d: Dict[str, str]) -> Dict[str, str]:",
+                P("py-invert-dict", 'Invert a Lookup Table', "def invert(d: Dict[str, str]) -> Dict[str, str]:",
                   """
-The market's translation card turns each forest word into a city word. A visitor from the city needs it the other way round.
+A config maps internal codes to display names, and you need the reverse mapping too. Write `invert(d)` to return a new dict where each value becomes a key and each key becomes its value. The values are all different.
 
-- **You get:** `d`, mapping forest words to city words. Every city word is different.
-- **Return:** a new dict mapping each city word back to its forest word.
-- **Example:** `{"a": "x", "b": "y"}` → `{"x": "a", "y": "b"}`.
+Example: `invert({"a": "x", "b": "y"})` returns `{"x": "a", "y": "b"}`.
 """,
                   "def invert(d: Dict[str, str]) -> Dict[str, str]:\n    out = {}\n    for k, v in d.items():\n        out[v] = k\n    return out\n",
                   [([{"a": "x", "b": "y"}], {"x": "a", "y": "b"}), ([{}], {})], [[{"one": "1"}]],
@@ -73,13 +65,11 @@ The market's translation card turns each forest word into a city word. A visitor
 - **Key and value together:** `for cap, value in mapping.items():`
 - **Store the other way round:** `acc[x] = kk`
 """),
-                P("py-first-repeat", "Haven't I Heard That?", "def first_repeat(words: List[str]) -> str:",
+                P("py-first-repeat", 'Find the First Repeated Word', "def first_repeat(words: List[str]) -> str:",
                   """
-The market parrot repeats things, but only some things. Reading its chatter from left to right, find the first word it says a **second** time.
+A spell checker flags the first word that appears twice in a sentence. Write `first_repeat(words)` to return the first word that you see for a second time, reading left to right, or `""` if no word repeats.
 
-- **You get:** `words`, the parrot's chatter in order.
-- **Return:** the first word you meet for the second time, or `""` if it never repeats itself.
-- **Example:** `["a", "b", "c", "b", "a"]` → `"b"` (you hear `b` again before you hear `a` again).
+Example: `first_repeat(["a", "b", "c", "b", "a"])` returns `"b"`, because the second `b` comes before the second `a`.
 """,
                   'def first_repeat(words: List[str]) -> str:\n    seen = {}\n    for w in words:\n        if w in seen:\n            return w\n        seen[w] = True\n    return ""\n',
                   [([["a", "b", "c", "b", "a"]], "b"), ([["x", "y"]], "")], [[[]], [["z", "z"]]],
@@ -114,13 +104,11 @@ The market parrot repeats things, but only some things. Reading its chatter from
 Dicts remember the order keys were added. Looping over a dict gives its keys.
 """,
             problems=[
-                P("py-total-stock", 'Count the Crates', "def total_stock(stock: Dict[str, int]) -> int:",
+                P("py-total-stock", 'Total the Inventory', "def total_stock(stock: Dict[str, int]) -> int:",
                   """
-At closing time the storekeeper wants one number: how many crates are left in total, whatever is in them.
+An inventory report needs the total number of units in stock across all products. Write `total_stock(stock)`, where `stock` maps product names to quantities, and return the total.
 
-- **You get:** `stock`, mapping each item to how many crates of it there are.
-- **Return:** the total number of crates.
-- **Example:** `{"apples": 3, "pears": 4}` → `7`. An empty store has `0`.
+Example: `total_stock({"apples": 3, "pears": 4})` returns `7`. An empty dict returns `0`.
 """,
                   "def total_stock(stock: Dict[str, int]) -> int:\n    return sum(stock.values())\n",
                   [([{"apples": 3, "pears": 4}], 7), ([{}], 0)], [[{"x": -1, "y": 1}]],
@@ -130,13 +118,11 @@ At closing time the storekeeper wants one number: how many crates are left in to
 - **Just the values:** `stock.values()`
 - **Add them:** `sum(...)`
 """),
-                P("py-sorted-keys", 'Alphabetise the Stalls', "def sorted_keys(d: Dict[str, int]) -> List[str]:",
+                P("py-sorted-keys", 'Sort the Keys', "def sorted_keys(d: Dict[str, int]) -> List[str]:",
                   """
-The new market map should list the stalls in alphabetical order.
+A settings page lists its options alphabetically. Write `sorted_keys(d)` to return the dict's keys as a list in alphabetical order.
 
-- **You get:** `d`, mapping stall names to their pitch numbers.
-- **Return:** a list of the stall names in alphabetical order.
-- **Example:** `{"b": 1, "a": 2}` → `["a", "b"]`.
+Example: `sorted_keys({"b": 1, "a": 2})` returns `["a", "b"]`.
 """,
                   "def sorted_keys(d: Dict[str, int]) -> List[str]:\n    return sorted(d)\n",
                   [([{"b": 1, "a": 2}], ["a", "b"]), ([{}], [])], [[{"z": 0, "m": 0, "a": 0}]],
@@ -144,14 +130,11 @@ The new market map should list the stalls in alphabetical order.
 ## Building blocks
 - **Looping over a dict gives keys:** so `sorted(d)` sorts the keys.
 """),
-                P("py-merge-settings", 'House Rules', "def merge(defaults: Dict[str, int], overrides: Dict[str, int]) -> Dict[str, int]:",
+                P("py-merge-settings", 'Merge Settings', "def merge(defaults: Dict[str, int], overrides: Dict[str, int]) -> Dict[str, int]:",
                   """
-Every stall starts with the market's default settings, and a stall can override some of them with its own rules.
+An app starts from default settings and lets each user override some of them. Write `merge(defaults, overrides)` to return a new dict with every default, replaced by the user's value wherever they set one. Keys that appear only in `overrides` are included too. Don't change either input dict.
 
-- **You get:** `defaults` and `overrides`, both dicts from setting name to value.
-- **Return:** a **new** dict with every default, replaced by the override wherever the stall set one. Any extra keys in `overrides` are included too.
-- **Example:** `{"size": 10, "bold": 0}` with `{"bold": 1}` → `{"size": 10, "bold": 1}`.
-- **Watch out:** don't change either of the dicts you were given.
+Example: `merge({"size": 10, "bold": 0}, {"bold": 1})` returns `{"size": 10, "bold": 1}`.
 """,
                   "def merge(defaults: Dict[str, int], overrides: Dict[str, int]) -> Dict[str, int]:\n    out = dict(defaults)\n    out.update(overrides)\n    return out\n",
                   [([{"size": 10, "bold": 0}, {"bold": 1}], {"size": 10, "bold": 1}), ([{}, {"a": 1}], {"a": 1})], [[{"a": 1}, {}]],
@@ -162,13 +145,11 @@ Every stall starts with the market's default settings, and a stall can override 
 - **Copy keys across:** `result.update(changes)`
 - **Shortcut you'll see:** `{**defaults, **overrides}`
 """),
-                P("py-pop-key", 'Sold!', "def take(d: Dict[str, int], key: str) -> List:",
+                P("py-pop-key", 'Remove a Key and Keep Its Value', "def take(d: Dict[str, int], key: str) -> List:",
                   """
-When an item sells, it comes off the shelf and you note its price.
+When a cart item is removed, the cart code needs the item's price for a refund. Write `take(d, key)` to remove `key` from `d` and return `[its value, the dict afterwards]`. If the key isn't there, return `[None, d]` with the dict unchanged.
 
-- **You get:** `d` (the shelf: item → price) and the `key` of the item that sold.
-- **Return:** a list `[price, shelf afterwards]`. If the item isn't on the shelf, return `[None, d]` with the shelf unchanged.
-- **Example:** `{"a": 1, "b": 2}` and `"a"` → `[1, {"b": 2}]`.
+Example: `take({"a": 1, "b": 2}, "a")` returns `[1, {"b": 2}]`.
 """,
                   "def take(d: Dict[str, int], key: str) -> List:\n    value = d.pop(key, None)\n    return [value, d]\n",
                   [([{"a": 1, "b": 2}, "a"], [1, {"b": 2}]), ([{"a": 1}, "z"], [None, {"a": 1}])], [[{}, "x"]],
@@ -177,13 +158,11 @@ When an item sells, it comes off the shelf and you note its price.
 ## Building blocks
 - **Remove and return, with a default:** `d.pop(key, None)`. Without the default, a missing key raises `KeyError`.
 """),
-                P("py-group-by-initial", 'Shelves by Letter', "def by_initial(words: List[str]) -> Dict[str, List[str]]:",
+                P("py-group-by-initial", 'Group Names by First Letter', "def by_initial(words: List[str]) -> Dict[str, List[str]]:",
                   """
-The market library shelves its recipe cards by first letter, keeping the cards on each shelf in the order they arrived.
+A contacts screen shows names under a heading for each first letter. Write `by_initial(words)` to return a dict from each first letter to the list of words that start with it, keeping the words in their original order. No word is empty.
 
-- **You get:** `words`, the recipe names in arrival order. None is empty.
-- **Return:** a dict mapping each first letter to the list of names that start with it.
-- **Example:** `["apple", "bean", "avocado"]` → `{"a": ["apple", "avocado"], "b": ["bean"]}`.
+Example: `by_initial(["apple", "bean", "avocado"])` returns `{"a": ["apple", "avocado"], "b": ["bean"]}`.
 """,
                   "def by_initial(words: List[str]) -> Dict[str, List[str]]:\n    groups = {}\n    for w in words:\n        groups.setdefault(w[0], []).append(w)\n    return groups\n",
                   [([["apple", "bean", "avocado"]], {"a": ["apple", "avocado"], "b": ["bean"]}), ([[]], {})], [[["x", "y", "x"]]],
@@ -193,13 +172,11 @@ The market library shelves its recipe cards by first letter, keeping the cards o
 - **Get the list, creating it if missing:** `groups.setdefault(key, [])`
 - **Then add to it:** `.append(w)` on what `setdefault` returns.
 """),
-                P("py-zip-to-dict", 'Pair the Labels', "def to_dict(keys: List[str], values: List[int]) -> Dict[str, int]:",
+                P("py-zip-to-dict", 'Build a Dict from Two Lists', "def to_dict(keys: List[str], values: List[int]) -> Dict[str, int]:",
                   """
-Two lists came back from the stocktake: the item labels and, in the same order, the counts.
+A CSV import gives you the column names in one list and a row's values in another, in the same order. Write `to_dict(keys, values)` to pair them up in a dict. The lists are the same length.
 
-- **You get:** `keys` and `values`, the same length.
-- **Return:** a dict pairing each label with the count at the same position.
-- **Example:** `["a", "b"]` and `[1, 2]` → `{"a": 1, "b": 2}`.
+Example: `to_dict(["a", "b"], [1, 2])` returns `{"a": 1, "b": 2}`.
 """,
                   "def to_dict(keys: List[str], values: List[int]) -> Dict[str, int]:\n    return dict(zip(keys, values))\n",
                   [([["a", "b"], [1, 2]], {"a": 1, "b": 2}), ([[], []], {})], [[["x", "x"], [1, 2]]],
@@ -230,13 +207,11 @@ A **set** holds unique values with no order: `{1, 2, 3}`.
 - `x in s` is O(1), much faster than `x in some_list`, which checks every item.
 """,
             problems=[
-                P("py-unique-count", 'How Many Kinds?', "def distinct(items: List[int]) -> int:",
+                P("py-unique-count", 'Count Distinct Values', "def distinct(items: List[int]) -> int:",
                   """
-A basket of mushrooms holds lots of repeats. The forager wants to know how many **different** kinds are in it.
+An analytics dashboard shows how many different user IDs appeared in a log. Write `distinct(items)` to return the number of different values in the list.
 
-- **You get:** `items`, a list of mushroom numbers (repeats allowed).
-- **Return:** how many different values there are.
-- **Example:** `[1, 2, 2, 3, 3, 3]` → `3`. An empty basket has `0`.
+Example: `distinct([1, 2, 2, 3, 3, 3])` returns `3`. An empty list returns `0`.
 """,
                   "def distinct(items: List[int]) -> int:\n    return len(set(items))\n",
                   [([[1, 2, 2, 3, 3, 3]], 3), ([[]], 0)], [[[7] * 10], [list(range(50))]],
@@ -246,14 +221,11 @@ A basket of mushrooms holds lots of repeats. The forager wants to know how many 
 - **Drop duplicates:** `set(items)`
 - **Count:** `len(...)`
 """),
-                P("py-dedupe-keep-order", 'The Guest Book', "def dedupe(items: List[int]) -> List[int]:",
+                P("py-dedupe-keep-order", 'Remove Duplicates, Keep Order', "def dedupe(items: List[int]) -> List[int]:",
                   """
-Some visitors signed the guest book more than once. Keep each name the first time it appears, in the order people signed.
+A mailing list has some addresses more than once. Write `dedupe(items)` to return the list with duplicates removed, keeping the first occurrence of each value in its original order.
 
-- **You get:** `items`, the signatures in order (as numbers).
-- **Return:** the list without repeats, keeping first appearances in their original order.
-- **Example:** `[3, 1, 3, 2, 1]` → `[3, 1, 2]`.
-- **Watch out:** a set alone loses the order.
+Example: `dedupe([3, 1, 3, 2, 1])` returns `[3, 1, 2]`. A plain set would lose the order.
 """,
                   "def dedupe(items: List[int]) -> List[int]:\n    seen = set()\n    out = []\n    for x in items:\n        if x not in seen:\n            seen.add(x)\n            out.append(x)\n    return out\n",
                   [([[3, 1, 3, 2, 1]], [3, 1, 2]), ([[]], [])], [[[5, 5, 5]], [[1, 2, 3]]],
@@ -265,13 +237,11 @@ Some visitors signed the guest book more than once. Keep each name the first tim
 - **Not seen yet:** `if item not in met:`
 - **Remember it:** `visited.add(val)`
 """),
-                P("py-unique-letters-set", "Sign-Painter's Letters", "def letters(word: str) -> Set[str]:",
+                P("py-unique-letters-set", 'Letters Used in a Word', "def letters(word: str) -> Set[str]:",
                   """
-The sign-painter only needs one stencil per letter, however many times it's used.
+A word game needs the set of letters in the player's word. Write `letters(word)` to return the set of its letters.
 
-- **You get:** `word`, the text of the sign.
-- **Return:** the **set** of its letters.
-- **Example:** `"hello"` → `{"h", "e", "l", "o"}`. An empty sign needs `set()`.
+Example: `letters("hello")` returns `{"h", "e", "l", "o"}`, and `letters("")` returns `set()`.
 """,
                   "def letters(word: str) -> Set[str]:\n    return set(word)\n",
                   [(["hello"], {"h", "e", "l", "o"}), ([""], set())], [["aaa"], ["abc"]],
@@ -303,13 +273,11 @@ The sign-painter only needs one stencil per letter, however many times it's used
 `a <= b` asks "is every item of `a` also in `b`?" (subset).
 """,
             problems=[
-                P("py-in-both", 'Stocked at Both Stalls', "def both(a: List[int], b: List[int]) -> Set[int]:",
+                P("py-in-both", 'Values in Both Lists', "def both(a: List[int], b: List[int]) -> Set[int]:",
                   """
-Two stalls want to know which products they *both* sell, so they can agree on a price.
+Two teams each have a list of tags they use. Write `both(a, b)` to return the set of tags that appear in both lists.
 
-- **You get:** `a` and `b`, each stall's product numbers.
-- **Return:** the set of products found in both lists.
-- **Example:** `[1, 2, 3]` and `[2, 3, 4]` → `{2, 3}`.
+Example: `both([1, 2, 3], [2, 3, 4])` returns `{2, 3}`.
 """,
                   "def both(a: List[int], b: List[int]) -> Set[int]:\n    return set(a) & set(b)\n",
                   [([[1, 2, 3], [2, 3, 4]], {2, 3}), ([[1], [2]], set())], [[[], []], [[5, 5], [5]]],
@@ -319,13 +287,11 @@ Two stalls want to know which products they *both* sell, so they can agree on a 
 - **Make sets:** `set(a)`, `set(b)`
 - **Intersection:** `&`
 """),
-                P("py-in-either", 'The Combined Catalogue', "def either(a: List[int], b: List[int]) -> Set[int]:",
+                P("py-in-either", 'Values in Either List', "def either(a: List[int], b: List[int]) -> Set[int]:",
                   """
-The two stalls are printing one catalogue together. Every product either of them sells goes in, once.
+Two data sources each list some product IDs, and the merged catalogue needs every ID once. Write `either(a, b)` to return the set of values that appear in at least one list.
 
-- **You get:** `a` and `b`, each stall's product numbers.
-- **Return:** the set of products in at least one list.
-- **Example:** `[1, 2]` and `[2, 3]` → `{1, 2, 3}`.
+Example: `either([1, 2], [2, 3])` returns `{1, 2, 3}`.
 """,
                   "def either(a: List[int], b: List[int]) -> Set[int]:\n    return set(a) | set(b)\n",
                   [([[1, 2], [2, 3]], {1, 2, 3}), ([[], []], set())], [[[1], []]],
@@ -334,13 +300,11 @@ The two stalls are printing one catalogue together. Every product either of them
 ## Building blocks
 - **Union:** `{1, 2} | {2, 3}` gives `{1, 2, 3}`.
 """),
-                P("py-only-in-first", "Who's Still Missing?", "def missing(invited: List[str], arrived: List[str]) -> List[str]:",
+                P("py-only-in-first", "Who Hasn't Checked In", "def missing(invited: List[str], arrived: List[str]) -> List[str]:",
                   """
-The market feast is starting. Check the invitations against the people who've arrived.
+An event app compares the guest list with the people who have checked in. Write `missing(invited, arrived)` to return the invited guests who haven't arrived, in alphabetical order.
 
-- **You get:** `invited` and `arrived`, two lists of names.
-- **Return:** the invited guests who haven't arrived, in alphabetical order.
-- **Example:** `["ada", "bo", "cy"]` and `["bo"]` → `["ada", "cy"]`.
+Example: `missing(["ada", "bo", "cy"], ["bo"])` returns `["ada", "cy"]`.
 """,
                   "def missing(invited: List[str], arrived: List[str]) -> List[str]:\n    return sorted(set(invited) - set(arrived))\n",
                   [([["ada", "bo", "cy"], ["bo"]], ["ada", "cy"]), ([["a"], ["a"]], [])], [[[], ["x"]], [["z", "y"], []]],
@@ -350,13 +314,11 @@ The market feast is starting. Check the invitations against the people who've ar
 - **Difference:** `{1, 2, 3} - {2}` gives `{1, 3}`.
 - **Sorted list from a set:** `sorted(...)`
 """),
-                P("py-in-exactly-one", 'Swap Meet', "def exactly_one(a: List[int], b: List[int]) -> List[int]:",
+                P("py-in-exactly-one", 'Values in Exactly One List', "def exactly_one(a: List[int], b: List[int]) -> List[int]:",
                   """
-Two traders compare their collections. Anything only *one* of them owns is up for swapping.
+A sync tool compares the file IDs on two machines and needs the ones that exist on only one of them. Write `exactly_one(a, b)` to return those values in increasing order.
 
-- **You get:** `a` and `b`, each trader's item numbers.
-- **Return:** the items in one list but not the other, in increasing order.
-- **Example:** `[1, 2, 3]` and `[3, 4]` → `[1, 2, 4]`.
+Example: `exactly_one([1, 2, 3], [3, 4])` returns `[1, 2, 4]`.
 """,
                   "def exactly_one(a: List[int], b: List[int]) -> List[int]:\n    return sorted(set(a) ^ set(b))\n",
                   [([[1, 2, 3], [3, 4]], [1, 2, 4]), ([[1], [1]], [])], [[[], [1, 1]], [[5, 6], [7, 8]]],
@@ -365,13 +327,11 @@ Two traders compare their collections. Anything only *one* of them owns is up fo
 ## Building blocks
 - **Symmetric difference:** `{1, 2} ^ {2, 3}` gives `{1, 3}`.
 """),
-                P("py-is-subset", 'Can We Bake It?', "def can_make(needed: List[str], have: List[str]) -> bool:",
+                P("py-is-subset", 'Check the Ingredients', "def can_make(needed: List[str], have: List[str]) -> bool:",
                   """
-The baker has a recipe and a pantry. The recipe can be made if every ingredient it needs is somewhere in the pantry. How much of each doesn't matter.
+A recipe app checks whether you can cook a dish with what's in your pantry. Write `can_make(needed, have)` to return `True` if every ingredient in `needed` appears somewhere in `have`. Quantities don't matter.
 
-- **You get:** `needed` (the recipe's ingredients) and `have` (what's in the pantry).
-- **Return:** `True` if every needed ingredient is in the pantry, otherwise `False`.
-- **Example:** `["egg", "milk"]` and `["milk", "egg", "flour"]` → `True`.
+Example: `can_make(["egg", "milk"], ["milk", "egg", "flour"])` returns `True`, and `can_make(["egg"], [])` returns `False`.
 """,
                   "def can_make(needed: List[str], have: List[str]) -> bool:\n    return set(needed) <= set(have)\n",
                   [([["egg", "milk"], ["milk", "egg", "flour"]], True), ([["egg"], []], False), ([[], []], True)], [[["a", "a"], ["a"]]],
@@ -402,13 +362,11 @@ A **tuple** is like a list that can't change: `point = (3, 4)`.
 - `tuple(items)` converts. Functions often return several values as a tuple: `return low, high`.
 """,
             problems=[
-                P("py-swap-pair", 'Trade Places', "def swap(a: int, b: int) -> Tuple[int, int]:",
+                P("py-swap-pair", 'Swap Two Values', "def swap(a: int, b: int) -> Tuple[int, int]:",
                   """
-Two stallholders swap pitches for the day.
+A sorting routine needs a helper that swaps a pair. Write `swap(a, b)` to return the tuple `(b, a)`.
 
-- **You get:** two numbers, `a` and `b`.
-- **Return:** the tuple `(b, a)`.
-- **Example:** `1, 2` → `(2, 1)`.
+Example: `swap(1, 2)` returns `(2, 1)`.
 """,
                   "def swap(a: int, b: int) -> Tuple[int, int]:\n    return b, a\n",
                   [([1, 2], (2, 1)), ([0, 0], (0, 0))], [[-1, 5]],
@@ -418,13 +376,11 @@ Two stallholders swap pitches for the day.
 - **Return a tuple:** `return q, p`. The comma makes the tuple; brackets are optional.
 - **This task checks the type:** `[b, a]` is a list, so it won't pass.
 """),
-                P("py-min-max-tuple", 'Cheapest and Dearest', "def low_high(nums: List[int]) -> Tuple[int, int]:",
+                P("py-min-max-tuple", 'Smallest and Largest', "def low_high(nums: List[int]) -> Tuple[int, int]:",
                   """
-A shopper wants the cheapest and the most expensive price on the board in one go.
+A chart needs the lowest and highest values to set its axis. Write `low_high(nums)` to return `(smallest, largest)` as a tuple. The list has at least one number.
 
-- **You get:** `nums`, the prices (at least one).
-- **Return:** the tuple `(cheapest, dearest)`.
-- **Example:** `[3, 1, 2]` → `(1, 3)`. With a single price, both are that price.
+Example: `low_high([3, 1, 2])` returns `(1, 3)`, and `low_high([5])` returns `(5, 5)`.
 """,
                   "def low_high(nums: List[int]) -> Tuple[int, int]:\n    return min(nums), max(nums)\n",
                   [([[3, 1, 2]], (1, 3)), ([[5]], (5, 5))], [[[-1, -9, 4]]],
@@ -433,13 +389,11 @@ A shopper wants the cheapest and the most expensive price on the board in one go
 ## Building blocks
 - **Return two results at once:** `return a, b` returns a tuple.
 """),
-                P("py-head-tail", 'First in the Queue', "def head_tail(items: List[int]) -> Tuple:",
+                P("py-head-tail", 'First Item and the Rest', "def head_tail(items: List[int]) -> Tuple:",
                   """
-The market queue: serve the person at the front and keep the rest waiting in order.
+A job queue processes the first job and keeps the rest waiting. Write `head_tail(items)` to return a tuple `(first item, list of the rest)`, using star unpacking. The list has at least one item.
 
-- **You get:** `items`, the queue (at least one person).
-- **Return:** a tuple `(first person, list of everyone else)`. Use star unpacking.
-- **Example:** `[1, 2, 3]` → `(1, [2, 3])`; `[9]` → `(9, [])`.
+Example: `head_tail([1, 2, 3])` returns `(1, [2, 3])`, and `head_tail([9])` returns `(9, [])`.
 """,
                   "def head_tail(items: List[int]) -> Tuple:\n    first, *rest = items\n    return first, rest\n",
                   [([[1, 2, 3]], (1, [2, 3])), ([[9]], (9, []))], [[[0, 0]]],
@@ -449,13 +403,11 @@ The market queue: serve the person at the front and keep the rest waiting in ord
 - **Star unpacking:** `leader, *remainder = things`. `remainder` is always a list.
 - **Return both:** `return one, tail_items`
 """),
-                P("py-distance-tuples", 'As the Crow Flies', "def distance(p: Tuple[int, int], q: Tuple[int, int]) -> float:",
+                P("py-distance-tuples", 'Distance Between Two Points', "def distance(p: Tuple[int, int], q: Tuple[int, int]) -> float:",
                   """
-The market map gives each stall as `(x, y)` coordinates. How far is it in a straight line from one stall to another?
+A map feature stores locations as `(x, y)` tuples. Write `distance(p, q)` to return the straight-line distance between two of them: √((x₁−x₂)² + (y₁−y₂)²).
 
-- **You get:** `p` and `q`, two `(x, y)` tuples.
-- **Return:** the straight-line distance: √((x₁−x₂)² + (y₁−y₂)²).
-- **Example:** `(0, 0)` and `(3, 4)` → `5.0`.
+Example: `distance((0, 0), (3, 4))` returns `5.0`.
 """,
                   "def distance(p: Tuple[int, int], q: Tuple[int, int]) -> float:\n    (x1, y1), (x2, y2) = p, q\n    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5\n",
                   [([(0, 0), (3, 4)], 5.0), ([(1, 1), (1, 1)], 0.0)], [[(-1, -1), (2, 3)], [(0, 0), (1, 1)]],
@@ -465,13 +417,11 @@ The market map gives each stall as `(x, y)` coordinates. How far is it in a stra
 - **Unpack a tuple:** `ax, ay = pt`
 - **Square root:** `** 0.5` (or `math.sqrt`).
 """),
-                P("py-tuple-from-list", 'Seal the Order', "def freeze(items: List[int]) -> Tuple[int, ...]:",
+                P("py-tuple-from-list", 'Make a List Read-Only', "def freeze(items: List[int]) -> Tuple[int, ...]:",
                   """
-Once an order is confirmed it mustn't change, so it's stored as a tuple instead of a list.
+Once an order is confirmed it shouldn't change, so it's stored as a tuple. Write `freeze(items)` to return the items as a tuple.
 
-- **You get:** `items`, the order as a list.
-- **Return:** the same items as a tuple.
-- **Example:** `[1, 2]` → `(1, 2)`; `[]` → `()`.
+Example: `freeze([1, 2])` returns `(1, 2)`, and `freeze([])` returns `()`.
 """,
                   "def freeze(items: List[int]) -> Tuple[int, ...]:\n    return tuple(items)\n",
                   [([[1, 2]], (1, 2)), ([[]], ()), ([[7]], (7,))], [[[3, 3, 3]]],
@@ -502,14 +452,11 @@ Dict keys and set items must be **hashable**: Python computes `hash(x)` to find 
 - Equal values always have equal hashes: `hash("abc") == hash("abc")`.
 """,
             problems=[
-                P("py-distinct-points", 'Pitch Map', "def distinct_points(points: List[List[int]]) -> int:",
+                P("py-distinct-points", 'Count Distinct Points', "def distinct_points(points: List[List[int]]) -> int:",
                   """
-Stalls report where they set up as `[x, y]` pairs, and some reported the same spot twice.
+A drawing app records every click as an `[x, y]` pair, and some clicks land on the same spot. Write `distinct_points(points)` to return how many different spots were clicked.
 
-- **You get:** `points`, a list of `[x, y]` pairs.
-- **Return:** how many different spots there are.
-- **Example:** `[[1, 2], [3, 4], [1, 2]]` → `2`.
-- **Watch out:** lists can't go in a set, but tuples can.
+Example: `distinct_points([[1, 2], [3, 4], [1, 2]])` returns `2`. Lists can't go in a set, but tuples can.
 """,
                   "def distinct_points(points: List[List[int]]) -> int:\n    return len({tuple(p) for p in points})\n",
                   [([[[1, 2], [3, 4], [1, 2]]], 2), ([[]], 0)], [[[[0, 0]] * 5], [[[1, 2], [2, 1]]]],
@@ -520,13 +467,11 @@ Stalls report where they set up as `[x, y]` pairs, and some reported the same sp
 - **Hashable version of a list:** `tuple(p)`
 - **Collect into a set:** `seen.add(tuple(p))`, then `len(seen)`.
 """),
-                P("py-point-counts", 'Busiest Spots', "def point_counts(points: List[List[int]]) -> Dict:",
+                P("py-point-counts", 'Count Clicks per Point', "def point_counts(points: List[List[int]]) -> Dict:",
                   """
-Count how many stalls set up at each spot on the market map.
+A heatmap needs to know how many clicks landed on each spot. Write `point_counts(points)` to return a dict from each spot, as an `(x, y)` tuple, to how many times it appears.
 
-- **You get:** `points`, a list of `[x, y]` pairs.
-- **Return:** a dict mapping each spot, as an `(x, y)` tuple, to how many times it appears.
-- **Example:** `[[1, 2], [1, 2], [0, 0]]` → `{(1, 2): 2, (0, 0): 1}`.
+Example: `point_counts([[1, 2], [1, 2], [0, 0]])` returns `{(1, 2): 2, (0, 0): 1}`.
 """,
                   "def point_counts(points: List[List[int]]) -> Dict:\n    counts = {}\n    for p in points:\n        key = tuple(p)\n        counts[key] = counts.get(key, 0) + 1\n    return counts\n",
                   [([[[1, 2], [1, 2], [0, 0]]], {(1, 2): 2, (0, 0): 1}), ([[]], {})], [[[[5, 5]]]],
@@ -536,13 +481,11 @@ Count how many stalls set up at each spot on the market map.
 - **Tuple keys:** `counts[tuple(p)]`
 - **Counting pattern:** `counts.get(key, 0) + 1`
 """),
-                P("py-same-letter-set", 'Same Stencils', "def same_letters(a: str, b: str) -> bool:",
+                P("py-same-letter-set", 'Same Set of Letters', "def same_letters(a: str, b: str) -> bool:",
                   """
-Two signs can share a stencil set if they use exactly the same letters (how many times doesn't matter).
+A word puzzle checks whether two words use exactly the same letters, ignoring how many times each appears. Write `same_letters(a, b)` using `frozenset`.
 
-- **You get:** two words, `a` and `b`.
-- **Return:** `True` if they use the same set of letters. Use `frozenset`.
-- **Example:** `"listen"` and `"silent"` → `True`; `"aab"` and `"ab"` → `True`.
+Example: `same_letters("listen", "silent")` returns `True`, and so does `same_letters("aab", "ab")`.
 """,
                   "def same_letters(a: str, b: str) -> bool:\n    return frozenset(a) == frozenset(b)\n",
                   [(["listen", "silent"], True), (["aab", "ab"], True), (["abc", "abd"], False)], [["", ""], ["a", ""]],
@@ -552,13 +495,11 @@ Two signs can share a stencil set if they use exactly the same letters (how many
 - **An unchangeable set:** `frozenset(a)`
 - **Sets compare by contents:** `frozenset("ab") == frozenset("ba")` is `True`.
 """),
-                P("py-group-by-letter-set", 'Stencil Groups', "def group_letter_sets(words: List[str]) -> List[List[str]]:",
+                P("py-group-by-letter-set", 'Group Words by Their Letters', "def group_letter_sets(words: List[str]) -> List[List[str]]:",
                   """
-Group the market's sign words so that words using the same set of letters share one stencil kit.
+A word puzzle groups words that use the same set of letters. Write `group_letter_sets(words)` to return the groups as a list of lists, in the order each group's first word appears, with each group's words in their original order.
 
-- **You get:** `words`.
-- **Return:** a list of groups, in the order each group's first word appears, with each group's words in their original order.
-- **Example:** `["ab", "ba", "aab", "c"]` → `[["ab", "ba", "aab"], ["c"]]`.
+Example: `group_letter_sets(["ab", "ba", "aab", "c"])` returns `[["ab", "ba", "aab"], ["c"]]`.
 """,
                   "def group_letter_sets(words: List[str]) -> List[List[str]]:\n    groups = {}\n    for w in words:\n        groups.setdefault(frozenset(w), []).append(w)\n    return list(groups.values())\n",
                   [([["ab", "ba", "aab", "c"]], [["ab", "ba", "aab"], ["c"]]), ([[]], [])], [[["x", "y", "xy", "yx", "x"]]],
@@ -569,13 +510,11 @@ Group the market's sign words so that words using the same set of letters share 
 - **Group:** `groups.setdefault(key, []).append(w)`
 - **Groups in first-seen order:** `list(groups.values())`
 """),
-                P("py-hash-equal", 'Matching Fingerprints', "def same_hash(a: str, b: str) -> bool:",
+                P("py-hash-equal", 'Compare Hashes', "def same_hash(a: str, b: str) -> bool:",
                   """
-Dicts and sets find things by their "fingerprint" (their hash). Equal words always get the same fingerprint.
+Dicts and sets look values up by their hash. Write `same_hash(a, b)` to return whether `hash(a) == hash(b)`. Equal strings always hash the same.
 
-- **You get:** two words, `a` and `b`.
-- **Return:** whether their hashes are equal.
-- **Example:** `"abc"` and `"abc"` → `True`; `"abc"` and `"abd"` → `False`.
+Example: `same_hash("abc", "abc")` returns `True`, and `same_hash("abc", "abd")` returns `False`.
 """,
                   "def same_hash(a: str, b: str) -> bool:\n    return hash(a) == hash(b)\n",
                   [(["abc", "abc"], True), (["abc", "abd"], False)], [["", ""], ["a", "A"]],

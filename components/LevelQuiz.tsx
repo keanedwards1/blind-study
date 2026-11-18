@@ -14,6 +14,7 @@ import { ambienceFor, WORLD_THEME } from "./game/theme";
 import { Button } from "./game/ui";
 import { FallingRound, LightningRound, MatchRound, PredictRound, type RoundResult, StrikeRound } from "./game/boss/rounds";
 import { QuizCard } from "./Quiz";
+import { DEV_UNLOCK_ALL } from "@/lib/dev-unlock";
 
 /** Each world's guardian: the level quiz, as an encounter. */
 type ConceptInfo = { id: string; title: string; problems: string[]; stages: string[] };
@@ -56,7 +57,7 @@ export default function LevelQuiz({
   const state = levelStates(levelInfo, placement, solved, passed)[idx];
   const unsolved = levelInfo[idx].problems.filter((s) => !solved[s]).length;
 
-  if (state === "locked" || state === "coming-soon" || unsolved > 0) {
+  if (state === "locked" || state === "coming-soon" || (unsolved > 0 && !DEV_UNLOCK_ALL)) {
     return (
       <GameShell biome={biome} back={back}>
         <div className="flex flex-1 flex-col items-center justify-center gap-5 px-4 text-center">

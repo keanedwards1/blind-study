@@ -17,7 +17,7 @@ greet("Ada", greeting="Hey")    # 'Hey, Ada!'     naming the input you're giving
 - `greeting="Hello"` gives that input a fallback value (a *default*).
 - `greeting="Hey"` in the call names the input (a *keyword argument*), which makes calls easier to read.
 - Inputs with fallbacks must come **after** the ones without.
-- A lone `*` in the inputs means everything after it **must** be named: `def scroll(title, *, upper=False):`.
+- A lone `*` in the inputs means everything after it **must** be named: `def banner(text, *, upper=False):`.
 
 ### Common mistakes
 - **Using a list as a fallback value.** `def add(item, bag=[]):` creates that list only **once**, and every call shares it. Use `None` instead and make a new list inside:

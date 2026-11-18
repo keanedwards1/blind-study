@@ -27,13 +27,11 @@ greet("Ada", greeting="Hey")   # keyword argument: clearer
 - **Never use a mutable default** like `items=[]`: the same list is shared between calls. Use `items=None`, then `if items is None: items = []`.
 """,
             problems=[
-                P("py-greet-default", 'The Greeting Charm', "def greet(name: str, greeting: str = ...) -> str:",
+                P("py-greet-default", 'Greeting with a Default', "def greet(name: str, greeting: str = ...) -> str:",
                   """
-The greeting charm says hello to a name. A wizard can change the greeting word, but most never bother, so it should default to `"Hello"`.
+A notification helper greets users, and most callers don't care which greeting it uses. Write `greet(name, greeting)` to return `"GREETING, NAME!"`, where `greeting` defaults to `"Hello"`.
 
-- **Write:** `greet(name, greeting)`, returning `"GREETING, NAME!"`.
-- **Default:** `greeting` is `"Hello"` when it isn't given.
-- **Example:** `greet("Ada")` → `"Hello, Ada!"`; `greet("Ada", greeting="Hi")` → `"Hi, Ada!"`.
+Example: `greet("Ada")` returns `"Hello, Ada!"`, and `greet("Ada", greeting="Hi")` returns `"Hi, Ada!"`.
 """,
                   'def greet(name: str, greeting: str = "Hello") -> str:\n    return f"{greeting}, {name}!"\n',
                   [(["Ada"], ["Hello, Ada!", "Hi, Ada!"])], [["Bo"], [""]],
@@ -45,13 +43,11 @@ The greeting charm says hello to a name. A wizard can change the greeting word, 
 - **A default value:** `def greet(name, greeting="Hello"):`
 - **Callers can skip it** (`greet("Ada")`) **or name it** (`greet("Ada", greeting="Hi")`).
 """),
-                P("py-power-default", 'The Squaring Spell', "def power(x: int, exp: int = ...) -> int:",
+                P("py-power-default", 'Square by Default', "def power(x: int, exp: int = ...) -> int:",
                   """
-The power spell raises a number to a power, but nine times out of ten wizards just want it squared.
+A maths helper raises a number to a power, and most calls just want the square. Write `power(x, exp)` to return `x ** exp`, where `exp` defaults to `2`.
 
-- **Write:** `power(x, exp)`, returning `x` raised to `exp`.
-- **Default:** `exp` is `2` when it isn't given.
-- **Example:** `power(3)` → `9`; `power(3, 3)` → `27`.
+Example: `power(3)` returns `9`, and `power(3, 3)` returns `27`.
 """,
                   "def power(x: int, exp: int = 2) -> int:\n    return x ** exp\n",
                   [([3], [9, 27])], [[0], [-2], [10]],
@@ -62,12 +58,11 @@ The power spell raises a number to a power, but nine times out of ten wizards ju
 ## Building blocks
 - **Default:** `power=2` in the `def` line.
 """),
-                P("py-fix-mutable-default", 'The Cursed Default', "def add_tag(tag: str, tags: Optional[List[str]] = None) -> List[str]:",
+                P("py-fix-mutable-default", 'Fix the Shared List Bug', "def add_tag(tag: str, tags: Optional[List[str]] = None) -> List[str]:",
                   """
-This tagging spell is cursed. It should start a **fresh** empty list each time it's cast without one, but instead every cast shares the same list. Cast `add_tag("a")` and then `add_tag("b")`, and the second returns `["a", "b"]`.
+This `add_tag(tag, tags)` helper appends a tag and returns the list. Called without a list, it should start a new empty one each time, but the starter code has a well-known bug: `add_tag("a")` followed by `add_tag("b")` returns `["a", "b"]` the second time. Fix it.
 
-- **Fix:** `add_tag(tag, tags)` so it appends `tag` to `tags` and returns the list, starting a new empty list whenever no list is given.
-- **Example:** casting with `"a"` then `"b"` (no list) gives `["a"]` then `["b"]`.
+Example: calling it with `"a"` and then `"b"`, with no list, should return `["a"]` and then `["b"]`.
 """,
                   "def add_tag(tag: str, tags: Optional[List[str]] = None) -> List[str]:\n    if tags is None:\n        tags = []\n    tags.append(tag)\n    return tags\n",
                   [([["a", "b"]], [["a"], ["b"]])], [[["x", "y", "z"]]],
@@ -101,12 +96,11 @@ This tagging spell is cursed. It should start a **fresh** empty list each time i
 - The same stars **unpack** when calling: `f(*[1, 2])` is `f(1, 2)`, and `f(**{"a": 1})` is `f(a=1)`.
 """,
             problems=[
-                P("py-sum-all", 'The Gathering Spell', "def add_all(*nums: int) -> int:",
+                P("py-sum-all", 'Add Any Number of Values', "def add_all(*nums: int) -> int:",
                   """
-The gathering spell collects any number of offerings and adds them up.
+A billing helper totals however many line amounts it's given. Write `add_all` so it accepts any number of numbers and returns their sum.
 
-- **Write:** `add_all`, which accepts any number of numbers (`add_all(1, 2, 3)`) and returns their sum.
-- **Example:** `add_all(1, 2, 3)` → `6`; `add_all()` → `0`.
+Example: `add_all(1, 2, 3)` returns `6`, and `add_all()` returns `0`.
 """,
                   "def add_all(*nums: int) -> int:\n    return sum(nums)\n",
                   [([[1, 2, 3]], 6), ([[]], 0)], [[[5]], [list(range(10))]],
@@ -118,12 +112,11 @@ The gathering spell collects any number of offerings and adds them up.
 - **Collect positional arguments:** `def add_all(*nums):`. `nums` is a tuple.
 - **Then:** `sum(nums)`
 """),
-                P("py-build-profile", "A Familiar's Profile", "def profile(name: str, **details: str) -> Dict[str, str]:",
+                P("py-build-profile", 'Build a User Profile', "def profile(name: str, **details: str) -> Dict[str, str]:",
                   """
-Every familiar has a name, plus whatever other details its wizard wants to record.
+A sign-up form always sends a name and may send any number of extra fields. Write `profile(name, **details)` to return a dict with `"name"` plus every keyword argument.
 
-- **Write:** `profile(name, **details)`, returning a dict with `"name"` and every keyword argument.
-- **Example:** `profile("Ada", city="London")` → `{"name": "Ada", "city": "London"}`; `profile("Bo")` → `{"name": "Bo"}`.
+Example: `profile("Ada", city="London")` returns `{"name": "Ada", "city": "London"}`, and `profile("Bo")` returns `{"name": "Bo"}`.
 """,
                   'def profile(name: str, **details: str) -> Dict[str, str]:\n    return {"name": name, **details}\n',
                   [(["Ada", {"city": "London"}], {"name": "Ada", "city": "London"}), (["Bo", {}], {"name": "Bo"})], [["Cy", {"a": "1", "b": "2"}]],
@@ -135,13 +128,11 @@ Every familiar has a name, plus whatever other details its wizard wants to recor
 - **Collect keyword arguments:** `def profile(name, **details):`. `details` is a dict.
 - **Merge into a new dict:** `{"name": name, **details}`
 """),
-                P("py-count-arguments", 'Count the Ingredients', "def count_args(*args, **kwargs) -> List[int]:",
+                P("py-count-arguments", 'Count the Arguments', "def count_args(*args, **kwargs) -> List[int]:",
                   """
-A spell can be called with plain ingredients and with named ones. Report how many of each kind it received.
+A debugging helper reports how a function was called. Write `count_args(*args, **kwargs)` to return `[number of positional arguments, number of keyword arguments]`.
 
-- **Write:** `count_args(*args, **kwargs)`.
-- **Return:** `[number of positional arguments, number of keyword arguments]`.
-- **Example:** `count_args(1, 2, x=3)` → `[2, 1]`; `count_args()` → `[0, 0]`.
+Example: `count_args(1, 2, x=3)` returns `[2, 1]`, and `count_args()` returns `[0, 0]`.
 """,
                   "def count_args(*args, **kwargs) -> List[int]:\n    return [len(args), len(kwargs)]\n",
                   [([[1, 2], {"x": 3}], [2, 1]), ([[], {}], [0, 0])], [[[None] * 5, {"a": 1, "b": 2, "c": 3}]],
@@ -181,13 +172,11 @@ sorted(words, key=lambda w: (len(w), w))  # by length, then alphabetically
 Returning a tuple from the key sorts by several things in order.
 """,
             problems=[
-                P("py-sort-by-last-letter", 'Sorted by Their Endings', "def by_last_letter(words: List[str]) -> List[str]:",
+                P("py-sort-by-last-letter", 'Sort by Last Letter', "def by_last_letter(words: List[str]) -> List[str]:",
                   """
-The rhyming spellbook files its words by their **last** letter.
+A rhyming dictionary lists words by their last letter. Write `by_last_letter(words)` to return the words sorted by their last letter, with words that share a last letter kept in their original order. No word is empty.
 
-- **You get:** `words` (none are empty).
-- **Return:** the words sorted by last letter. Words with the same last letter keep their original order.
-- **Example:** `["zoo", "bee", "ant"]` → `["bee", "zoo", "ant"]`.
+Example: `by_last_letter(["zoo", "bee", "ant"])` returns `["bee", "zoo", "ant"]`.
 """,
                   "def by_last_letter(words: List[str]) -> List[str]:\n    return sorted(words, key=lambda w: w[-1])\n",
                   [([["cab", "bad", "ace"]], ["cab", "bad", "ace"]), ([["zoo", "bee", "ant"]], ["bee", "zoo", "ant"])], [[[]], [["x", "y", "z", "a"]]],
@@ -197,13 +186,11 @@ The rhyming spellbook files its words by their **last** letter.
 - **A key function:** `sorted(items, key=lambda x: x[0])` sorts by each item's first part.
 - **Stable sort:** ties keep their original order.
 """),
-                P("py-longest-word", 'The Longest Incantation', "def longest(words: List[str]) -> str:",
+                P("py-longest-word", 'Longest Word', "def longest(words: List[str]) -> str:",
                   """
-The most powerful incantation is the longest one.
+A text layout routine needs the longest word to size a column. Write `longest(words)` to return the longest word, or the first one if several tie. The list isn't empty.
 
-- **You get:** `words` (at least one).
-- **Return:** the longest word; if there's a tie, the first of them.
-- **Example:** `["a", "abc", "ab"]` → `"abc"`; `["xx", "yy"]` → `"xx"`.
+Example: `longest(["a", "abc", "ab"])` returns `"abc"`, and `longest(["xx", "yy"])` returns `"xx"`.
 """,
                   "def longest(words: List[str]) -> str:\n    return max(words, key=len)\n",
                   [([["a", "abc", "ab"]], "abc"), ([["xx", "yy"]], "xx")], [[["solo"]], [["", "a"]]],
@@ -212,13 +199,11 @@ The most powerful incantation is the longest one.
 ## Building blocks
 - **Max by something:** `max(words, key=len)`. Any function works as a key, including built-ins like `len`.
 """),
-                P("py-sort-by-score", 'The Duel Leaderboard', "def ranking(results: List[List]) -> List[str]:",
+                P("py-sort-by-score", 'Rank by Score', "def ranking(results: List[List]) -> List[str]:",
                   """
-After the wizards' duel, rank everyone by score.
+A leaderboard shows players by score. Write `ranking(results)`, where `results` is a list of `[name, score]` pairs, to return the names ordered by score, highest first. Players with equal scores go in alphabetical order.
 
-- **You get:** `results`, a list of `[name, score]` pairs.
-- **Return:** the names ordered by score, highest first; equal scores in alphabetical order.
-- **Example:** `[["bo", 3], ["ada", 5], ["cy", 3]]` → `["ada", "bo", "cy"]`.
+Example: `ranking([["bo", 3], ["ada", 5], ["cy", 3]])` returns `["ada", "bo", "cy"]`.
 """,
                   "def ranking(results: List[List]) -> List[str]:\n    return [name for name, score in sorted(results, key=lambda r: (-r[1], r[0]))]\n",
                   [([[["bo", 3], ["ada", 5], ["cy", 3]]], ["ada", "bo", "cy"]), ([[]], [])], [[[["z", 1], ["a", 1]]]],
@@ -257,13 +242,11 @@ list(filter(lambda x: x > 0, nums))    # positives
 Comprehensions (next lesson) do the same job and are often clearer, but `map(int, …)` is a common idiom.
 """,
             problems=[
-                P("py-strings-to-ints", 'Decode the Runes', "def to_ints(items: List[str]) -> List[int]:",
+                P("py-strings-to-ints", 'Parse Number Strings', "def to_ints(items: List[str]) -> List[int]:",
                   """
-The rune stones store numbers as text. Turn every one into a real number.
+A form sends every field as text. Write `to_ints(items)` to convert a list of number strings to ints, using `map`.
 
-- **You get:** `items`, a list of number strings.
-- **Return:** the numbers as ints, using `map`.
-- **Example:** `["1", "20"]` → `[1, 20]`.
+Example: `to_ints(["1", "20"])` returns `[1, 20]`.
 """,
                   "def to_ints(items: List[str]) -> List[int]:\n    return list(map(int, items))\n",
                   [([["1", "20"]], [1, 20]), ([[]], [])], [[["-5", "0", "007"]]],
@@ -273,13 +256,11 @@ The rune stones store numbers as text. Turn every one into a real number.
 - **Apply a function to every item:** `map(int, items)`
 - **Get a list:** `list(map(...))`
 """),
-                P("py-squares-map", 'Square Every Rune', "def squares(nums: List[int]) -> List[int]:",
+                P("py-squares-map", 'Squares with map', "def squares(nums: List[int]) -> List[int]:",
                   """
-The squaring glyph multiplies each number by itself.
+Write `squares(nums)` to return the square of every number, using `map` with a `lambda`.
 
-- **You get:** `nums`.
-- **Return:** the square of every number, using `map` with a `lambda`.
-- **Example:** `[1, 2, 3]` → `[1, 4, 9]`.
+Example: `squares([1, 2, 3])` returns `[1, 4, 9]`.
 """,
                   "def squares(nums: List[int]) -> List[int]:\n    return list(map(lambda x: x * x, nums))\n",
                   [([[1, 2, 3]], [1, 4, 9]), ([[]], [])], [[[-3, 0]]],
@@ -288,13 +269,11 @@ The squaring glyph multiplies each number by itself.
 ## Building blocks
 - **A lambda as the function:** `map(lambda s: s + "!", words)`
 """),
-                P("py-filter-evens", 'Even Charms Only', "def evens(nums: List[int]) -> List[int]:",
+                P("py-filter-evens", 'Keep the Even Numbers', "def evens(nums: List[int]) -> List[int]:",
                   """
-Only even-numbered charms work on a full moon.
+A report only shows even-numbered rows. Write `evens(nums)` to return the even numbers in order, using `filter`.
 
-- **You get:** `nums`.
-- **Return:** only the even numbers, in order, using `filter`.
-- **Example:** `[1, 2, 3, 4]` → `[2, 4]`.
+Example: `evens([1, 2, 3, 4])` returns `[2, 4]`.
 """,
                   "def evens(nums: List[int]) -> List[int]:\n    return list(filter(lambda x: x % 2 == 0, nums))\n",
                   [([[1, 2, 3, 4]], [2, 4]), ([[1, 3]], [])], [[[]], [[0, -2, -3]]],
@@ -304,13 +283,11 @@ Only even-numbered charms work on a full moon.
 - **Keep matching items:** `filter(lambda w: len(w) > 3, words)`
 - **Then:** `list(...)`
 """),
-                P("py-non-empty", 'Sweep Out the Blanks', "def non_empty(items: List[str]) -> List[str]:",
+                P("py-non-empty", 'Drop Empty Strings', "def non_empty(items: List[str]) -> List[str]:",
                   """
-Some scrolls in the pile are completely blank. Throw those away.
+A CSV row has some empty fields that should be skipped. Write `non_empty(items)` to return the strings that aren't empty, in order. `filter(None, items)` keeps only truthy items.
 
-- **You get:** `items`, a list of strings.
-- **Return:** the strings that aren't empty, in order. `filter(None, ...)` keeps only truthy items.
-- **Example:** `["a", "", "b", ""]` → `["a", "b"]`.
+Example: `non_empty(["a", "", "b", ""])` returns `["a", "b"]`.
 """,
                   "def non_empty(items: List[str]) -> List[str]:\n    return list(filter(None, items))\n",
                   [([["a", "", "b", ""]], ["a", "b"]), ([[""]], [])], [[[]], [[" ", "x"]]],
@@ -347,13 +324,11 @@ sum(x * x for x in nums)              # generator expression: no brackets needed
 Read them left to right as "give me `this` for each `item` in `items` if `condition`".
 """,
             problems=[
-                P("py-squares-comp", 'Squares, the Short Way', "def squares(nums: List[int]) -> List[int]:",
+                P("py-squares-comp", 'Squares with a Comprehension', "def squares(nums: List[int]) -> List[int]:",
                   """
-Same squaring glyph, written as one neat line.
+Write `squares(nums)` to return the square of every number, using a list comprehension this time.
 
-- **You get:** `nums`.
-- **Return:** the square of every number, using a list comprehension.
-- **Example:** `[1, 2, 3]` → `[1, 4, 9]`.
+Example: `squares([1, 2, 3])` returns `[1, 4, 9]`.
 """,
                   "def squares(nums: List[int]) -> List[int]:\n    return [x * x for x in nums]\n",
                   [([[1, 2, 3]], [1, 4, 9]), ([[]], [])], [[[-1, 10]]],
@@ -362,13 +337,11 @@ Same squaring glyph, written as one neat line.
 ## Building blocks
 - **List comprehension:** `[x * x for x in nums]`
 """),
-                P("py-positive-doubles", 'Double the Good Omens', "def double_positives(nums: List[int]) -> List[int]:",
+                P("py-positive-doubles", 'Double the Positive Numbers', "def double_positives(nums: List[int]) -> List[int]:",
                   """
-Positive numbers are good omens; double them. Zero and negative numbers are ignored.
+A pricing script doubles every positive adjustment and ignores the rest. Write `double_positives(nums)` to return double each positive number, skipping zero and negatives, in one comprehension.
 
-- **You get:** `nums`.
-- **Return:** double each positive number, skipping the rest, in one comprehension.
-- **Example:** `[1, -2, 3, 0]` → `[2, 6]`.
+Example: `double_positives([1, -2, 3, 0])` returns `[2, 6]`.
 """,
                   "def double_positives(nums: List[int]) -> List[int]:\n    return [2 * x for x in nums if x > 0]\n",
                   [([[1, -2, 3, 0]], [2, 6]), ([[-1]], [])], [[[]], [[5, 5]]],
@@ -377,13 +350,11 @@ Positive numbers are good omens; double them. Zero and negative numbers are igno
 ## Building blocks
 - **Filter at the end:** `[w.upper() for w in words if w]` keeps only non-empty words.
 """),
-                P("py-word-lengths", 'Measure the Spells', "def lengths(words: List[str]) -> Dict[str, int]:",
+                P("py-word-lengths", 'Word Lengths', "def lengths(words: List[str]) -> Dict[str, int]:",
                   """
-Record how long each spell word is.
+A text tool shows each word's length. Write `lengths(words)` to return a dict from each word to its length, using a dict comprehension.
 
-- **You get:** `words`.
-- **Return:** a dict mapping each word to its length, using a dict comprehension.
-- **Example:** `["hi", "hello"]` → `{"hi": 2, "hello": 5}`.
+Example: `lengths(["hi", "hello"])` returns `{"hi": 2, "hello": 5}`.
 """,
                   "def lengths(words: List[str]) -> Dict[str, int]:\n    return {w: len(w) for w in words}\n",
                   [([["hi", "hello"]], {"hi": 2, "hello": 5}), ([[]], {})], [[["a", "a"]]],
@@ -392,13 +363,11 @@ Record how long each spell word is.
 ## Building blocks
 - **Dict comprehension:** `{w: len(w) for w in words}`
 """),
-                P("py-length-set", 'Which Lengths Exist?', "def distinct_lengths(words: List[str]) -> Set[int]:",
+                P("py-length-set", 'Distinct Word Lengths', "def distinct_lengths(words: List[str]) -> Set[int]:",
                   """
-Which word lengths appear in the spellbook at all?
+Write `distinct_lengths(words)` to return the set of different word lengths, using a set comprehension.
 
-- **You get:** `words`.
-- **Return:** the set of different lengths, using a set comprehension.
-- **Example:** `["a", "bb", "cc"]` → `{1, 2}`.
+Example: `distinct_lengths(["a", "bb", "cc"])` returns `{1, 2}`.
 """,
                   "def distinct_lengths(words: List[str]) -> Set[int]:\n    return {len(w) for w in words}\n",
                   [([["a", "bb", "cc"]], {1, 2}), ([[]], set())], [[["", "x"]]],
@@ -407,13 +376,11 @@ Which word lengths appear in the spellbook at all?
 ## Building blocks
 - **Set comprehension:** `{len(w) for w in words}`, with no colon.
 """),
-                P("py-sum-odd-squares", 'Odd Power', "def odd_square_sum(nums: List[int]) -> int:",
+                P("py-sum-odd-squares", 'Sum of Odd Squares', "def odd_square_sum(nums: List[int]) -> int:",
                   """
-The odd-number ritual squares every odd number and adds the results up.
+Write `odd_square_sum(nums)` to return the sum of the squares of the odd numbers, using a generator expression inside `sum`.
 
-- **You get:** `nums`.
-- **Return:** the sum of the squares of the odd numbers, using a generator expression inside `sum`.
-- **Example:** `[1, 2, 3]` → `10` (1 + 9).
+Example: `odd_square_sum([1, 2, 3])` returns `10` (1 + 9).
 """,
                   "def odd_square_sum(nums: List[int]) -> int:\n    return sum(x * x for x in nums if x % 2)\n",
                   [([[1, 2, 3]], 10), ([[2, 4]], 0)], [[[]], [list(range(20))]],
@@ -422,13 +389,11 @@ The odd-number ritual squares every odd number and adds the results up.
 ## Building blocks
 - **Generator expression:** `sum(len(w) for w in words if w)`. No square brackets: no list is built.
 """),
-                P("py-flatten-comp", 'Unroll the Scroll', "def flatten(grid: List[List[int]]) -> List[int]:",
+                P("py-flatten-comp", 'Flatten a Grid', "def flatten(grid: List[List[int]]) -> List[int]:",
                   """
-A scroll is stored as rows of numbers. Unroll it into one long line, row by row.
+A spreadsheet export stores rows as lists, and the next step needs one flat list. Write `flatten(grid)` to return every value in row order, using a single comprehension.
 
-- **You get:** `grid`, a list of rows.
-- **Return:** every value in one list, in row order, using a single comprehension.
-- **Example:** `[[1, 2], [3]]` → `[1, 2, 3]`.
+Example: `flatten([[1, 2], [3]])` returns `[1, 2, 3]`.
 """,
                   "def flatten(grid: List[List[int]]) -> List[int]:\n    return [x for row in grid for x in row]\n",
                   [([[[1, 2], [3]]], [1, 2, 3]), ([[]], [])], [[[[], [4, 5]]]],
@@ -465,13 +430,11 @@ def countdown_sum(n):
 - Trees and backtracking problems (levels 9–10) lean on recursion heavily.
 """,
             problems=[
-                P("py-factorial", 'The Factorial Chant', "def factorial(n: int) -> int:",
+                P("py-factorial", 'Factorial', "def factorial(n: int) -> int:",
                   """
-The factorial chant multiplies every number from 1 up to `n`: 5! = 1 × 2 × 3 × 4 × 5 = 120. By tradition, 0! is 1.
+Write `factorial(n)` to return `n!`, which is 1 × 2 × … × n, using recursion. By definition `0!` is `1`.
 
-- **You get:** `n` (0 or more).
-- **Return:** `n!`, using recursion.
-- **Example:** `5` → `120`; `0` → `1`.
+Example: `factorial(5)` returns `120`, and `factorial(0)` returns `1`.
 """,
                   "def factorial(n: int) -> int:\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n",
                   [([5], 120), ([0], 1), ([1], 1)], [[10], [20]],
@@ -481,13 +444,11 @@ The factorial chant multiplies every number from 1 up to `n`: 5! = 1 × 2 × 3 �
 - **Base case:** `if size <= 1: return 1`
 - **Recursive case:** the function calls itself on a smaller input, e.g. `f(n - 1)`.
 """),
-                P("py-recursive-sum", 'Echo Sum', "def rsum(nums: List[int]) -> int:",
+                P("py-recursive-sum", 'Sum a List Recursively', "def rsum(nums: List[int]) -> int:",
                   """
-Add up a list the recursive way: the first number plus the total of everything after it.
+Write `rsum(nums)` to return the sum of the list using recursion: the first number plus the sum of the rest. Don't use loops or `sum`.
 
-- **You get:** `nums`.
-- **Return:** their sum, using recursion (no loops, no `sum`).
-- **Example:** `[1, 2, 3]` → `6`; `[]` → `0`.
+Example: `rsum([1, 2, 3])` returns `6`, and `rsum([])` returns `0`.
 """,
                   "def rsum(nums: List[int]) -> int:\n    if not nums:\n        return 0\n    return nums[0] + rsum(nums[1:])\n",
                   [([[1, 2, 3]], 6), ([[]], 0)], [[[5]], [list(range(100))]],
@@ -497,13 +458,11 @@ Add up a list the recursive way: the first number plus the total of everything a
 - **Base case:** an empty list sums to 0: `if not xs: return 0`
 - **The first item / the rest:** `xs[0]`, `xs[1:]`
 """),
-                P("py-recursive-reverse", 'The Mirror Spell', "def rreverse(s: str) -> str:",
+                P("py-recursive-reverse", 'Reverse a String Recursively', "def rreverse(s: str) -> str:",
                   """
-The mirror spell writes a word backwards, one letter at a time.
+Write `rreverse(s)` to return `s` reversed, using recursion. Don't use loops or a slice with a step.
 
-- **You get:** `s`.
-- **Return:** `s` reversed, using recursion (no slicing with a step, no loops).
-- **Example:** `"abc"` → `"cba"`.
+Example: `rreverse("abc")` returns `"cba"`.
 """,
                   "def rreverse(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    return rreverse(s[1:]) + s[0]\n",
                   [(["abc"], "cba"), ([""], "")], [["a"], ["racecar"], ["hello world"]],
@@ -513,13 +472,11 @@ The mirror spell writes a word backwards, one letter at a time.
 - **Base case:** strings of length 0 or 1 are their own reverse.
 - **The first character / the rest:** `text[0]`, `text[1:]`
 """),
-                P("py-count-nested", 'Boxes Inside Boxes', "def count_items(nested: list) -> int:",
+                P("py-count-nested", 'Count Numbers in Nested Lists', "def count_items(nested: list) -> int:",
                   """
-The enchanted chest holds numbers and smaller chests, which hold more numbers and chests, as deep as you like.
+A JSON-like payload holds numbers and lists, nested to any depth. Write `count_items(nested)` to return how many numbers it contains in total.
 
-- **You get:** `nested`, a list whose items are numbers or more lists.
-- **Return:** how many numbers there are in total, at every depth.
-- **Example:** `[1, [2, [3, 4]], 5]` → `5`.
+Example: `count_items([1, [2, [3, 4]], 5])` returns `5`.
 """,
                   "def count_items(nested: list) -> int:\n    total = 0\n    for x in nested:\n        total += count_items(x) if isinstance(x, list) else 1\n    return total\n",
                   [([[1, [2, [3, 4]], 5]], 5), ([[]], 0)], [[[[[[]]]]], [[[1], [2], [3, [4]]]]],
@@ -558,12 +515,11 @@ add5(10)   # 15
 - `callable(x)` tells you whether `x` can be called like a function.
 """,
             problems=[
-                P("py-make-adder", 'Forge an Adder', "def make_adder(n: int):",
+                P("py-make-adder", 'Make an Adder', "def make_adder(n: int):",
                   """
-A spell-forge makes new spells. This one forges spells that add a fixed number.
+Write `make_adder(n)` to return a function. That function takes `x` and returns `x + n`.
 
-- **Write:** `make_adder(n)`, which returns a **function**. That function takes `x` and returns `x + n`.
-- **Example:** `make_adder(5)(10)` → `15`.
+Example: `make_adder(5)(10)` returns `15`.
 """,
                   "def make_adder(n: int):\n    def add(x):\n        return x + n\n    return add\n",
                   [([5, 10], 15), ([0, 0], 0)], [[-3, 3], [100, 1]],
@@ -574,12 +530,11 @@ A spell-forge makes new spells. This one forges spells that add a fixed number.
 - **A function inside a function:** `def add(x): return x + n`
 - **Return the function itself:** `return plus` (no brackets: you're not calling it).
 """),
-                P("py-make-counter", 'A Counting Familiar', "def make_counter():",
+                P("py-make-counter", 'Make a Counter', "def make_counter():",
                   """
-Summon a familiar that counts. Each time you poke it, it says the next number: 1, then 2, then 3… Two familiars count separately.
+An ID generator hands out 1, then 2, then 3, and so on. Write `make_counter()` to return a function that returns the next number each time it's called. Two counters must count independently.
 
-- **Write:** `make_counter()`, which returns a function. Each call of that function returns the next number, starting at 1.
-- **Example:** poking one counter three times gives `1, 2, 3`; a second counter's first poke gives `1`.
+Example: one counter called three times gives `1, 2, 3`; a second counter's first call gives `1`.
 """,
                   "def make_counter():\n    count = 0\n\n    def counter():\n        nonlocal count\n        count += 1\n        return count\n\n    return counter\n",
                   [([3], [[1, 2, 3], [1]])], [[1], [5]],
@@ -593,13 +548,11 @@ Summon a familiar that counts. Each time you poke it, it says the next number: 1
 - **Change it from inside:** `nonlocal sum_so_far`, then `sum_so_far += 1`.
 - **Each call to `make_counter()` creates a fresh `count`**, so counters are independent.
 """),
-                P("py-call-if-callable", 'Cast It If You Can', "def resolve_value(x, arg):",
+                P("py-call-if-callable", 'Call It If You Can', "def resolve_value(x, arg):",
                   """
-Some things in the satchel are spells (they can be called); others are just objects.
+A settings system lets each value be either a plain value or a function that computes it. Write `resolve_value(x, arg)` to return `x(arg)` if `x` can be called, and `x` itself otherwise.
 
-- **You get:** `x` and `arg`.
-- **Return:** `x(arg)` if `x` can be called, otherwise `x` itself.
-- **Example:** with `len` and `"abc"` you get `3`; with `5` you get `5`.
+Example: `resolve_value(len, "abc")` returns `3`, and `resolve_value(5, "abc")` returns `5`.
 """,
                   "def resolve_value(x, arg):\n    return x(arg) if callable(x) else x\n",
                   [([], [3, "HI", 5, "text"])], [[]],
@@ -645,13 +598,11 @@ list(countdown(3))   # [3, 2, 1]
 Generators are lazy, so they can describe huge or even infinite sequences. `aiter` and `anext` are the same ideas for `async` code.
 """,
             problems=[
-                P("py-first-or-default", 'First Scroll or a Fallback', "def first(items: List[int], default: int) -> int:",
+                P("py-first-or-default", 'First Item or a Default', "def first(items: List[int], default: int) -> int:",
                   """
-Grab the first scroll off the pile, or use the fallback if the pile is empty.
+Write `first(items, default)` to return the first item, or `default` if the list is empty, using `iter` and `next`.
 
-- **You get:** `items` and `default`.
-- **Return:** the first item, or `default` if the list is empty, using `iter` and `next`.
-- **Example:** `[5, 6], 0` → `5`; `[], -1` → `-1`.
+Example: `first([5, 6], 0)` returns `5`, and `first([], -1)` returns `-1`.
 """,
                   "def first(items: List[int], default: int) -> int:\n    return next(iter(items), default)\n",
                   [([[5, 6], 0], 5), ([[], -1], -1)], [[[0], 9]],
@@ -661,13 +612,11 @@ Grab the first scroll off the pile, or use the fallback if the pile is empty.
 - **An iterator:** `iter(items)`
 - **Next value, or a fallback:** `next(it, default)`
 """),
-                P("py-first-match", 'The First Long Spell', "def first_long(words: List[str], n: int) -> Optional[str]:",
+                P("py-first-match", 'First Long Word', "def first_long(words: List[str], n: int) -> Optional[str]:",
                   """
-Find the first spell word longer than `n` letters.
+An autocomplete feature shows the first suggestion longer than the text typed so far. Write `first_long(words, n)` to return the first word longer than `n` characters, or `None`, using `next` with a generator expression.
 
-- **You get:** `words` and `n`.
-- **Return:** the first word longer than `n`, or `None`. Use `next` with a generator expression.
-- **Example:** `["a", "abcd", "abcdef"], 3` → `"abcd"`.
+Example: `first_long(["a", "abcd", "abcdef"], 3)` returns `"abcd"`.
 """,
                   "def first_long(words: List[str], n: int) -> Optional[str]:\n    return next((w for w in words if len(w) > n), None)\n",
                   [([["a", "abcd", "abcdef"], 3], "abcd"), ([["a"], 3], None)], [[[], 0], [["xy", "xyz"], 2]],
@@ -677,12 +626,11 @@ Find the first spell word longer than `n` letters.
 - **A lazy search:** `(x for x in nums if x < 0)` only does the work when asked.
 - **Take the first, or None:** `next(that_generator, None)`. Brackets are needed around the generator when it's not the only argument.
 """),
-                P("py-countdown-generator", 'Countdown to Midnight', "def countdown(n: int):",
+                P("py-countdown-generator", 'Countdown Generator', "def countdown(n: int):",
                   """
-The midnight charm counts down: n, n-1, …, 1.
+Write a generator `countdown(n)` that yields `n`, `n - 1`, …, `1`.
 
-- **Write:** a **generator** `countdown(n)` that yields those numbers one at a time.
-- **Example:** `countdown(3)` yields `3, 2, 1`; `countdown(0)` yields nothing.
+Example: `countdown(3)` yields `3, 2, 1`, and `countdown(0)` yields nothing.
 """,
                   "def countdown(n: int):\n    while n > 0:\n        yield n\n        n -= 1\n",
                   [([3], Gen([3, 2, 1])), ([0], Gen([]))], [[1], [10]],
@@ -692,12 +640,11 @@ The midnight charm counts down: n, n-1, …, 1.
 - **Yield instead of return:** `yield num` hands out one value and pauses.
 - **The tests check it's a generator,** so returning a list won't pass.
 """),
-                P("py-chunks", 'Bundle the Herbs', "def chunks(items: List[int], size: int):",
+                P("py-chunks", 'Split into Batches', "def chunks(items: List[int], size: int):",
                   """
-Tie the herbs into bundles of `size` (the last bundle may be smaller).
+An upload job sends records in batches of a fixed size, and the last batch may be smaller. Write a generator `chunks(items, size)` that yields each batch as a list.
 
-- **Write:** a generator `chunks(items, size)` that yields each bundle as a list.
-- **Example:** `[1, 2, 3, 4, 5], 2` yields `[1, 2]`, `[3, 4]`, `[5]`.
+Example: `chunks([1, 2, 3, 4, 5], 2)` yields `[1, 2]`, `[3, 4]`, then `[5]`.
 """,
                   "def chunks(items: List[int], size: int):\n    for i in range(0, len(items), size):\n        yield items[i:i + size]\n",
                   [([[1, 2, 3, 4, 5], 2], Gen([[1, 2], [3, 4], [5]])), ([[], 3], Gen([]))], [[[1, 2, 3], 3], [list(range(10)), 4]],
@@ -743,12 +690,11 @@ greet("ada")      # 'HI ADA'
 `@functools.cache` (level 7) is a decorator you'll use for dynamic programming.
 """,
             problems=[
-                P("py-double-result", 'The Doubling Rune', "def double_result(func):",
+                P("py-double-result", 'Double the Result', "def double_result(func):",
                   """
-Carve the doubling rune onto any spell, and the spell's result comes out twice as big.
+Write a decorator `double_result` that makes the decorated function return twice its normal result.
 
-- **Write:** a decorator `double_result` that makes the decorated function return twice its normal result.
-- **Example:** on a spell that adds two numbers, `add(1, 2)` returns `6`.
+Example: on a function that adds two numbers, `add(1, 2)` returns `6`.
 """,
                   "def double_result(func):\n    def wrapper(*args, **kwargs):\n        return 2 * func(*args, **kwargs)\n    return wrapper\n",
                   [([1, 2], 6), ([0, 0], 0)], [[-5, 2], [10, 10]],
@@ -759,12 +705,11 @@ Carve the doubling rune onto any spell, and the spell's result comes out twice a
 - **Take a function, return a wrapper:** `def double_result(fn):` … `return inner`
 - **Pass every argument through:** `def wrapper(*args, **kwargs): return 2 * func(*args, **kwargs)`
 """),
-                P("py-count-calls", 'The Tally Rune', "def count_calls(func):",
+                P("py-count-calls", 'Count the Calls', "def count_calls(func):",
                   """
-The tally rune counts how many times a spell has been cast.
+A metrics helper counts how often a function runs. Write a decorator `count_calls` so the decorated function has an attribute `calls` that starts at 0 and goes up by one on every call.
 
-- **Write:** a decorator `count_calls`. The decorated function keeps an attribute `calls`, starting at 0, that goes up by one each time it's called.
-- **Example:** after 3 calls, `f.calls` is `3`.
+Example: after three calls, `f.calls` is `3`.
 """,
                   "def count_calls(func):\n    def wrapper(*args, **kwargs):\n        wrapper.calls += 1\n        return func(*args, **kwargs)\n    wrapper.calls = 0\n    return wrapper\n",
                   [([3], 3), ([0], 0)], [[1], [10]],

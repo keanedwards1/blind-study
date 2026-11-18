@@ -1,44 +1,42 @@
-# Extra practice for Learn Python level 5 (Functions): the spellbook. See extra_level03.py for the format.
+# Extra practice for Learn Python level 5 (Functions). See extra_level03.py for the format.
 from _helpers import P, Q
 
 EXTRA = {
     "defaults-kwargs": dict(
         warmup=[
-            P("py-candle-default", "One Candle by Default", "def light(candles: int = 1) -> str:",
+            P("py-default-limit", "A Default Page Size", "def fetch(limit: int = 10) -> str:",
               """
-The lighting spell lights candles. Most of the time the wizard wants just one.
+An API client builds the query for paged results, and most callers want the default page size of 10. Write `fetch(limit=10)` to return `"limit=N"`.
 
-- **Write:** `light(candles)`, returning `"lit N"`, where `candles` defaults to `1`.
-- **Example:** `light()` → `"lit 1"`; `light(3)` → `"lit 3"`.
+Example: `fetch()` returns `"limit=10"`, and `fetch(25)` returns `"limit=25"`.
 """,
-              "def light(candles: int = 1) -> str:\n    return f\"lit {candles}\"\n",
-              [([None], ["lit 1", "lit 1"]), ([3], ["lit 1", "lit 3"])], [[0], [10]],
+              "def fetch(limit: int = 10) -> str:\n    return f\"limit={limit}\"\n",
+              [([None], ["limit=10", "limit=10"]), ([25], ["limit=10", "limit=25"])], [[0], [100]],
               params=["n"],
-              driver='def driver(ns, n):\n    f = resolve(ns, "light")\n    return [f(), f() if n is None else f(n)]\n',
+              driver='def driver(ns, n):\n    f = resolve(ns, "fetch")\n    return [f(), f() if n is None else f(n)]\n',
               hints=["A default value goes in the function's first line: `def f(x=5):`.",
                      "When the caller leaves the argument out, the default is used.",
                      "Build the text with an f-string."],
               grammar="""
 ## Building blocks
-- **A parameter with a default:** `def brew(cups=2):`
-- **Text with a value in it:** `f"made {cups}"`
+- **A parameter with a default:** `def resize(width=800):`
+- **Text with a value in it:** `f"{width}px"`
 """),
         ],
         practice=[
-            P("py-scroll-format", "Format a Scroll", "def scroll(title: str, *, upper: bool = False, border: str = \"*\") -> str:",
+            P("py-format-heading", "Format a Heading", "def heading(title: str, *, upper: bool = False, border: str = \"*\") -> str:",
               """
-Format a scroll title between two borders. The options must be given **by name** (keyword-only).
+A command-line tool prints each section heading between two border characters. The options must be passed **by name** (keyword-only). Write `heading(title, *, upper=False, border="*")` to return border + title + border, with the title in capitals when `upper` is true.
 
-- **Write:** `scroll(title, *, upper=False, border="*")`, returning border + title + border, with the title in capitals when `upper` is true.
-- **Example:** `scroll("fire")` → `"*fire*"`; `scroll("fire", upper=True, border="~")` → `"~FIRE~"`.
+Example: `heading("setup")` returns `"*setup*"`, and `heading("setup", upper=True, border="=")` returns `"=SETUP="`.
 """,
-              "def scroll(title: str, *, upper: bool = False, border: str = \"*\") -> str:\n    text = title.upper() if upper else title\n    return border + text + border\n",
-              [(["fire", False, "*"], "*fire*"), (["fire", True, "~"], "~FIRE~")], [["a", False, "#"], ["", True, "!"]],
+              "def heading(title: str, *, upper: bool = False, border: str = \"*\") -> str:\n    text = title.upper() if upper else title\n    return border + text + border\n",
+              [(["setup", False, "*"], "*setup*"), (["setup", True, "="], "=SETUP=")], [["a", False, "#"], ["", True, "!"]],
               params=["title", "upper", "border"],
-              driver='def driver(ns, title, upper, border):\n    return resolve(ns, "scroll")(title, upper=upper, border=border)\n',
+              driver='def driver(ns, title, upper, border):\n    return resolve(ns, "heading")(title, upper=upper, border=border)\n',
               hints=["A bare `*` in the parameter list means everything after it must be passed by name.",
                      "Give both options their defaults in the signature.",
-                     "Choose the title text first (upper-cased or not), then glue the border on both sides."],
+                     "Choose the title text first (upper-cased or not), then put the border on both sides."],
               grammar="""
 ## Building blocks
 - **Keyword-only parameters:** `def f(a, *, b=1):`
@@ -58,17 +56,16 @@ Format a scroll title between two borders. The options must be given **by name**
     ),
     "args-kwargs": dict(
         warmup=[
-            P("py-count-spells", "How Many Ingredients?", "def ingredients(*items: str) -> int:",
+            P("py-count-tags", "Count the Tags", "def count_tags(*tags: str) -> int:",
               """
-A potion can take any number of ingredients.
+A logging helper accepts any number of tags on each call. Write `count_tags(*tags)` to return how many tags were passed.
 
-- **Write:** `ingredients(*items)`, returning how many were passed.
-- **Example:** `ingredients("newt", "moss")` → `2`; `ingredients()` → `0`.
+Example: `count_tags("db", "slow")` returns `2`, and `count_tags()` returns `0`.
 """,
-              "def ingredients(*items: str) -> int:\n    return len(items)\n",
-              [([["newt", "moss"]], 2), ([[]], 0)], [[["a"]], [["x", "y", "z"]]],
-              params=["items"],
-              driver='def driver(ns, items):\n    return resolve(ns, "ingredients")(*items)\n',
+              "def count_tags(*tags: str) -> int:\n    return len(tags)\n",
+              [([["db", "slow"]], 2), ([[]], 0)], [[["a"]], [["x", "y", "z"]]],
+              params=["tags"],
+              driver='def driver(ns, tags):\n    return resolve(ns, "count_tags")(*tags)\n',
               hints=["A star before a parameter collects all the positional arguments into a tuple.",
                      "A tuple has a length like any other sequence.",
                      "Return its `len`."],
@@ -79,27 +76,25 @@ A potion can take any number of ingredients.
 """),
         ],
         practice=[
-            P("py-potion-label", "Potion Label", "def label(name: str, *ingredients: str, **notes: str) -> str:",
+            P("py-log-line", "Build a Log Line", "def log_line(level: str, *words: str, **fields: str) -> str:",
               """
-Make a potion label: the name, the ingredients joined with `" + "`, then any notes as `key=value`, all separated by ` | `.
+A logger writes one line per event: the level, then the message words joined with spaces, then any extra fields as `key=value` separated by `", "`. The sections are separated by `" | "`, and an empty section is left out entirely. Write `log_line(level, *words, **fields)`.
 
-- **Write:** `label(name, *ingredients, **notes)`.
-- **Example:** `label("Glow", "moss", "dew", strength="mild")` → `"Glow | moss + dew | strength=mild"`.
-- **Watch out:** leave out a section entirely if it's empty: `label("Plain")` → `"Plain"`.
+Example: `log_line("INFO", "user", "login", user="ada")` returns `"INFO | user login | user=ada"`, and `log_line("WARN")` returns `"WARN"`.
 """,
-              "def label(name: str, *ingredients: str, **notes: str) -> str:\n    parts = [name]\n    if ingredients:\n        parts.append(\" + \".join(ingredients))\n    if notes:\n        parts.append(\", \".join(f\"{k}={v}\" for k, v in notes.items()))\n    return \" | \".join(parts)\n",
-              [(["Glow", ["moss", "dew"], {"strength": "mild"}], "Glow | moss + dew | strength=mild"), (["Plain", [], {}], "Plain")],
+              "def log_line(level: str, *words: str, **fields: str) -> str:\n    parts = [level]\n    if words:\n        parts.append(\" \".join(words))\n    if fields:\n        parts.append(\", \".join(f\"{k}={v}\" for k, v in fields.items()))\n    return \" | \".join(parts)\n",
+              [(["INFO", ["user", "login"], {"user": "ada"}], "INFO | user login | user=ada"), (["WARN", [], {}], "WARN")],
               [["X", ["a"], {}], ["Y", [], {"k": "v", "z": "w"}]],
-              params=["name", "ingredients", "notes"],
-              driver='def driver(ns, name, ingredients, notes):\n    return resolve(ns, "label")(name, *ingredients, **notes)\n',
-              hints=["`*ingredients` arrives as a tuple and `**notes` as a dict.",
-                     "Build a list of the label's parts, adding each section only if it isn't empty.",
-                     "Join the ingredients with `\" + \"`, the notes as `k=v` with `\", \"`, and finally everything with `\" | \"`."],
+              params=["level", "words", "fields"],
+              driver='def driver(ns, level, words, fields):\n    return resolve(ns, "log_line")(level, *words, **fields)\n',
+              hints=["`*words` arrives as a tuple and `**fields` as a dict.",
+                     "Build a list of the line's sections, adding each one only if it isn't empty.",
+                     "Join the words with a space, the fields as `k=v` with `\", \"`, and finally everything with `\" | \"`."],
               grammar="""
 ## Building blocks
 - **Collect keyword arguments:** `def f(**opts):`
 - **Key and value pairs:** `for k, v in d.items():`
-- **Join with a separator:** `" + ".join(words)`
+- **Join with a separator:** `"-".join(names)`
 """),
         ],
         reps=[
@@ -113,16 +108,14 @@ Make a potion label: the name, the ingredients joined with `" + "`, then any not
     ),
     "lambda-key": dict(
         warmup=[
-            P("py-shortest-spell", "Shortest Spell First", "def by_length(spells: List[str]) -> List[str]:",
+            P("py-sort-by-length", "Shortest Suggestions First", "def by_length(words: List[str]) -> List[str]:",
               """
-Sort the spells from shortest to longest. Spells of the same length keep their order.
+An autocomplete box shows shorter suggestions first. Write `by_length(words)` to return a new list sorted from shortest to longest with `key=len`. Words of the same length keep their order.
 
-- **You get:** `spells`.
-- **Return:** a new list sorted by length, using `key=len`.
-- **Example:** `["blaze", "go", "rain"]` → `["go", "rain", "blaze"]`.
+Example: `by_length(["search", "go", "save"])` returns `["go", "save", "search"]`.
 """,
-              "def by_length(spells: List[str]) -> List[str]:\n    return sorted(spells, key=len)\n",
-              [([["blaze", "go", "rain"]], ["go", "rain", "blaze"]), ([[]], [])], [[["bb", "a", "cc"]]],
+              "def by_length(words: List[str]) -> List[str]:\n    return sorted(words, key=len)\n",
+              [([["search", "go", "save"]], ["go", "save", "search"]), ([[]], [])], [[["bb", "a", "cc"]]],
               hints=["`sorted` can sort by whatever a `key` function returns.",
                      "`len` is a function, so it can be the key directly (no brackets after it).",
                      "Python's sort is stable, so equal lengths keep their order."],
@@ -132,19 +125,17 @@ Sort the spells from shortest to longest. Spells of the same length keep their o
 """),
         ],
         practice=[
-            P("py-strongest-familiar", "The Strongest Familiar", "def strongest(familiars: Dict[str, List[int]]) -> str:",
+            P("py-best-average", "Best Average Score", "def best(players: Dict[str, List[int]]) -> str:",
               """
-Each familiar has a list of training scores. The strongest has the highest **average**.
+A leaderboard keeps a list of scores for each player. Write `best(players)` to return the player with the highest **average** score. If players tie, return the one that comes first in the dict. Every player has at least one score.
 
-- **You get:** `familiars`, name → scores (each list has at least one score).
-- **Return:** the name with the highest average (the first in the dict if tied).
-- **Example:** `{"owl": [3, 5], "cat": [6], "toad": [1, 9]}` → `"cat"` (averages 4, 6, 5).
+Example: `best({"ada": [3, 5], "bo": [6], "cy": [1, 9]})` returns `"bo"`, since the averages are 4, 6 and 5.
 """,
-              "def strongest(familiars: Dict[str, List[int]]) -> str:\n    return max(familiars, key=lambda name: sum(familiars[name]) / len(familiars[name]))\n",
-              [([{"owl": [3, 5], "cat": [6], "toad": [1, 9]}], "cat"), ([{"x": [1]}], "x")], [[{"a": [2, 2], "b": [1, 3]}]],
+              "def best(players: Dict[str, List[int]]) -> str:\n    return max(players, key=lambda name: sum(players[name]) / len(players[name]))\n",
+              [([{"ada": [3, 5], "bo": [6], "cy": [1, 9]}], "bo"), ([{"x": [1]}], "x")], [[{"a": [2, 2], "b": [1, 3]}]],
               require=["lambda"],
               hints=["`max` over a dict looks at its keys (the names).",
-                     "Give `max` a `key`: a `lambda` that takes a name and works out that familiar's average.",
+                     "Give `max` a `key`: a `lambda` that takes a name and works out that player's average.",
                      "An average is the sum of the scores divided by how many there are. `max` keeps the first on a tie."],
               grammar="""
 ## Building blocks
@@ -163,16 +154,14 @@ Each familiar has a list of training scores. The strongest has the highest **ave
     ),
     "map-filter": dict(
         warmup=[
-            P("py-upper-runes", "Shout the Runes", "def shout(runes: List[str]) -> List[str]:",
+            P("py-upper-codes", "Normalise Country Codes", "def upper_all(codes: List[str]) -> List[str]:",
               """
-Turn every rune name into capitals, using `map`.
+A signup form sends country codes in whatever case people typed. Write `upper_all(codes)` to return them all in capitals, using `map`.
 
-- **You get:** `runes`.
-- **Return:** the names in upper case.
-- **Example:** `["fire", "ice"]` → `["FIRE", "ICE"]`.
+Example: `upper_all(["us", "Fr"])` returns `["US", "FR"]`.
 """,
-              "def shout(runes: List[str]) -> List[str]:\n    return list(map(str.upper, runes))\n",
-              [([["fire", "ice"]], ["FIRE", "ICE"]), ([[]], [])], [[["a"]]],
+              "def upper_all(codes: List[str]) -> List[str]:\n    return list(map(str.upper, codes))\n",
+              [([["us", "Fr"]], ["US", "FR"]), ([[]], [])], [[["a"]]],
               require=["map"],
               hints=["`map(function, items)` applies the function to every item.",
                      "`str.upper` is the method itself, usable as a function: `str.upper(\"a\")` is `\"A\"`.",
@@ -185,20 +174,18 @@ Turn every rune name into capitals, using `map`.
 """),
         ],
         practice=[
-            P("py-strong-potions", "Strong Potions Only", "def strong(potions: List[str]) -> List[int]:",
+            P("py-passing-scores", "Passing Scores Only", "def passing(scores: List[str]) -> List[int]:",
               """
-Potion strengths are written as text. Convert them to numbers and keep only the ones of 50 or more, in order.
+A CSV import gives test scores as strings. Write `passing(scores)` to convert them to ints and keep only the ones of 50 or more, in their original order, using `map` and `filter`.
 
-- **You get:** `potions`, strength strings.
-- **Return:** the strong ones as ints, using `map` and `filter`.
-- **Example:** `["20", "75", "50"]` → `[75, 50]`.
+Example: `passing(["20", "75", "50"])` returns `[75, 50]`.
 """,
-              "def strong(potions: List[str]) -> List[int]:\n    return list(filter(lambda n: n >= 50, map(int, potions)))\n",
+              "def passing(scores: List[str]) -> List[int]:\n    return list(filter(lambda n: n >= 50, map(int, scores)))\n",
               [([["20", "75", "50"]], [75, 50]), ([[]], [])], [[["1"]], [["99", "100"]]],
               require=["map", "filter"],
-              hints=["Two steps: convert every string with `map`, then keep the big ones with `filter`.",
+              hints=["Two steps: convert every string with `map`, then keep the high ones with `filter`.",
                      "`filter` can work directly on what `map` gives back; there's no need to make a list in between.",
-                     "Give `filter` a `lambda` that checks the strength is at least 50, and wrap the final result in `list(...)`."],
+                     "Give `filter` a `lambda` that checks the score is at least 50, and wrap the final result in `list(...)`."],
               grammar="""
 ## Building blocks
 - **Convert every item:** `map(float, xs)`
@@ -216,15 +203,13 @@ Potion strengths are written as text. Convert them to numbers and keep only the 
     ),
     "comprehensions": dict(
         warmup=[
-            P("py-add-one-comp", "Level Up Everyone", "def level_up(levels: List[int]) -> List[int]:",
+            P("py-bump-builds", "Bump Every Build Number", "def bump(builds: List[int]) -> List[int]:",
               """
-Every apprentice goes up one level.
+A release script raises every package's build number by one. Write `bump(builds)` to return the new numbers, using a list comprehension.
 
-- **You get:** `levels`.
-- **Return:** each level plus one, using a list comprehension.
-- **Example:** `[1, 4]` → `[2, 5]`.
+Example: `bump([1, 4])` returns `[2, 5]`.
 """,
-              "def level_up(levels: List[int]) -> List[int]:\n    return [lv + 1 for lv in levels]\n",
+              "def bump(builds: List[int]) -> List[int]:\n    return [b + 1 for b in builds]\n",
               [([[1, 4]], [2, 5]), ([[]], [])], [[[0, 0]]],
               require=["listcomp"],
               hints=["A list comprehension has the shape `[new_value for item in items]`.",
@@ -236,13 +221,11 @@ Every apprentice goes up one level.
 """),
         ],
         practice=[
-            P("py-initials-dict", "Apprentice Initials", "def initials(names: List[str]) -> Dict[str, str]:",
+            P("py-initials-dict", 'Initials for Each Name', "def initials(names: List[str]) -> Dict[str, str]:",
               """
-Map each apprentice to their initials, skipping any blank names.
+A user directory shows initials next to each person. Write `initials(names)`, where each name looks like `"ada lovelace"`, to return a dict from every non-blank name to its initials in capitals. Use a dict comprehension and skip blank names.
 
-- **You get:** `names`, full names like `"ada lovelace"`.
-- **Return:** a dict from each non-blank name to its initials in capitals, using a dict comprehension.
-- **Example:** `["ada lovelace", "", "bo"]` → `{"ada lovelace": "AL", "bo": "B"}`.
+Example: `initials(["ada lovelace", "", "bo"])` returns `{"ada lovelace": "AL", "bo": "B"}`.
 """,
               "def initials(names: List[str]) -> Dict[str, str]:\n    return {n: \"\".join(w[0].upper() for w in n.split()) for n in names if n}\n",
               [([["ada lovelace", "", "bo"]], {"ada lovelace": "AL", "bo": "B"}), ([[]], {})], [[["x y z"]]],
@@ -267,20 +250,18 @@ Map each apprentice to their initials, skipping any blank names.
     ),
     "recursion": dict(
         warmup=[
-            P("py-countdown-recursive", "Countdown Chant", "def chant(n: int) -> List[int]:",
+            P("py-countdown", "Count Down Recursively", "def countdown(n: int) -> List[int]:",
               """
-Chant the numbers from `n` down to 1, recursively.
+A launch screen counts down from `n` to 1. Write `countdown(n)` to return `[n, n-1, ..., 1]` using recursion and no loops. `n` is 0 or more.
 
-- **You get:** `n` (0 or more).
-- **Return:** the list `[n, n-1, …, 1]`, built with recursion (no loops).
-- **Example:** `3` → `[3, 2, 1]`; `0` → `[]`.
+Example: `countdown(3)` returns `[3, 2, 1]`, and `countdown(0)` returns `[]`.
 """,
-              "def chant(n: int) -> List[int]:\n    if n == 0:\n        return []\n    return [n] + chant(n - 1)\n",
+              "def countdown(n: int) -> List[int]:\n    if n == 0:\n        return []\n    return [n] + countdown(n - 1)\n",
               [([3], [3, 2, 1]), ([0], [])], [[1], [6]],
               require=["recursion"], forbid=["for", "while"],
-              hints=["The chant for `n` is `n` followed by the chant for `n - 1`.",
-                     "Base case: the chant for 0 is an empty list.",
-                     "Join a one-item list and the smaller chant with `+`."],
+              hints=["The countdown from `n` is `n` followed by the countdown from `n - 1`.",
+                     "Base case: the countdown from 0 is an empty list.",
+                     "Join a one-item list and the shorter countdown with `+`."],
               grammar="""
 ## Building blocks
 - **Call yourself on something smaller:** `f(k - 1)`
@@ -289,13 +270,11 @@ Chant the numbers from `n` down to 1, recursively.
 """),
         ],
         practice=[
-            P("py-power-tower", "Power Tower", "def power(base: int, exp: int) -> int:",
+            P("py-power-tower", 'Fast Power', "def power(base: int, exp: int) -> int:",
               """
-Raise `base` to the power `exp` by recursion, using the fast trick: x to the power 2k is (x to the power k) squared.
+Write `power(base, exp)` to return `base ** exp` without using `**` or `pow`. Do it recursively with the halving trick: x to the power 2k is (x to the power k) squared, so each call halves the exponent. `exp` is 0 or more.
 
-- **You get:** `base` and `exp` (0 or more).
-- **Return:** `base ** exp`, worked out recursively (no `**`, no `pow`).
-- **Example:** `2, 10` → `1024`; `5, 0` → `1`.
+Example: `power(2, 10)` returns `1024`, and `power(5, 0)` returns `1`.
 """,
               "def power(base: int, exp: int) -> int:\n    if exp == 0:\n        return 1\n    half = power(base, exp // 2)\n    if exp % 2 == 0:\n        return half * half\n    return half * half * base\n",
               [([2, 10], 1024), ([5, 0], 1)], [[3, 5], [2, 1], [7, 12]],
@@ -322,12 +301,11 @@ Raise `base` to the power `exp` by recursion, using the fast trick: x to the pow
     ),
     "closures": dict(
         warmup=[
-            P("py-make-greeter", "Forge a Greeter", "def make_greeter(word: str):",
+            P("py-make-greeter", 'Make a Greeter', "def make_greeter(word: str):",
               """
-Forge greeting spells: each one remembers its own greeting word.
+An email template system needs greeting functions that each remember their own greeting word. Write `make_greeter(word)` to return a function that takes `name` and returns `"<word> <name>"`.
 
-- **Write:** `make_greeter(word)`, returning a function that takes `name` and returns `"WORD NAME"`.
-- **Example:** `make_greeter("Hi")("Ada")` → `"Hi Ada"`.
+Example: `make_greeter("Hi")("Ada")` returns `"Hi Ada"`.
 """,
               "def make_greeter(word: str):\n    def greet(name):\n        return f\"{word} {name}\"\n    return greet\n",
               [(["Hi", "Ada"], "Hi Ada"), (["Yo", "Bo"], "Yo Bo")], [["", "x"]],
@@ -343,21 +321,20 @@ Forge greeting spells: each one remembers its own greeting word.
 """),
         ],
         practice=[
-            P("py-make-limited", "A Spell with Three Charges", "def make_wand(charges: int):",
+            P("py-rate-limiter", "A Simple Rate Limiter", "def make_limiter(limit: int):",
               """
-A wand holds a number of charges. Each wave uses one and returns `"zap"`; once it's empty, it returns `"fizzle"`.
+An API gives each client a fixed number of requests. Write `make_limiter(limit)` to return a function with no parameters. Each call uses up one request and returns `"ok"`; once none are left, it returns `"blocked"`.
 
-- **Write:** `make_wand(charges)`, returning a function with no parameters that behaves like that.
-- **Example:** a wand with 2 charges waved 3 times gives `"zap"`, `"zap"`, `"fizzle"`.
+Example: with a limit of 2, three calls return `"ok"`, `"ok"`, `"blocked"`.
 """,
-              "def make_wand(charges: int):\n    left = charges\n\n    def wave():\n        nonlocal left\n        if left == 0:\n            return \"fizzle\"\n        left -= 1\n        return \"zap\"\n\n    return wave\n",
-              [([2, 3], ["zap", "zap", "fizzle"]), ([0, 1], ["fizzle"])], [[1, 2], [3, 3]],
-              params=["charges", "waves"],
-              driver='def driver(ns, charges, waves):\n    w = resolve(ns, "make_wand")(charges)\n    return [w() for _ in range(waves)]\n',
+              "def make_limiter(limit: int):\n    left = limit\n\n    def request():\n        nonlocal left\n        if left == 0:\n            return \"blocked\"\n        left -= 1\n        return \"ok\"\n\n    return request\n",
+              [([2, 3], ["ok", "ok", "blocked"]), ([0, 1], ["blocked"])], [[1, 2], [3, 3]],
+              params=["limit", "calls"],
+              driver='def driver(ns, limit, calls):\n    r = resolve(ns, "make_limiter")(limit)\n    return [r() for _ in range(calls)]\n',
               require=["nonlocal"],
               hints=["The inner function must change a number that lives in the outer function.",
                      "Declare it `nonlocal` inside the inner function before changing it.",
-                     "Check for zero first and return `\"fizzle\"`; otherwise use a charge and return `\"zap\"`."],
+                     "Check for zero first and return `\"blocked\"`; otherwise use one up and return `\"ok\"`."],
               grammar="""
 ## Building blocks
 - **Change an outer variable:** `nonlocal total`
@@ -378,16 +355,15 @@ A wand holds a number of charges. Each wave uses one and returns `"zap"`; once i
     ),
     "iterators-generators": dict(
         warmup=[
-            P("py-yield-evens", "Even Sparks", "def sparks(n: int):",
+            P("py-yield-evens", "Yield Even Numbers", "def evens(n: int):",
               """
-A generator of sparks: yield the even numbers from 0 up to (but not including) `n`.
+A test-data helper hands out even ids one at a time instead of building a big list. Write a generator `evens(n)` that yields the even numbers from 0 up to, but not including, `n`.
 
-- **Write:** a generator `sparks(n)`.
-- **Example:** `sparks(7)` yields `0, 2, 4, 6`.
+Example: `list(evens(7))` is `[0, 2, 4, 6]`.
 """,
-              "def sparks(n: int):\n    for i in range(0, n, 2):\n        yield i\n",
+              "def evens(n: int):\n    for i in range(0, n, 2):\n        yield i\n",
               [([7], [0, 2, 4, 6]), ([0], [])], [[1], [10]],
-              driver='def driver(ns, n):\n    return list(resolve(ns, "sparks")(n))\n',
+              driver='def driver(ns, n):\n    return list(resolve(ns, "evens")(n))\n',
               require=["yield"],
               hints=["A generator uses `yield` to hand out values one at a time.",
                      "Loop over the even numbers with a `range` that steps by 2.",
@@ -399,20 +375,18 @@ A generator of sparks: yield the even numbers from 0 up to (but not including) `
 """),
         ],
         practice=[
-            P("py-take-while-lit", "Lit Torches", "def lit_prefix(torches: List[int]) -> List[int]:",
+            P("py-read-until-zero", "Read Until the Stop Marker", "def until_zero(readings: List[int]) -> List[int]:",
               """
-Torches burn in a row. Read them from the start and stop at the first one that's out (strength 0).
+A sensor sends a stream of readings and marks the end with a 0. Write `until_zero(readings)` to return the readings before the first 0, using `iter` and `next` and no `for` loop. If there's no 0, return them all.
 
-- **You get:** `torches`, strengths.
-- **Return:** the strengths before the first 0, using `iter` and `next` (no `for` loop).
-- **Example:** `[3, 5, 0, 4]` → `[3, 5]`.
+Example: `until_zero([3, 5, 0, 4])` returns `[3, 5]`.
 """,
-              "def lit_prefix(torches: List[int]) -> List[int]:\n    it = iter(torches)\n    out = []\n    while (t := next(it, 0)) != 0:\n        out.append(t)\n    return out\n",
+              "def until_zero(readings: List[int]) -> List[int]:\n    it = iter(readings)\n    out = []\n    while (r := next(it, 0)) != 0:\n        out.append(r)\n    return out\n",
               [([[3, 5, 0, 4]], [3, 5]), ([[]], [])], [[[0, 1]], [[1, 2, 3]]],
               require=["iter", "next"], forbid=["for"],
               hints=["`iter(list)` gives an iterator; `next(iterator, default)` takes the next item or returns the default at the end.",
-                     "Using 0 as the default means \"run out\" and \"torch is out\" look the same, so one check stops both.",
-                     "Loop with `while`, taking the next strength each time, until it's 0."],
+                     "Using 0 as the default means \"ran out\" and \"hit the stop marker\" look the same, so one check stops both.",
+                     "Loop with `while`, taking the next reading each time, until it's 0."],
               grammar="""
 ## Building blocks
 - **Make an iterator:** `stream = iter(xs)`
@@ -431,17 +405,16 @@ Torches burn in a row. Read them from the start and stop at the first one that's
     ),
     "decorators": dict(
         warmup=[
-            P("py-shout-decorator", "The Loud Rune", "def loud(func):",
+            P("py-upper-decorator", "An Uppercase Decorator", "def uppercase(func):",
               """
-Carve the loud rune on a spell, and its text result comes out in capitals.
+A command-line tool wants some commands to print their output in capitals. Write a decorator `uppercase` whose wrapper calls the original function and returns its text result upper-cased.
 
-- **Write:** a decorator `loud` whose wrapper returns the original result upper-cased.
-- **Example:** a spell returning `"hi " + name`, decorated with `@loud`, called with `"bo"` → `"HI BO"`.
+Example: a function returning `"hi " + name`, decorated with `@uppercase` and called with `"bo"`, returns `"HI BO"`.
 """,
-              "def loud(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs).upper()\n    return wrapper\n",
+              "def uppercase(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs).upper()\n    return wrapper\n",
               [(["bo"], "HI BO"), ([""], "HI ")], [["x"]],
               params=["name"],
-              driver='def driver(ns, name):\n    deco = resolve(ns, "loud")\n\n    @deco\n    def hello(n):\n        return "hi " + n\n\n    return hello(name)\n',
+              driver='def driver(ns, name):\n    deco = resolve(ns, "uppercase")\n\n    @deco\n    def hello(n):\n        return "hi " + n\n\n    return hello(name)\n',
               hints=["A decorator takes a function and returns a new wrapper function.",
                      "The wrapper accepts any arguments and passes them straight on to the original.",
                      "Upper-case what the original returns, and return that."],
@@ -453,17 +426,16 @@ Carve the loud rune on a spell, and its text result comes out in capitals.
 """),
         ],
         practice=[
-            P("py-retry-decorator", "Try the Spell Twice", "def retry_once(func):",
+            P("py-retry-decorator", 'Retry Once', "def retry_once(func):",
               """
-Some spells fail the first time. The retry rune catches a `ValueError` and tries once more; if that fails too, the error escapes.
+Network calls sometimes fail once and then work. Write a decorator `retry_once` that catches a `ValueError`, calls the function one more time, and lets the error through if the second call fails too.
 
-- **Write:** a decorator `retry_once`.
-- **Example:** a spell that fails on its first call then succeeds returns its result (`"ok"`); one that fails twice still raises `ValueError` (the tests report that as `"ValueError escaped"`).
+Example: a function that fails on its first call and then succeeds returns its result (`"ok"`). One that fails twice still raises `ValueError`, which the tests report as `"ValueError escaped"`.
 """,
               "def retry_once(func):\n    def wrapper(*args, **kwargs):\n        try:\n            return func(*args, **kwargs)\n        except ValueError:\n            return func(*args, **kwargs)\n    return wrapper\n",
               [([1], "ok"), ([2], "ValueError escaped")], [[0]],
               params=["fails"],
-              driver='def driver(ns, fails):\n    deco = resolve(ns, "retry_once")\n    calls = [0]\n\n    @deco\n    def spell():\n        calls[0] += 1\n        if calls[0] <= fails:\n            raise ValueError("fizzle")\n        return "ok"\n\n    try:\n        return spell()\n    except ValueError:\n        return "ValueError escaped"\n',
+              driver='def driver(ns, fails):\n    deco = resolve(ns, "retry_once")\n    calls = [0]\n\n    @deco\n    def fetch():\n        calls[0] += 1\n        if calls[0] <= fails:\n            raise ValueError("timeout")\n        return "ok"\n\n    try:\n        return fetch()\n    except ValueError:\n        return "ValueError escaped"\n',
               hints=["Put the call to the original inside `try`.",
                      "In `except ValueError:`, call the original once more and return its result.",
                      "Don't catch the second failure: if the retry also raises, the error leaves the wrapper on its own."],
@@ -483,64 +455,59 @@ Some spells fail the first time. The retry rune catches a `ValueError` and tries
 }
 
 REVIEW = dict(
-    id="review-5", title="Review: the spellbook exam",
+    id="review-5", title="Review: functions",
     intro="""
-The spellbook exam mixes everything in this world: defaults, `*args`/`**kwargs`, `lambda` keys, comprehensions, recursion, closures, generators and decorators.
+This review mixes everything in this world: defaults, `*args`/`**kwargs`, `lambda` keys, comprehensions, recursion, closures, generators and decorators.
 """,
     problems=[
-        P("py-review-spell-ranking", "Rank the Spells", "def rank(spells: List[str], power: Dict[str, int]) -> List[str]:",
+        P("py-review-rank-results", "Rank Search Results", "def rank(results: List[str], score: Dict[str, int]) -> List[str]:",
           """
-Rank the spells by power, strongest first. Spells missing from `power` have power 0. Ties go alphabetically.
+A search page ranks results by relevance score, highest first. Results missing from `score` count as 0, and ties go alphabetically. Write `rank(results, score)` using `sorted` with a `lambda` key.
 
-- **You get:** `spells` and `power` (spell → power).
-- **Return:** the spells ranked, using `sorted` with a `lambda` key.
-- **Example:** `["fog", "fire", "ice"]` with `{"fire": 9, "ice": 9}` → `["fire", "ice", "fog"]`.
+Example: `rank(["faq", "docs", "blog"], {"docs": 9, "faq": 9})` returns `["docs", "faq", "blog"]`.
 """,
-          "def rank(spells: List[str], power: Dict[str, int]) -> List[str]:\n    return sorted(spells, key=lambda s: (-power.get(s, 0), s))\n",
-          [([["fog", "fire", "ice"], {"fire": 9, "ice": 9}], ["fire", "ice", "fog"]), ([[], {}], [])], [[["b", "a"], {}], [["x", "y"], {"y": 1}]],
+          "def rank(results: List[str], score: Dict[str, int]) -> List[str]:\n    return sorted(results, key=lambda r: (-score.get(r, 0), r))\n",
+          [([["faq", "docs", "blog"], {"docs": 9, "faq": 9}], ["docs", "faq", "blog"]), ([[], {}], [])], [[["b", "a"], {}], [["x", "y"], {"y": 1}]],
           require=["lambda"],
-          hints=["Two sorting rules: higher power first, then alphabetical.",
-                 "A key can return a tuple; tuples compare item by item. Negate the power so higher comes first.",
-                 "Read missing spells' power with `.get(spell, 0)`."],
+          hints=["Two sorting rules: higher score first, then alphabetical.",
+                 "A key can return a tuple; tuples compare item by item. Negate the score so higher comes first.",
+                 "Read a missing result's score with `.get(result, 0)`."],
           grammar="""
 ## Building blocks
-- **Sort by two things:** a key that returns a tuple, like `(-score, name)`.
+- **Sort by two things:** a key that returns a tuple, like `(-points, name)`.
 - **Read with a default:** `d.get(k, 0)`
 """),
-        P("py-review-flatten-scrolls", "Unroll Nested Scrolls", "def unroll(scroll: list) -> List[str]:",
+        P("py-review-flatten-menu", "Flatten a Nested Menu", "def flatten(menu: list) -> List[str]:",
           """
-A scroll holds words and smaller scrolls (lists), nested to any depth. Read every word in order, skipping empty words.
+A site's navigation config holds labels and nested submenus (lists), to any depth. Write `flatten(menu)` to return every non-empty label in reading order.
 
-- **You get:** `scroll`.
-- **Return:** all the non-empty words, in reading order.
-- **Example:** `["a", ["b", ["", "c"]], "d"]` → `["a", "b", "c", "d"]`.
+Example: `flatten(["Home", ["Docs", ["", "API"]], "Blog"])` returns `["Home", "Docs", "API", "Blog"]`.
 """,
-          "def unroll(scroll: list) -> List[str]:\n    out = []\n    for part in scroll:\n        if isinstance(part, list):\n            out += unroll(part)\n        elif part:\n            out.append(part)\n    return out\n",
-          [([["a", ["b", ["", "c"]], "d"]], ["a", "b", "c", "d"]), ([[]], [])], [[[[[["x"]]]]], [["", ""]]],
+          "def flatten(menu: list) -> List[str]:\n    out = []\n    for item in menu:\n        if isinstance(item, list):\n            out += flatten(item)\n        elif item:\n            out.append(item)\n    return out\n",
+          [([["Home", ["Docs", ["", "API"]], "Blog"]], ["Home", "Docs", "API", "Blog"]), ([[]], [])], [[[[[["x"]]]]], [["", ""]]],
           require=["recursion"],
-          hints=["Each item is either a word or another scroll (a list).",
+          hints=["Each item is either a label or a submenu (a list).",
                  "For a list, call your own function on it and add everything it returns.",
-                 "For a word, add it only if it isn't empty (empty strings are falsy)."],
+                 "For a label, add it only if it isn't empty (empty strings are falsy)."],
           grammar="""
 ## Building blocks
 - **Is it a list?** `isinstance(x, list)`
 - **Add several items:** `out += more`
 - **Call yourself on a smaller part:** `f(part)`
 """),
-        P("py-review-cooldowns", "Spell Cooldowns", "def make_caster(cooldown: int):",
+        P("py-review-throttle", "Throttle Clicks", "def make_throttle(cooldown: int):",
           """
-A caster can only cast once every `cooldown` ticks. Build a caster function that takes the current `tick` and returns `True` if the cast happens (and starts the cooldown), or `False` if it's still cooling down.
+A button handler ignores clicks that come too soon after the last accepted one. Write `make_throttle(cooldown)` to return a function `allow(tick)`. It returns `True` and starts a new cooldown when the click is accepted, or `False` while it's still cooling down.
 
-- **Write:** `make_caster(cooldown)`, returning a function `cast(tick)`.
-- **Example:** with cooldown `3`, casting at ticks `0, 1, 3, 4, 6` gives `True, False, True, False, True`.
+Example: with a cooldown of `3`, clicks at ticks `0, 1, 3, 4, 6` give `True, False, True, False, True`.
 """,
-          "def make_caster(cooldown: int):\n    ready_at = 0\n\n    def cast(tick):\n        nonlocal ready_at\n        if tick < ready_at:\n            return False\n        ready_at = tick + cooldown\n        return True\n\n    return cast\n",
+          "def make_throttle(cooldown: int):\n    ready_at = 0\n\n    def allow(tick):\n        nonlocal ready_at\n        if tick < ready_at:\n            return False\n        ready_at = tick + cooldown\n        return True\n\n    return allow\n",
           [([3, [0, 1, 3, 4, 6]], [True, False, True, False, True]), ([1, [0, 0, 1]], [True, False, True])], [[5, [0, 4, 5, 9, 10]], [2, []]],
           params=["cooldown", "ticks"],
-          driver='def driver(ns, cooldown, ticks):\n    cast = resolve(ns, "make_caster")(cooldown)\n    return [cast(t) for t in ticks]\n',
-          hints=["The caster needs to remember the tick when it's next ready, between calls: a closure.",
+          driver='def driver(ns, cooldown, ticks):\n    allow = resolve(ns, "make_throttle")(cooldown)\n    return [allow(t) for t in ticks]\n',
+          hints=["The handler needs to remember, between calls, the tick when it's next ready: a closure.",
                  "Store that tick in the outer function, starting at 0, and use `nonlocal` to update it.",
-                 "If the tick is earlier than the ready tick, refuse; otherwise cast and set the next ready tick to now plus the cooldown."],
+                 "If the tick is earlier than the ready tick, refuse; otherwise accept and set the next ready tick to now plus the cooldown."],
           grammar="""
 ## Building blocks
 - **Change an outer variable:** `nonlocal ready`

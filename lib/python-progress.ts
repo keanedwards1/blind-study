@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { load, save, useStored, type Progress } from "./storage";
 import { type Attempt, mergeResult, NEW_ATTEMPT, type StageResult } from "./game-score";
+import { DEV_UNLOCK_ALL } from "./dev-unlock";
 
 /** Placement results: one entry per task in test order. `null` = not answered yet. */
 export type Placement = { level: number; at: number; results: (boolean | null)[] };
@@ -53,7 +54,7 @@ export function levelStates(levels: LevelInfo[], placement: Placement | null, so
     if (!lv.ready) state = "coming-soon";
     else if (mastered) state = "mastered";
     else if (placedOut) state = "placed-out";
-    else if (!open) state = "locked";
+    else if (!open && !DEV_UNLOCK_ALL) state = "locked";
     else if (!currentFound) state = "current";
     else state = "unlocked";
     if (state === "current") currentFound = true;
@@ -130,5 +131,5 @@ export function markIntroSeen(world: number) {
 
 /** Worlds whose stages are all open (no one-after-another unlocking). */
 export function worldAllOpen(state: LevelState): boolean {
-  return state === "placed-out" || state === "mastered";
+  return DEV_UNLOCK_ALL || state === "placed-out" || state === "mastered";
 }

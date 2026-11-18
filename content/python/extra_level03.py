@@ -10,13 +10,11 @@ from _helpers import P, Q
 EXTRA = {
     "for-loops": dict(
         warmup=[
-            P("py-say-each", "Roll Call", "def roll_call(names: List[str]) -> None:",
+            P("py-say-each", 'Print Each Name', "def roll_call(names: List[str]) -> None:",
               """
-Every morning the orchard keeper calls out each picker's name.
+A command-line tool lists every user on its own line. Write `roll_call(names)` to print each name in order.
 
-- **You get:** `names`, a list of names.
-- **Print:** each name on its own line, in order.
-- **Example:** `["Ada", "Bo"]` prints `Ada` then `Bo`.
+Example: `roll_call(["Ada", "Bo"])` prints `Ada` and then `Bo`. An empty list prints nothing.
 
 _This task checks what you print._
 """,
@@ -28,24 +26,22 @@ _This task checks what you print._
                      "Print the loop variable each time round. An empty list prints nothing."],
               grammar="""
 ## Building blocks
-- **Loop over a list:** `for fruit in basket:`
+- **Loop over a list:** `for item in cart:`
 - **Print one thing:** `print(word)`
 """),
         ],
         practice=[
-            P("py-loop-longest-name", "The Longest Ladder", "def longest_name(names: List[str]) -> str:",
+            P("py-loop-longest-name", 'Longest Name Without max', "def longest_name(names: List[str]) -> str:",
               """
-The picker with the longest name gets the tallest ladder (it's tradition). Find them without using `max`.
+A table needs to be as wide as its longest name. Write `longest_name(names)` to return the longest name, or the first one if several tie, without using `max`. The list has at least one name.
 
-- **You get:** `names` (at least one).
-- **Return:** the longest name; if there's a tie, the first one.
-- **Example:** `["Bo", "Ada", "Cy"]` → `"Ada"`.
+Example: `longest_name(["Bo", "Ada", "Cy"])` returns `"Ada"`.
 """,
               "def longest_name(names: List[str]) -> str:\n    best = names[0]\n    for name in names:\n        if len(name) > len(best):\n            best = name\n    return best\n",
               [([["Bo", "Ada", "Cy"]], "Ada"), ([["Al", "Bo"]], "Al")], [[["x"]], [["aa", "b", "ccc", "ddd"]]],
               forbid=["max"],
               hints=["Keep track of the best name found so far, starting with the first one.",
-                     "Compare lengths with `len(...)`, not the names themselves.",
+                     "Compare the lengths with `len(...)`, not the names themselves.",
                      "Replace the best only when a name is strictly longer, so ties keep the first one."],
               grammar="""
 ## Building blocks
@@ -65,13 +61,11 @@ The picker with the longest name gets the tallest ladder (it's tradition). Find 
     ),
     "range": dict(
         warmup=[
-            P("py-count-to-n", "Count the Rows", "def rows(n: int) -> None:",
+            P("py-count-to-n", 'Print 1 to N', "def rows(n: int) -> None:",
               """
-The orchard has `n` rows of trees, numbered from 1. Print each row number.
+A progress log prints each step number as it runs. Write `rows(n)` to print the numbers from 1 to `n`, one per line.
 
-- **You get:** `n` (0 or more).
-- **Print:** the numbers 1 to `n`, one per line.
-- **Example:** `3` prints `1`, `2`, `3`.
+Example: `rows(3)` prints `1`, `2` and `3`. `rows(0)` prints nothing.
 
 _This task checks what you print._
 """,
@@ -88,24 +82,22 @@ _This task checks what you print._
 """),
         ],
         practice=[
-            P("py-every-third-tree", "Every Third Tree", "def marked(trees: List[str]) -> List[str]:",
+            P("py-every-third", "Every Third Item", "def every_third(items: List[str]) -> List[str]:",
               """
-The keeper ties a ribbon on every third tree, starting with the first.
+A sampling script keeps every third record from a log, starting with the first. Write `every_third(items)` to return the items at positions 0, 3, 6 and so on, using `range` with a step (no slicing).
 
-- **You get:** `trees`, a list of tree names.
-- **Return:** the names at positions 0, 3, 6, …, using `range` with a step.
-- **Example:** `["a", "b", "c", "d", "e"]` → `["a", "d"]`.
+Example: `every_third(["a", "b", "c", "d", "e"])` returns `["a", "d"]`.
 """,
-              "def marked(trees: List[str]) -> List[str]:\n    out = []\n    for i in range(0, len(trees), 3):\n        out.append(trees[i])\n    return out\n",
+              "def every_third(items: List[str]) -> List[str]:\n    out = []\n    for i in range(0, len(items), 3):\n        out.append(items[i])\n    return out\n",
               [([["a", "b", "c", "d", "e"]], ["a", "d"]), ([[]], [])], [[["x"]], [list("abcdefghij")]],
               forbid=["slicing"],
-              hints=["You want positions 0, 3, 6, … up to the end of the list.",
+              hints=["You want positions 0, 3, 6, and so on, up to the end of the list.",
                      "`range` takes a third number, the step, and the stop can be the list's length.",
-                     "Loop over those positions and collect the tree at each one (no slicing allowed here)."],
+                     "Loop over those positions and collect the item at each one."],
               grammar="""
 ## Building blocks
 - **Count in steps:** `range(0, 10, 4)` gives 0, 4, 8.
-- **Read by position:** `items[k]`
+- **Read by position:** `things[k]`
 - **Add to a list:** `out.append(x)`
 """),
         ],
@@ -120,19 +112,17 @@ The keeper ties a ribbon on every third tree, starting with the first.
     ),
     "while-break": dict(
         warmup=[
-            P("py-double-until", "Doubling Seeds", "def days_to_reach(target: int) -> int:",
+            P("py-double-until", 'Doubling Until a Target', "def days_to_reach(target: int) -> int:",
               """
-A magic seed pod starts with 1 seed and doubles every day. How many days until it has **at least** `target` seeds?
+A cache doubles its capacity every time it fills up, starting from 1 slot. Write `days_to_reach(target)` to return how many doublings it takes to have at least `target` slots.
 
-- **You get:** `target` (1 or more).
-- **Return:** the number of days. On day 0 there is 1 seed.
-- **Example:** `8` → `3` (1, 2, 4, 8).
+Example: `days_to_reach(8)` returns `3` (1, 2, 4, 8). `days_to_reach(1)` returns `0`.
 """,
               "def days_to_reach(target: int) -> int:\n    seeds, days = 1, 0\n    while seeds < target:\n        seeds *= 2\n        days += 1\n    return days\n",
               [([8], 3), ([1], 0)], [[2], [9], [1000]],
-              hints=["You don't know in advance how many days it takes, which is exactly when a `while` loop fits.",
-                     "Keep two numbers: the seeds and the days so far.",
-                     "While there are still too few seeds, double them and count a day. A target of 1 needs 0 days."],
+              hints=["You don't know in advance how many doublings it takes, which is exactly when a `while` loop fits.",
+                     "Keep two numbers: the current size and the number of doublings so far.",
+                     "While the size is still below the target, double it and count one doubling. A target of 1 needs 0 doublings."],
               grammar="""
 ## Building blocks
 - **Repeat while something is true:** `while level < 10:`
@@ -141,20 +131,18 @@ A magic seed pod starts with 1 seed and doubles every day. How many days until i
 """),
         ],
         practice=[
-            P("py-first-rotten", "Find the Rotten Apple", "def first_rotten(apples: List[str]) -> int:",
+            P("py-first-failure", "First Failed Check", "def first_failure(results: List[str]) -> int:",
               """
-Apples are checked in order. Stop at the first rotten one (`"rotten"`) and report its position.
+A CI script runs its checks in order and reports the first one that failed. Write `first_failure(results)` to return the index of the first `"fail"`, or `-1` if every check passed. Use `break` to stop looking once you find it.
 
-- **You get:** `apples`, a list of words like `"good"` or `"rotten"`.
-- **Return:** the index of the first `"rotten"`, or `-1` if they're all fine. Use `break`.
-- **Example:** `["good", "rotten", "rotten"]` → `1`.
+Example: `first_failure(["pass", "fail", "fail"])` returns `1`, and `first_failure(["pass"])` returns `-1`.
 """,
-              "def first_rotten(apples: List[str]) -> int:\n    found = -1\n    for i, a in enumerate(apples):\n        if a == \"rotten\":\n            found = i\n            break\n    return found\n",
-              [([["good", "rotten", "rotten"]], 1), ([["good"]], -1)], [[[]], [["rotten"]], [["good"] * 5 + ["rotten"]]],
+              "def first_failure(results: List[str]) -> int:\n    found = -1\n    for i, r in enumerate(results):\n        if r == \"fail\":\n            found = i\n            break\n    return found\n",
+              [([["pass", "fail", "fail"]], 1), ([["pass"]], -1)], [[[]], [["fail"]], [["pass"] * 5 + ["fail"]]],
               require=["break"],
               hints=["Start your answer as -1, meaning \"not found yet\".",
-                     "Loop with positions (`enumerate`), and when you meet a rotten apple, remember its position.",
-                     "Then `break` straight away, so a later rotten apple can't overwrite the first."],
+                     "Loop with positions (`enumerate`), and when you meet a failure, remember its position.",
+                     "Then `break` straight away, so a later failure can't overwrite the first one."],
               grammar="""
 ## Building blocks
 - **Position and item:** `for k, item in enumerate(things):`
@@ -173,38 +161,33 @@ Apples are checked in order. Stop at the first rotten one (`"rotten"`) and repor
     ),
     "list-methods": dict(
         warmup=[
-            P("py-pick-basket", "Fill the Basket", "def basket(apples: int) -> List[str]:",
+            P("py-pending-list", "A List of Placeholders", "def pending(n: int) -> List[str]:",
               """
-Build a basket by adding one `"apple"` at a time.
+A task tracker creates `n` empty slots marked `"pending"` before any work starts. Write `pending(n)` to build that list by appending one `"pending"` at a time in a loop.
 
-- **You get:** `apples`, how many to add (0 or more).
-- **Return:** a list with that many `"apple"` strings, built with `append` in a loop.
-- **Example:** `2` → `["apple", "apple"]`.
+Example: `pending(2)` returns `["pending", "pending"]`, and `pending(0)` returns `[]`.
 """,
-              "def basket(apples: int) -> List[str]:\n    out = []\n    for _ in range(apples):\n        out.append(\"apple\")\n    return out\n",
-              [([2], ["apple", "apple"]), ([0], [])], [[1], [5]],
+              "def pending(n: int) -> List[str]:\n    out = []\n    for _ in range(n):\n        out.append(\"pending\")\n    return out\n",
+              [([2], ["pending", "pending"]), ([0], [])], [[1], [5]],
               require=[".append"],
               hints=["Start with an empty list.",
-                     "Loop `apples` times with `range`; the loop variable isn't needed, so `_` is a fine name.",
-                     "Each time round, `append` one `\"apple\"`."],
+                     "Loop `n` times with `range`; the loop variable isn't needed, so `_` is a fine name.",
+                     "Each time round, `append` one `\"pending\"`."],
               grammar="""
 ## Building blocks
 - **Empty list:** `[]`
-- **Add to the end:** `bag.append("pear")`
+- **Add to the end:** `bag.append("x")`
 - **Repeat n times:** `for _ in range(3):`
 """),
         ],
         practice=[
-            P("py-sorted-copy-top", "Best Three Harvests", "def best_three(harvests: List[int]) -> List[int]:",
+            P("py-sorted-copy-top", 'Top Three Without Changing the List', "def best_three(scores: List[int]) -> List[int]:",
               """
-Pick the three biggest harvests, biggest first, **without** changing the original list.
+A leaderboard shows the three best scores, largest first, but the original list is shared with other code and must not change. Write `best_three(scores)` to return a new list of the three largest values (fewer if there aren't three).
 
-- **You get:** `harvests`, a list of numbers.
-- **Return:** a new list of the three largest, largest first (fewer if there aren't three).
-- **Example:** `[5, 1, 9, 7]` → `[9, 7, 5]`.
-- **Watch out:** `.sort()` changes the list you were given; copy it first.
+Example: `best_three([5, 1, 9, 7])` returns `[9, 7, 5]`. `.sort()` would change the list you were given, so copy it first.
 """,
-              "def best_three(harvests: List[int]) -> List[int]:\n    copy = harvests[:]\n    copy.sort(reverse=True)\n    return copy[:3]\n",
+              "def best_three(scores: List[int]) -> List[int]:\n    copy = scores[:]\n    copy.sort(reverse=True)\n    return copy[:3]\n",
               [([[5, 1, 9, 7]], [9, 7, 5]), ([[2]], [2])], [[[]], [[3, 3, 3, 3]], [[1, 2, 3, 4, 5, 6]]],
               hints=["You need a copy so the original isn't sorted too. A full slice makes one.",
                      "Sort the copy largest first with `reverse=True`.",
@@ -228,13 +211,11 @@ Pick the three biggest harvests, biggest first, **without** changing the origina
     ),
     "list-slicing": dict(
         warmup=[
-            P("py-first-two-trees", "First Two Rows", "def first_two(rows: List[str]) -> List[str]:",
+            P("py-first-two-trees", 'First Two Items', "def first_two(rows: List[str]) -> List[str]:",
               """
-The tour only visits the first two rows of the orchard.
+A preview card shows only the first two tags of a post. Write `first_two(rows)` to return the first two items (or fewer, if there aren't two), using a slice.
 
-- **You get:** `rows`, a list of row names.
-- **Return:** the first two (or fewer, if there aren't two), using a slice.
-- **Example:** `["oak", "ash", "elm"]` → `["oak", "ash"]`.
+Example: `first_two(["oak", "ash", "elm"])` returns `["oak", "ash"]`.
 """,
               "def first_two(rows: List[str]) -> List[str]:\n    return rows[:2]\n",
               [([["oak", "ash", "elm"]], ["oak", "ash"]), ([["fir"]], ["fir"])], [[[]], [["a", "b"]]],
@@ -248,13 +229,11 @@ The tour only visits the first two rows of the orchard.
 """),
         ],
         practice=[
-            P("py-middle-rows", "The Middle Rows", "def middle(rows: List[int]) -> List:",
+            P("py-middle-rows", 'Drop the First and Last', "def middle(rows: List[int]) -> List:",
               """
-The first and last rows are fences, not trees. Return everything in between, then count how many trees that is.
+A CSV export wraps its data with a header row and a footer row. Write `middle(rows)` to return `[the rows without the first and last, how many that is]`.
 
-- **You get:** `rows`.
-- **Return:** `[the rows without the first and last, how many that is]`.
-- **Example:** `[0, 5, 6, 7, 0]` → `[[5, 6, 7], 3]`.
+Example: `middle([0, 5, 6, 7, 0])` returns `[[5, 6, 7], 3]`, and `middle([0, 0])` returns `[[], 0]`.
 """,
               "def middle(rows: List[int]) -> List:\n    inner = rows[1:-1]\n    return [inner, len(inner)]\n",
               [([[0, 5, 6, 7, 0]], [[5, 6, 7], 3]), ([[0, 0]], [[], 0])], [[[]], [[1]], [[1, 2, 3]]],
@@ -282,13 +261,11 @@ The first and last rows are fences, not trees. Return everything in between, the
     ),
     "enumerate-zip": dict(
         warmup=[
-            P("py-numbered-rows", "Label the Rows", "def labels(rows: List[str]) -> None:",
+            P("py-numbered-rows", 'Print with Positions', "def labels(rows: List[str]) -> None:",
               """
-Print each row with its position, starting from 0, like `0 oak`.
+A debugging helper prints each item with its index. Write `labels(rows)` to print one line per item: the position (starting at 0), a space, then the item.
 
-- **You get:** `rows`.
-- **Print:** one line per row: the position, a space, the name.
-- **Example:** `["oak", "ash"]` prints `0 oak` then `1 ash`.
+Example: `labels(["oak", "ash"])` prints `0 oak` and then `1 ash`.
 
 _This task checks what you print._
 """,
@@ -305,19 +282,17 @@ _This task checks what you print._
 """),
         ],
         practice=[
-            P("py-heaviest-day", "Heaviest Picking Day", "def heaviest_day(days: List[str], kilos: List[int]) -> str:",
+            P("py-busiest-day", "Busiest Day", "def busiest_day(days: List[str], visits: List[int]) -> str:",
               """
-Two lists: the days of the week, and the kilos picked on each day, in the same order. Which day was heaviest?
+A traffic report has the days of the week in one list and the number of site visits on each day in another, in the same order. Write `busiest_day(days, visits)` to return the day with the most visits (the first one if there's a tie). Both lists have at least one item.
 
-- **You get:** `days` and `kilos`, the same length (at least one).
-- **Return:** the day with the most kilos (the first one if tied).
-- **Example:** `["mon", "tue"]` and `[3, 5]` → `"tue"`.
+Example: `busiest_day(["mon", "tue"], [3, 5])` returns `"tue"`.
 """,
-              "def heaviest_day(days: List[str], kilos: List[int]) -> str:\n    best_day, best = days[0], kilos[0]\n    for d, k in zip(days, kilos):\n        if k > best:\n            best_day, best = d, k\n    return best_day\n",
+              "def busiest_day(days: List[str], visits: List[int]) -> str:\n    best_day, best = days[0], visits[0]\n    for d, v in zip(days, visits):\n        if v > best:\n            best_day, best = d, v\n    return best_day\n",
               [([["mon", "tue"], [3, 5]], "tue"), ([["sun"], [1]], "sun")], [[["a", "b", "c"], [5, 5, 1]], [["a", "b"], [1, 9]]],
-              hints=["`zip(a, b)` pairs each day with its kilos.",
-                     "Keep the best day and its kilos so far, starting with the first pair.",
-                     "Replace them only when a day is strictly heavier, so ties keep the first day."],
+              hints=["`zip(a, b)` pairs each day with its visit count.",
+                     "Keep the best day and its count so far, starting with the first pair.",
+                     "Replace them only when a day has strictly more visits, so ties keep the first day."],
               grammar="""
 ## Building blocks
 - **Walk two lists together:** `for a, b in zip(xs, ys):`
@@ -335,15 +310,13 @@ Two lists: the days of the week, and the kilos picked on each day, in the same o
     ),
     "list-builtins": dict(
         warmup=[
-            P("py-total-apples", "Total Apples", "def total(baskets: List[int]) -> int:",
+            P("py-total-amounts", 'Add Up a List', "def total(amounts: List[int]) -> int:",
               """
-Add up the apples in every basket, the quick way.
+An invoice totals its line amounts. Write `total(amounts)` to return the sum of the list, using `sum`.
 
-- **You get:** `baskets`, a list of counts.
-- **Return:** the total, using `sum`.
-- **Example:** `[3, 4, 5]` → `12`; `[]` → `0`.
+Example: `total([3, 4, 5])` returns `12`, and `total([])` returns `0`.
 """,
-              "def total(baskets: List[int]) -> int:\n    return sum(baskets)\n",
+              "def total(amounts: List[int]) -> int:\n    return sum(amounts)\n",
               [([[3, 4, 5]], 12), ([[]], 0)], [[[1]], [[10, -2]]],
               require=["sum"],
               hints=["Python has a built-in that adds up a whole list.",
@@ -355,15 +328,13 @@ Add up the apples in every basket, the quick way.
 """),
         ],
         practice=[
-            P("py-ranked-pickers", "Ranked Pickers", "def ranked(kilos: List[int]) -> List[int]:",
+            P("py-sorted-scores", 'Sort Without Changing the Original', "def ranked(scores: List[int]) -> List[int]:",
               """
-Rank the pickers' totals from most to least, and leave the original record alone.
+A report shows scores from highest to lowest, and the original list must stay as it is. Write `ranked(scores)` to return a new list sorted largest first, using `sorted`.
 
-- **You get:** `kilos`.
-- **Return:** a new list sorted from largest to smallest, using `sorted`.
-- **Example:** `[3, 9, 1]` → `[9, 3, 1]`.
+Example: `ranked([3, 9, 1])` returns `[9, 3, 1]`.
 """,
-              "def ranked(kilos: List[int]) -> List[int]:\n    return sorted(kilos, reverse=True)\n",
+              "def ranked(scores: List[int]) -> List[int]:\n    return sorted(scores, reverse=True)\n",
               [([[3, 9, 1]], [9, 3, 1]), ([[]], [])], [[[1, 1, 2]], [[5]]],
               require=["sorted"],
               hints=["`sorted(...)` returns a brand-new sorted list and leaves the original as it was.",
@@ -385,15 +356,13 @@ Rank the pickers' totals from most to least, and leave the original record alone
     ),
     "any-all": dict(
         warmup=[
-            P("py-any-ripe", "Anything Ripe?", "def any_ripe(apples: List[bool]) -> bool:",
+            P("py-any-done", "Is Any Job Finished?", "def any_done(jobs: List[bool]) -> bool:",
               """
-Each apple is `True` if it's ripe. Is at least one ready to pick?
+A dashboard lights up as soon as at least one background job has finished. Each job is `True` when it's done. Write `any_done(jobs)` using `any`.
 
-- **You get:** `apples`, a list of booleans.
-- **Return:** `True` if any is ripe, using `any`.
-- **Example:** `[False, True]` → `True`; `[]` → `False`.
+Example: `any_done([False, True])` returns `True`, and `any_done([])` returns `False`.
 """,
-              "def any_ripe(apples: List[bool]) -> bool:\n    return any(apples)\n",
+              "def any_done(jobs: List[bool]) -> bool:\n    return any(jobs)\n",
               [([[False, True]], True), ([[]], False)], [[[False]], [[True, True]]],
               require=["any"],
               hints=["`any(list)` is `True` when at least one item is true.",
@@ -405,13 +374,11 @@ Each apple is `True` if it's ripe. Is at least one ready to pick?
 """),
         ],
         practice=[
-            P("py-all-labelled", "Every Crate Labelled?", "def all_labelled(labels: List[str]) -> bool:",
+            P("py-all-labelled", 'Check Every Label', "def all_labelled(labels: List[str]) -> bool:",
               """
-A crate is labelled if its label isn't empty. Is every crate labelled, and is the first letter of each label upper case?
+Before saving, a form checks that every label is filled in and starts with a capital letter. Write `all_labelled(labels)` to return `True` only if every label is non-empty and its first character is upper case.
 
-- **You get:** `labels`.
-- **Return:** `True` if every label is non-empty and starts with a capital letter.
-- **Example:** `["Apples", "Pears"]` → `True`; `["Apples", ""]` → `False`; `["apples"]` → `False`.
+Example: `all_labelled(["Apples", "Pears"])` returns `True`; `all_labelled(["Apples", ""])` and `all_labelled(["apples"])` both return `False`. An empty list counts as `True`.
 """,
               "def all_labelled(labels: List[str]) -> bool:\n    return all(lab != \"\" and lab[0].isupper() for lab in labels)\n",
               [([["Apples", "Pears"]], True), ([["Apples", ""]], False), ([["apples"]], False)], [[[]], [["A"]], [["Ab", "b"]]],
@@ -436,13 +403,11 @@ A crate is labelled if its label isn't empty. Is every crate labelled, and is th
     ),
     "nested": dict(
         warmup=[
-            P("py-print-grid", "Print the Orchard Map", "def show(grid: List[List[str]]) -> None:",
+            P("py-print-grid", 'Print a Grid', "def show(grid: List[List[str]]) -> None:",
               """
-The orchard map is a grid of letters. Print each row as one line with no spaces.
+A terminal game draws its map from a grid of single characters. Write `show(grid)` to print each row as one line, with the characters joined together and no spaces.
 
-- **You get:** `grid`, a list of rows (each a list of letters).
-- **Print:** each row's letters joined together, one row per line.
-- **Example:** `[["a", "b"], ["c", "d"]]` prints `ab` then `cd`.
+Example: `show([["a", "b"], ["c", "d"]])` prints `ab` and then `cd`.
 
 _This task checks what you print._
 """,
@@ -459,19 +424,17 @@ _This task checks what you print._
 """),
         ],
         practice=[
-            P("py-count-trees-grid", "Count the Trees", "def count_trees(grid: List[List[str]]) -> int:",
+            P("py-count-walls", "Count the Walls", "def count_walls(grid: List[List[str]]) -> int:",
               """
-On the orchard map, `"T"` is a tree and `"."` is grass. How many trees are there?
+A maze is stored as a grid where `"#"` is a wall and `"."` is open floor. Write `count_walls(grid)` to return how many wall cells there are.
 
-- **You get:** `grid`, rows of `"T"` and `"."`.
-- **Return:** how many `"T"` cells there are.
-- **Example:** `[["T", "."], [".", "T"]]` → `2`.
+Example: `count_walls([["#", "."], [".", "#"]])` returns `2`, and an empty grid returns `0`.
 """,
-              "def count_trees(grid: List[List[str]]) -> int:\n    n = 0\n    for row in grid:\n        for cell in row:\n            if cell == \"T\":\n                n += 1\n    return n\n",
-              [([[["T", "."], [".", "T"]]], 2), ([[]], 0)], [[[["."]]], [[["T", "T", "T"]]]],
+              "def count_walls(grid: List[List[str]]) -> int:\n    n = 0\n    for row in grid:\n        for cell in row:\n            if cell == \"#\":\n                n += 1\n    return n\n",
+              [([[["#", "."], [".", "#"]]], 2), ([[]], 0)], [[[["."]]], [[["#", "#", "#"]]]],
               hints=["A loop inside a loop visits every cell: rows on the outside, cells on the inside.",
                      "Keep one counter for the whole grid.",
-                     "Add one whenever a cell is `\"T\"`."],
+                     "Add one whenever a cell is `\"#\"`."],
               grammar="""
 ## Building blocks
 - **Loop inside a loop:** an inner `for` indented under an outer `for`.
@@ -497,22 +460,20 @@ REVIEW = dict(
 Time to mix it all together. These stages combine loops, `range`, list methods, slicing, `enumerate`/`zip` and the list built-ins. There's no new idea here, just practice choosing the right tool.
 """,
     problems=[
-        P("py-review-harvest-report", "Harvest Report", "def report(names: List[str], kilos: List[int]) -> List[str]:",
-          """
-Write the end-of-day report: one line per picker who picked **more than 5** kilos, numbered from 1, biggest picker first.
+        P("py-review-sales-report", "Sales Report", "def report(names: List[str], sales: List[int]) -> List[str]:",
+              """
+A weekly email lists every salesperson who closed **more than 5** sales, numbered from 1, best seller first. Write `report(names, sales)`, where the two lists line up by position, to return lines like `"1. Ada (9)"`. People with equal sales keep their original order.
 
-- **You get:** `names` and `kilos`, the same length.
-- **Return:** lines like `"1. Ada (9)"`, ordered by kilos from most to least (equal kilos keep their original order).
-- **Example:** `["Bo", "Ada", "Cy"]` and `[6, 9, 2]` → `["1. Ada (9)", "2. Bo (6)"]`.
+Example: `report(["Bo", "Ada", "Cy"], [6, 9, 2])` returns `["1. Ada (9)", "2. Bo (6)"]`.
 """,
-          "def report(names: List[str], kilos: List[int]) -> List[str]:\n    pairs = [(k, n) for n, k in zip(names, kilos) if k > 5]\n    pairs = sorted(pairs, key=lambda p: -p[0])\n    return [f\"{i}. {n} ({k})\" for i, (k, n) in enumerate(pairs, start=1)]\n",
-          [([["Bo", "Ada", "Cy"], [6, 9, 2]], ["1. Ada (9)", "2. Bo (6)"]), ([[], []], [])],
-          [[["a", "b"], [6, 6]], [["x"], [1]], [["p", "q", "r"], [10, 7, 8]]],
-          hints=["Three steps: keep only the big pickers, sort them, then number the lines.",
-                 "`zip` pairs each name with its kilos; keep the pairs where the kilos are more than 5.",
-                 "Sort by kilos largest first (sorting is stable, so ties keep their order), then use `enumerate(..., start=1)` to number them.",
-                 "Build each line with an f-string: number, dot, space, name, then the kilos in brackets."],
-          grammar="""
+              "def report(names: List[str], sales: List[int]) -> List[str]:\n    pairs = [(s, n) for n, s in zip(names, sales) if s > 5]\n    pairs = sorted(pairs, key=lambda p: -p[0])\n    return [f\"{i}. {n} ({s})\" for i, (s, n) in enumerate(pairs, start=1)]\n",
+              [([["Bo", "Ada", "Cy"], [6, 9, 2]], ["1. Ada (9)", "2. Bo (6)"]), ([[], []], [])],
+              [[["a", "b"], [6, 6]], [["x"], [1]], [["p", "q", "r"], [10, 7, 8]]],
+              hints=["Three steps: keep only the people with more than 5 sales, sort them, then number the lines.",
+                     "`zip` pairs each name with its sales; keep the pairs where the sales are more than 5.",
+                     "Sort by sales largest first (sorting is stable, so ties keep their order), then use `enumerate(..., start=1)` to number them.",
+                     "Build each line with an f-string: number, dot, space, name, then the sales in brackets."],
+              grammar="""
 ## Building blocks
 - **Walk two lists together:** `zip(xs, ys)`
 - **Sort by something:** `sorted(words, key=len)`
@@ -521,40 +482,36 @@ Write the end-of-day report: one line per picker who picked **more than 5** kilo
 - **Number from 1:** `enumerate(things, start=1)`
 - **Text with values in it:** `f"{a}. {b}"`
 """),
-        P("py-review-fence-repair", "Fence Repair", "def broken_sections(fence: List[int]) -> List[int]:",
-          """
-Each fence section has a strength from 0 to 9. A section needs repair if it's weaker than **both** its neighbours. The two end sections only have one neighbour, so they never count.
+        P("py-review-local-dips", "Find the Dips", "def dips(readings: List[int]) -> List[int]:",
+              """
+A monitoring script flags sensor readings that are lower than **both** of their neighbours. The first and last readings only have one neighbour, so they're never flagged. Write `dips(readings)` to return the positions of the flagged readings, in order.
 
-- **You get:** `fence`, a list of strengths.
-- **Return:** the positions that need repair, in order.
-- **Example:** `[5, 2, 6, 6, 1, 3]` → `[1, 4]`.
+Example: `dips([5, 2, 6, 6, 1, 3])` returns `[1, 4]`.
 """,
-          "def broken_sections(fence: List[int]) -> List[int]:\n    out = []\n    for i in range(1, len(fence) - 1):\n        if fence[i] < fence[i - 1] and fence[i] < fence[i + 1]:\n            out.append(i)\n    return out\n",
-          [([[5, 2, 6, 6, 1, 3]], [1, 4]), ([[1, 2]], [])], [[[]], [[3, 1, 3, 1, 3]], [[2, 2, 2]]],
-          hints=["Only the inner positions (not the first or last) can need repair.",
-                 "`range(1, len(fence) - 1)` gives exactly the inner positions.",
-                 "For each one, compare it with the section before (`i - 1`) and after (`i + 1`); it must be smaller than both."],
-          grammar="""
+              "def dips(readings: List[int]) -> List[int]:\n    out = []\n    for i in range(1, len(readings) - 1):\n        if readings[i] < readings[i - 1] and readings[i] < readings[i + 1]:\n            out.append(i)\n    return out\n",
+              [([[5, 2, 6, 6, 1, 3]], [1, 4]), ([[1, 2]], [])], [[[]], [[3, 1, 3, 1, 3]], [[2, 2, 2]]],
+              hints=["Only the inner positions (not the first or last) can be flagged.",
+                     "`range(1, len(readings) - 1)` gives exactly the inner positions.",
+                     "For each one, compare it with the reading before (`i - 1`) and after (`i + 1`); it must be smaller than both."],
+              grammar="""
 ## Building blocks
 - **Count from 1 up to a stop:** `range(1, stop)`
 - **One less than the length:** `len(xs) - 1`
 - **Neighbours:** `xs[k - 1]`, `xs[k + 1]`
 - **Both must hold:** `and`
 """),
-        P("py-review-picking-rounds", "Picking Rounds", "def rounds(trees: List[int], per_round: int) -> int:",
-          """
-Each tree has some apples. A picker can take at most `per_round` apples from one tree per round. How many rounds does the slowest tree need?
+        P("py-review-batches-needed", "How Many Batches?", "def batches_needed(queues: List[int], per_batch: int) -> int:",
+              """
+Several work queues are drained in batches, and each batch can take at most `per_batch` items from one queue. Write `batches_needed(queues, per_batch)` to return how many batches the longest queue needs (0 if there are no queues). `per_batch` is at least 1.
 
-- **You get:** `trees` (apples on each tree) and `per_round` (at least 1).
-- **Return:** the largest number of rounds any tree needs (0 if there are no trees).
-- **Example:** `[5, 9, 2]` with `4` → `3` (9 apples need 3 rounds of up to 4).
+Example: `batches_needed([5, 9, 2], 4)` returns `3`, because the queue of 9 needs three batches of up to 4.
 """,
-          "def rounds(trees: List[int], per_round: int) -> int:\n    most = 0\n    for apples in trees:\n        needed = (apples + per_round - 1) // per_round\n        most = max(most, needed)\n    return most\n",
-          [([[5, 9, 2], 4], 3), ([[], 3], 0)], [[[0], 2], [[8], 4], [[1, 1, 1], 1], [[10, 3], 3]],
-          hints=["For one tree, the rounds needed is the apples divided by `per_round`, rounded **up**.",
-                 "Rounding up with whole numbers: add `per_round - 1` before using `//`. (9 apples, 4 per round: (9 + 3) // 4 = 3.)",
-                 "Work this out for every tree and keep the largest."],
-          grammar="""
+              "def batches_needed(queues: List[int], per_batch: int) -> int:\n    most = 0\n    for items in queues:\n        needed = (items + per_batch - 1) // per_batch\n        most = max(most, needed)\n    return most\n",
+              [([[5, 9, 2], 4], 3), ([[], 3], 0)], [[[0], 2], [[8], 4], [[1, 1, 1], 1], [[10, 3], 3]],
+              hints=["For one queue, the batches needed is its length divided by `per_batch`, rounded **up**.",
+                     "Rounding up with whole numbers: add `per_batch - 1` before using `//`. (9 items, 4 per batch: (9 + 3) // 4 = 3.)",
+                     "Work this out for every queue and keep the largest."],
+              grammar="""
 ## Building blocks
 - **Whole-number division:** `17 // 5` is `3`.
 - **Larger of two:** `max(a, b)`
