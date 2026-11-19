@@ -43,7 +43,6 @@ export default function StageClear({
   const { result, prev, hints, peeked, tests } = info;
   const firstClear = !prev;
   const hasEdges = Boolean(tests && tests.edges.length > 0);
-  const visibleCount = tests ? tests.edges.filter((e) => !e.hidden).length : 0;
   const newBest = Boolean(prev && result.score > prev.score);
   const { color, biome } = WORLD_THEME[world];
 
@@ -136,13 +135,13 @@ export default function StageClear({
               <div className="n-rise-in flex min-h-0 w-full flex-col text-left md:order-1" style={{ animationDelay: "1700ms" }}>
                 <p className="mb-2 text-xs tracking-wide text-[#c9bda4] uppercase">Test cases</p>
                 <ul className="flex max-h-64 flex-col gap-1.5 overflow-auto pr-1 md:max-h-[min(28rem,calc(100dvh-13rem))]">
-                  {/* Numbered like the IDE's Test cases list (labelled tests in order, description as a tooltip), then the
-                      hidden tests Submit also ran, numbered on their own. */}
+                  {/* Numbered like the IDE's Test cases list (labelled tests in order, description as a tooltip), with the
+                      hidden tests Submit also ran continuing the count. */}
                   {tests.edges.map((e, n) => (
                     <li key={n} className="rounded bg-black/25 px-3 py-2" title={e.note || undefined}>
                       <p className={`flex items-center gap-2 text-sm font-semibold ${e.ok ? "text-[#9bc26b]" : "text-[#ff7a5c]"}`}>
                         <CaseMark ok={e.ok} delay={1900 + n * 140} />
-                        {e.hidden ? `Hidden case ${n + 1 - visibleCount}` : `Case ${n + 1}`}
+                        Case {n + 1}
                       </p>
                       <div className="mt-1 grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-2 font-mono text-xs leading-5 [font-variant-ligatures:none]">
                         <span className="text-[#c9bda4]">input</span>

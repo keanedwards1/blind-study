@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { CaseResult, Problem, RunOutcome } from "@/lib/types";
 import { runCases } from "@/lib/edge-cases";
-import { py, show } from "@/lib/format";
+import { clipText, py, show } from "@/lib/format";
 
 const chip: Record<string, string> = {
   pass: "bg-emerald-500/15 text-ok border-emerald-600/40",
@@ -26,7 +26,9 @@ function Field({ label, children, tone }: { label: string; children: React.React
   return (
     <div>
       <div className="mb-1 text-xs text-subtle">{label}</div>
-      <pre className={`whitespace-pre-wrap break-all rounded-md bg-panel px-3 py-2 font-mono text-[13px] ${tone ?? "text-fg"}`}>{children}</pre>
+      <pre className={`whitespace-pre-wrap break-all rounded-md bg-panel px-3 py-2 font-mono text-[13px] ${tone ?? "text-fg"}`}>
+        {typeof children === "string" ? clipText(children, 1500) : children}
+      </pre>
     </div>
   );
 }

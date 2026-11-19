@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { CaseResult, Concept, Problem, RunOutcome } from "@/lib/types";
-import { show } from "@/lib/format";
+import { clipText, show } from "@/lib/format";
 import { formatPyArgs, parsePyArgs } from "@/lib/py-args";
 import { edgeCases, runCaseIndexes } from "@/lib/edge-cases";
 import { getRunner } from "@/lib/runner";
@@ -435,11 +435,11 @@ export default function StageIDE({
               r.label ? (
                 <div key={i} className={`grid grid-cols-[3.5rem_minmax(0,1fr)] ${r.tone ? toneClass[r.tone] : ""}`}>
                   <span className="text-(--ide-muted)">{r.label}</span>
-                  <span className="break-words whitespace-pre-wrap">{r.text}</span>
+                  <span className="break-words whitespace-pre-wrap">{clipText(r.text)}</span>
                 </div>
               ) : (
                 <div key={i} className={`min-h-6 break-words whitespace-pre-wrap ${r.tone ? toneClass[r.tone] : ""}`}>
-                  {r.text}
+                  {clipText(r.text)}
                 </div>
               ),
             )}

@@ -26,6 +26,11 @@ export function show(spec: { out?: string; compare?: string }, v: unknown): stri
   return py(v);
 }
 
+/** Shorten text for display: the stress tests feed ~1000-item inputs, which would flood a console line. */
+export function clipText(s: string, max = 400): string {
+  return s.length > max ? `${s.slice(0, max)} … (${s.length.toLocaleString("en-US")} characters)` : s;
+}
+
 export function clock(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds));
   const h = Math.floor(s / 3600);
