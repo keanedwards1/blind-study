@@ -19,7 +19,7 @@ import "./stage-ide.css";
 
 /**
  * The Learn Python stage IDE: three flush columns.
- * - Problem: the statement, examples and tags, with Problem, Hints, Learn mode and Solution as tab buttons (plus the music visual).
+ * - Problem: the statement and examples, with Problem, Hints, Learn mode and Solution as tab buttons (plus the music visual).
  * - Editor: a "?" that shows the concept's lesson on hover, Vim / Emacs keybindings, a theme switch and Reset.
  * - Console: "Run Code" runs your function on arguments you type; "Run Test Cases" checks the examples; "Submit" runs every test.
  *   Run Test Cases also runs every labelled edge case; the edge cases are listed at the bottom (click one for its input and
@@ -35,7 +35,6 @@ const DIFFICULTY_PILL: Record<string, string> = { Easy: "bg-[#3dbb5a]", Medium: 
 export default function StageIDE({
   problem,
   concepts,
-  tags,
   lesson,
   back,
   barRight,
@@ -46,8 +45,6 @@ export default function StageIDE({
 }: {
   problem: Problem;
   concepts: Concept[];
-  /** The concept (or Blind 75 pattern) and the world. */
-  tags: string[];
   /** The lesson for this stage's concept group (Learn Python worlds 1-7), shown by hovering the "?" in the editor bar. */
   lesson?: { title: string; intro: string };
   back: { href: string; label: string };
@@ -73,6 +70,8 @@ export default function StageIDE({
   const [hintsShown, setHintsShown] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const keymap = useStored<Keymap>("python:ide-keymap", "default");
+  /** Whether the Examples list under the statement is expanded (click the heading to toggle; remembered across stages). */
+  const examplesOpen = useStored<boolean>("python:ide-examples-open", true);
   const theme = useTheme();
 
   // ---- console
@@ -96,10 +95,18 @@ export default function StageIDE({
   const hiddenCount = problem.tests.length - runIdx.length;
   const [results, setResults] = useState<Record<number, CaseResult>>({});
   const [openEdge, setOpenEdge] = useState<number | null>(null);
+  // The Test cases list shows the first few; "View more" reveals the rest of the visible (non-hidden) ones.
+  const CASES_SHOWN = 3;
+  const [allCasesShown, setAllCasesShown] = useState(false);
+  const shownEdges = allCasesShown ? edges : edges.slice(0, CASES_SHOWN);
+  const moreCases = edges.length - CASES_SHOWN;
+  // Each labelled test is shown as "Case 1", "Case 2"… in list order; its note describes it in the detail view.
+  const caseNo = Object.fromEntries(edges.map((e, n) => [e.i, n + 1])) as Record<number, number>;
+  const caseLabel = (i: number) => `Case ${caseNo[i]}`;
   const caseTitle = (i: number) => {
     const note = problem.tests[i]?.note;
-    if (i < exampleCount) return note ? `Example ${i + 1} · ${note}` : `Example ${i + 1}`;
-    return note ? `Edge case · ${note}` : `Hidden test ${i - exampleCount + 1}`;
+    if (i < exampleCount) return note ? `Example ${i + 1} · ${caseLabel(i)}` : `Example ${i + 1}`;
+    return note ? caseLabel(i) : `Hidden test ${i - exampleCount + 1}`;
   };
   const record = (o: RunOutcome, idx: number[]) => setResults((prev) => ({ ...prev, ...Object.fromEntries(o.cases.map((c, j) => [idx[j], c])) }));
   const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -158,7 +165,7 @@ export default function StageIDE({
       } else if (kind === "run") {
         o.cases.forEach((c, j) => logCase(caseTitle(runIdx[j]), o.tests[j].args, c, o.tests[j].expected, true));
         const ok = o.passed === o.total;
-        const next = hiddenCount ? ` Submit also runs ${plural(hiddenCount, "hidden test")}.` : " Submit when ready.";
+        const next = o.ruleNote ? "" : hiddenCount ? ` Submit also runs ${plural(hiddenCount, "hidden test")}.` : " Submit when ready.";
         add({ text: ok ? `✓ All ${o.total} pass.${next}` : `${o.passed} of ${o.total} pass`, tone: ok ? "good" : "bad" });
         record(o, runIdx);
       } else {
@@ -167,13 +174,14 @@ export default function StageIDE({
         failed.slice(0, 3).forEach(([c, i]) => logCase(caseTitle(i), o.tests[i].args, c, o.tests[i].expected, true));
         if (failed.length > 3) add({ text: `… and ${failed.length - 3} more`, tone: "dim" }, gap);
         if (edges.length > 0) {
-          add({ text: "Edge cases", tone: "head" });
-          edges.forEach((e) => add(o.cases[e.i]?.status === "pass" ? { text: `✓ ${e.note}`, tone: "good" } : { text: `✗ ${e.note}`, tone: "bad" }));
+          add({ text: "Test cases", tone: "head" });
+          edges.forEach((e) => add(o.cases[e.i]?.status === "pass" ? { text: `✓ ${caseLabel(e.i)}`, tone: "good" } : { text: `✗ ${caseLabel(e.i)}`, tone: "bad" }));
           add(gap);
         }
         record(o, o.cases.map((_, i) => i));
         add(o.passed === o.total ? { text: `✓ All ${o.total} tests passed`, tone: "good" } : { text: `${o.passed} of ${o.total} tests passed`, tone: "bad" });
       }
+      if (o.ruleNote) add(gap, { text: `! Submit will fail until this is fixed: ${o.ruleNote}`, tone: "bad" });
       if (kind !== "custom") markAttempted(problem.slug);
       if (kind === "submit") {
         if (!o.compileError && o.passed === o.total) markSolved(problem.slug);
@@ -195,14 +203,15 @@ export default function StageIDE({
   // ---- pieces
   const barBtn = "inline-flex items-center gap-1.5 rounded px-3 py-1.5 text-sm font-medium text-(--ide-btn-fg) bg-(--ide-btn) hover:brightness-110 disabled:opacity-60";
 
-  // Tabs: the selected one is filled; the others are outlined.
-  const tabBtn = (id: View, label: string) => (
+  // Tabs: the selected one is filled; the others are outlined. They tighten as the problem column narrows (container
+  // queries on the column) so the pill and all four tabs stay on one line; they only wrap when the column is very narrow.
+  const tabBtn = (id: View, label: React.ReactNode) => (
     <button
       type="button"
       role="tab"
       aria-selected={view === id}
       onClick={() => setView(id)}
-      className={`rounded border px-3 py-1 text-sm font-medium transition-colors ${
+      className={`rounded border px-2.5 py-1 text-[13px] font-medium whitespace-nowrap transition-colors @max-[25rem]:px-2 @max-[25rem]:text-xs @max-[19rem]:px-1 ${
         view === id
           ? "border-(--ide-tab-on) bg-(--ide-tab-on) text-white shadow-sm"
           : "border-(--ide-line) bg-(--ide-tab) text-(--ide-tab-fg) hover:border-(--ide-tab-on) hover:text-(--ide-tab-on)"
@@ -233,13 +242,21 @@ export default function StageIDE({
       <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.2fr)_minmax(0,0.95fr)] lg:grid-rows-[minmax(0,1fr)]">
         {/* ---- problem */}
         <section className="flex min-h-0 min-w-0 flex-col overflow-auto border-(--ide-line) bg-(--ide-problem) lg:border-r">
-          <div className="flex min-h-full flex-col gap-5 p-5">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-(--ide-line) pb-4">
-              <span className={`rounded px-2 py-0.5 text-sm text-white lowercase ${DIFFICULTY_PILL[problem.difficulty] ?? "bg-subtle"}`}>{problem.difficulty}</span>
-              <div className="flex flex-wrap gap-2" role="tablist" aria-label="Problem panel">
+          <div className="@container flex min-h-full flex-col gap-5 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-(--ide-line) pb-4 @max-[25rem]:gap-1.5">
+              <span className={`shrink-0 rounded px-2 py-0.5 text-sm text-white lowercase @max-[25rem]:px-1.5 @max-[25rem]:text-xs @max-[19rem]:px-1 ${DIFFICULTY_PILL[problem.difficulty] ?? "bg-subtle"}`}>
+                {problem.difficulty}
+              </span>
+              <div className="flex flex-wrap gap-1.5 @max-[25rem]:gap-1" role="tablist" aria-label="Problem panel">
                 {tabBtn("problem", "Problem")}
                 {tabBtn("hints", `Hints${problem.hints.length ? ` (${problem.hints.length})` : ""}`)}
-                {problem.grammar.length > 0 && tabBtn("learn", "Learn mode")}
+                {problem.grammar.length > 0 &&
+                  tabBtn(
+                    "learn",
+                    <>
+                      Learn<span className="@max-[21rem]:hidden"> mode</span>
+                    </>,
+                  )}
                 {tabBtn("solution", "Solution")}
               </div>
             </div>
@@ -251,26 +268,34 @@ export default function StageIDE({
                   <Markdown>{problem.desc}</Markdown>
                   <TaskRules problem={problem} />
                 </div>
-                <div className="flex flex-col gap-3">
-                  <h2 className="text-lg font-bold text-(--ide-text)">Examples</h2>
-                  {problem.examples.map((ex, i) => (
-                    <pre key={i} className="overflow-x-auto rounded bg-(--ide-example) px-3 py-2.5 font-mono text-[13px] leading-6 whitespace-pre-wrap text-(--ide-text)">
-                      {`Input: ${formatPyArgs(ex.args)}\n${problem.spec.out === "stdout" ? "Prints:" : "Output:"} ${showValue(ex.expected)}`}
-                    </pre>
-                  ))}
-                </div>
-                {tags.length > 0 && (
-                  <div className="flex flex-col gap-3">
-                    <h2 className="text-lg font-bold text-(--ide-text)">Tags</h2>
-                    <div className="flex flex-wrap gap-2">
-                      {tags.map((t) => (
-                        <span key={t} className="rounded bg-(--ide-chip) px-2.5 py-1 text-sm text-(--ide-chip-fg)">
-                          {t}
-                        </span>
+                <div className="flex flex-col">
+                  <h2 className="text-lg font-bold text-(--ide-text)">
+                    <button
+                      type="button"
+                      aria-expanded={examplesOpen}
+                      aria-controls="stage-examples"
+                      onClick={() => save("python:ide-examples-open", !examplesOpen)}
+                      className="transition-colors duration-200 ease-out hover:text-(--ide-link) motion-reduce:transition-none"
+                      title={examplesOpen ? "Hide the examples" : "Show the examples"}
+                    >
+                      Examples
+                    </button>
+                  </h2>
+                  {/* Collapses by animating the row from its content height to 0 (and back). */}
+                  <div
+                    id="stage-examples"
+                    inert={!examplesOpen}
+                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none ${examplesOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                  >
+                    <div className="flex min-h-0 flex-col gap-3 overflow-hidden pt-3">
+                      {problem.examples.map((ex, i) => (
+                        <pre key={i} className="overflow-x-auto rounded bg-(--ide-example) px-3 py-2.5 font-mono text-[13px] leading-6 whitespace-pre-wrap text-(--ide-text)">
+                          {`Input: ${formatPyArgs(ex.args)}\n${problem.spec.out === "stdout" ? "Prints:" : "Output:"} ${showValue(ex.expected)}`}
+                        </pre>
                       ))}
                     </div>
                   </div>
-                )}
+                </div>
                 {visual && <div className="min-h-[280px] flex-1">{visual}</div>}
               </>
             )}
@@ -404,7 +429,7 @@ export default function StageIDE({
           </div>
           <div ref={logRef} className="min-h-0 flex-1 overflow-auto px-3 py-3 font-mono text-[13px] leading-6 [font-variant-ligatures:none]" aria-live="polite">
             {rows.length === 0 && !running && (
-              <p className="opacity-60">Run Code runs your function on the arguments above. Run Test Cases checks the examples and the edge cases below; Submit also runs the hidden tests.</p>
+              <p className="opacity-60">&quot;Run Code&quot; runs your code with the inputs in the box above. &quot;Run Test Cases&quot; runs the inputs from the examples and from the test cases below; Submit runs the same and additionally, runs hidden test cases if they exist.</p>
             )}
             {rows.map((r, i) =>
               r.label ? (
@@ -422,10 +447,9 @@ export default function StageIDE({
           </div>
           {edges.length > 0 && (
             <div className="max-h-[50%] overflow-auto border-t border-(--ide-line) px-3 py-3">
-              <p className="text-xs font-semibold tracking-wide text-(--ide-muted) uppercase">Edge cases</p>
-              <p className="mb-2 text-xs text-(--ide-muted)">Run Test Cases and Submit both check these. Click one to see its input and expected output.</p>
+              <p className="mb-2 text-xs font-semibold tracking-wide text-(--ide-muted) uppercase">Test cases</p>
               <ul className="flex flex-wrap gap-1.5 text-[13px]">
-                {edges.map((e) => {
+                {shownEdges.map((e) => {
                   const r = results[e.i];
                   const ok = r && r.status === "pass";
                   return (
@@ -439,14 +463,34 @@ export default function StageIDE({
                         }`}
                       >
                         {!r ? "" : ok ? "✓ " : "✗ "}
-                        {e.note}
+                        {caseLabel(e.i)}
                       </button>
                     </li>
                   );
                 })}
+                {moreCases > 0 && (
+                  <li className="self-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (allCasesShown && openEdge !== null && !edges.slice(0, CASES_SHOWN).some((e) => e.i === openEdge)) setOpenEdge(null);
+                        setAllCasesShown(!allCasesShown);
+                      }}
+                      className="px-1 text-xs text-(--ide-link) transition-colors duration-200 hover:underline"
+                    >
+                      {allCasesShown ? "View less" : `View ${moreCases} more`}
+                    </button>
+                  </li>
+                )}
+                {hiddenCount > 0 && (allCasesShown || moreCases <= 0) && (
+                  <li className="self-center pl-1 text-xs text-(--ide-muted)" title="Submit runs these too; their inputs stay hidden.">
+                    + {plural(hiddenCount, "hidden test case")}
+                  </li>
+                )}
               </ul>
               {openEdge !== null && problem.tests[openEdge] && (
                 <EdgeDetail
+                  label={caseLabel(openEdge)}
                   test={problem.tests[openEdge]}
                   result={results[openEdge]}
                   stdout={problem.spec.out === "stdout"}
@@ -464,12 +508,14 @@ export default function StageIDE({
 
 /** One edge case opened from the console: its input, the expected output, and your latest result. */
 function EdgeDetail({
+  label,
   test,
   result,
   stdout,
   showValue,
   onUse,
 }: {
+  label: string;
   test: { args: unknown[]; expected: unknown; note?: string };
   result?: CaseResult;
   stdout: boolean;
@@ -484,7 +530,10 @@ function EdgeDetail({
   );
   return (
     <div className="mt-3 rounded bg-(--ide-example) p-3 font-mono text-[13px] leading-6 [font-variant-ligatures:none]">
-      <p className="mb-1 font-sans font-semibold text-(--ide-text)">{test.note}</p>
+      <p className="mb-1 font-sans text-(--ide-text)">
+        <span className="font-semibold">{label}</span>
+        {test.note && <span className="text-(--ide-muted)"> · {test.note}</span>}
+      </p>
       {row("input", formatPyArgs(test.args))}
       {row(stdout ? "prints" : "expected", showValue(test.expected))}
       {result &&
@@ -494,7 +543,7 @@ function EdgeDetail({
             ? row("yours", result.error, "text-[#e5534b]")
             : row("yours", showValue(result.result), result.status === "pass" ? "text-[#2fae4e]" : "text-[#e5534b]"))}
       <button type="button" onClick={onUse} className="mt-2 font-sans text-xs text-(--ide-link) hover:underline">
-        Use this input for Run Code
+        Use this input to run your code
       </button>
     </div>
   );

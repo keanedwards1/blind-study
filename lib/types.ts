@@ -96,6 +96,8 @@ export type CaseResult = {
 export type RunOutcome = {
   kind: "run" | "submit";
   compileError?: string;
+  /** Run only: the task rule the code doesn't meet yet. Submit will reject it. */
+  ruleNote?: string;
   stdout?: string;
   cases: CaseResult[];
   tests: TestCase[];

@@ -16,13 +16,13 @@ ready.then(
 );
 
 onmessage = async (e) => {
-  const { id, code, spec, tests, mode } = e.data;
+  const { id, code, spec, tests, mode, rules = true } = e.data;
   const h = await ready;
   if (mode === "exec") {
     postMessage({ type: "exec", id, ...JSON.parse(h.exec(code)) });
     return;
   }
-  const prepared = JSON.parse(h.prepare(code, JSON.stringify(spec)));
+  const prepared = JSON.parse(h.prepare(code, JSON.stringify(spec), rules));
   postMessage({ type: "prepared", id, ...prepared });
   if (prepared.ok) {
     for (let i = 0; i < tests.length; i++) {

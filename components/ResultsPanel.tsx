@@ -145,6 +145,10 @@ function OutcomeView({ problem, outcome, sel, setSel }: { problem: Problem; outc
         )}
       </div>
 
+      {outcome.ruleNote && (
+        <div className="rounded-md border border-bad/40 bg-bad/10 px-3 py-2 text-sm text-bad">Submit will fail until this is fixed: {outcome.ruleNote}</div>
+      )}
+
       {outcome.stdout && <Field label="Stdout (module level)">{outcome.stdout}</Field>}
 
       {outcome.compileError ? (

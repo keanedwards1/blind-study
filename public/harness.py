@@ -472,14 +472,23 @@ def format_error(e):
 _session = None
 
 
-def js_prepare(code, spec_json):
+def js_prepare(code, spec_json, rules=True):
+    """Load the user's code. With rules=False (Run / Run Test Cases) a broken task rule doesn't block the run;
+    it comes back as `ruleNote` so the UI can say Submit will still need it."""
     global _session
     _session = None
     buf = io.StringIO()
     try:
+        spec = json.loads(spec_json)
         with contextlib.redirect_stdout(buf):
-            _session = Session(code, json.loads(spec_json))
-        return json.dumps({"ok": True, "stdout": buf.getvalue()})
+            _session = Session(code, spec, rules=rules)
+        note = None
+        if not rules:
+            try:
+                check_rules(code, spec)
+            except TaskRuleError as e:
+                note = str(e)
+        return json.dumps({"ok": True, "stdout": buf.getvalue(), "ruleNote": note})
     except BaseException as e:  # noqa: BLE001
         return json.dumps({"ok": False, "error": format_error(e), "stdout": buf.getvalue()})
 

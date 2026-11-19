@@ -62,8 +62,7 @@ export default function LearnMode({ sections }: { sections: GrammarSection[] }) 
         <div>
           <h2 className="text-base font-semibold text-fg">Python building blocks</h2>
           <p className="mt-1 text-xs text-subtle">
-            The Python pieces you could use, in no particular order. Working out how they fit together is the exercise. Everything from collections, heapq, bisect, functools and math
-            is already imported.
+            The Python pieces you could use.
           </p>
         </div>
         <LearnModeToggle />

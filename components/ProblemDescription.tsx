@@ -54,7 +54,7 @@ export function TaskRules({ problem }: { problem: Problem }) {
       )}
       {forbid.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-subtle">Don&apos;t use:</span>
+          <span className="text-subtle">Can&apos;t use:</span>
           {forbid.map((r) => (
             <code key={r} className="rounded-sm bg-bad/15 px-1.5 py-0.5 text-xs text-bad">{ruleLabel(r)}</code>
           ))}

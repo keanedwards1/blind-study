@@ -11,7 +11,7 @@ const TEST_TIMEOUT_MS = 6000;
 type WorkerMsg =
   | { type: "ready" }
   | { type: "fatal"; error: string }
-  | { type: "prepared"; id: number; ok: boolean; error?: string; stdout?: string }
+  | { type: "prepared"; id: number; ok: boolean; error?: string; stdout?: string; ruleNote?: string | null }
   | { type: "start"; id: number; index: number }
   | { type: "result"; id: number; index: number; result: { ok: boolean; result: unknown; error: string | null; stdout: string; ms: number } }
   | { type: "done"; id: number }
@@ -116,6 +116,7 @@ class PyRunner {
       let timer: ReturnType<typeof setTimeout> | undefined;
       let current = -1;
       let compileError: string | undefined;
+      let ruleNote: string | undefined;
       let stdout = "";
 
       const finish = () => {
@@ -123,7 +124,7 @@ class PyRunner {
         worker.removeEventListener("message", onMsg);
         if (this.worker === worker) this.setStatus("ready");
         const passed = cases.filter((c) => c.status === "pass").length;
-        resolve({ kind, compileError, stdout, cases, tests, passed, total: tests.length });
+        resolve({ kind, compileError, ruleNote, stdout, cases, tests, passed, total: tests.length });
       };
       const arm = () => {
         clearTimeout(timer);
@@ -144,6 +145,7 @@ class PyRunner {
           clearTimeout(timer);
           stdout = m.stdout ?? "";
           if (!m.ok) compileError = m.error;
+          ruleNote = m.ruleNote ?? undefined;
         } else if (m.type === "start") {
           current = m.index;
           arm();
@@ -160,7 +162,8 @@ class PyRunner {
 
       worker.addEventListener("message", onMsg);
       arm();
-      worker.postMessage({ id, code, spec: problem.spec, tests });
+      // Task rules (must use / don't use) only gate Submit, so Run still works while you debug.
+      worker.postMessage({ id, code, spec: problem.spec, tests, rules: kind === "submit" });
     });
   }
 }

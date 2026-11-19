@@ -44,10 +44,6 @@ async function StageLoader({ params }: { params: Params }) {
         world: { n: level.n, title: level.title },
         worldSlugs: level.problems,
         next: nextSlug ? { slug: nextSlug, label: stageLabel(level, nextSlug) } : undefined,
-        tags: [
-          level.kind === "python" ? (concept?.title.replace(/`/g, "") ?? level.title) : problem.category,
-          `World ${level.n}: ${level.title}`,
-        ],
         lesson: concept ? { title: concept.title, intro: concept.intro } : undefined,
       }}
       levelInfo={levelInfos()}

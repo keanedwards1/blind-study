@@ -32,8 +32,6 @@ export type StageContext = {
   world: { n: number; title: string };
   worldSlugs: string[];
   next?: { slug: string; label: string };
-  /** Shown as tags under the problem: the concept (or Blind 75 pattern) and the world. */
-  tags: string[];
   /** The concept group's lesson (Learn Python worlds only). */
   lesson?: { title: string; intro: string };
 };
@@ -192,7 +190,6 @@ export default function GameStage({
         key={`${slug}:${workspaceKey}`}
         problem={problem}
         concepts={concepts}
-        tags={stage.tags}
         lesson={stage.lesson}
         back={{ href: `/python/world/${stage.world.n}`, label: `World ${stage.world.n}` }}
         barRight={hudView}
