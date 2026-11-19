@@ -264,6 +264,13 @@ export default function StageSelect({
                 Why: {shaky[zone.id].reasons.join("; ")}.
               </p>
             )}
+            {zone.stages.length === 0 && (
+              // Quiz-only groups (like world 6's interpreter helpers) have no coding stages; say so instead of an empty row.
+              <p className="text-sm text-(--n-dim)">
+                No coding stages here: these are tools for exploring and debugging, not for writing answers. Read the lesson,
+                then try Practice. They also come up in the guardian fight.
+              </p>
+            )}
             <div className="flex flex-wrap gap-4">
               {zone.stages.map((s) => {
                 const state = stateOf[s.slug];
