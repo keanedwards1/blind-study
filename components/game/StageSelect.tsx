@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { bossOpen, stageStates } from "@/lib/game-score";
 import { sfx, useMusic } from "@/lib/audio/engine";
@@ -96,6 +96,8 @@ export default function StageSelect({
 }) {
   const hydrated = useHydrated();
   const router = useRouter();
+  // Set by the stage-clear screen's Next button: the stage to play next, highlighted in its own colour.
+  const nextSlug = useSearchParams().get("next");
   const placement = usePlacement();
   const solved = useSolved();
   const quiz = useQuizPassed();
@@ -283,11 +285,14 @@ export default function StageSelect({
                       type="button"
                       onClick={() => play(s.slug)}
                       data-state={state}
+                      data-next={s.slug === nextSlug || undefined}
                       className={`n-stone ${shaking === s.slug ? "n-shake" : ""}`}
                       title={
                         state === "locked"
                           ? "Clear the stage before this one to unlock it"
-                          : s.title
+                          : s.slug === nextSlug
+                            ? `Up next: ${s.title}`
+                            : s.title
                       }
                       aria-label={`Stage ${s.label}: ${s.title}${state === "locked" ? " (locked)" : ""}`}
                     >

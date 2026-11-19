@@ -616,6 +616,16 @@ select:not([multiple]):focus-visible {
 .n-stone[data-state="open"] {
   animation: n-glow 2.2s ease-in-out infinite;
 }
+/* The stage you chose to play next (from the stage-clear screen): a faint blue tint and a softer blue glow, a hue no world
+   colour uses. It keeps the shared n-glow animation (only its variables change), so it pulses in step with the other stones. */
+.game .n-stone[data-next="true"] {
+  background: radial-gradient(circle at 35% 30%, #f4f8fa, #c8d9e2 75%);
+  --glow: #6ea0be;
+  --glow-ring: 3px;
+  --glow-ring-mix: 30%;
+  --glow-blur: 14px;
+  --glow-blur-mix: 35%;
+}
 .n-clearing {
   position: relative;
   display: flex;
@@ -696,7 +706,7 @@ select:not([multiple]):focus-visible {
 @keyframes n-fall { from { transform: translate(0, -10vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.9; } to { transform: translate(60px, 110vh) rotate(540deg); opacity: 0; } }
 @keyframes n-sway { 50% { transform: rotate(-3deg); } }
 @keyframes n-breathe { 50% { transform: scale(1.06); } }
-@keyframes n-glow { 50% { box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 0 0 5px color-mix(in srgb, var(--world) 40%, transparent), 0 0 24px color-mix(in srgb, var(--world) 70%, transparent); } }
+@keyframes n-glow { 50% { box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 0 0 var(--glow-ring, 5px) color-mix(in srgb, var(--glow, var(--world)) var(--glow-ring-mix, 40%), transparent), 0 0 var(--glow-blur, 24px) color-mix(in srgb, var(--glow, var(--world)) var(--glow-blur-mix, 70%), transparent); } }
 @keyframes n-pop { 0% { transform: scale(0) rotate(-30deg); } 70% { transform: scale(1.25) rotate(8deg); } 100% { transform: none; } }
 @keyframes n-rise-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes n-fade { from { opacity: 0; } to { opacity: 1; } }

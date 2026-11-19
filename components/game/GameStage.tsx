@@ -119,21 +119,22 @@ export default function GameStage({
     done.current = true;
     attempt.current = NEW_ATTEMPT;
     saveAttempt(slug, null);
-    // The submit's test results, for the clear screen: the totals plus each labelled edge case with its input and answer.
+    // The submit's test results, for the clear screen: the totals plus each labelled test case, then each hidden test
+    // (unlabelled, past the examples), with its input and answer.
     const clip = (text: string) => (text.length > 120 ? `${text.slice(0, 117)}…` : text);
-    const edges = o.tests.flatMap((t, i) =>
-      t.note
-        ? [
-            {
-              note: t.note,
-              ok: o.cases[i]?.status === "pass",
-              input: clip(formatPyArgs(t.args)),
-              output: clip(show(problem.spec, o.cases[i]?.result)),
-              expected: clip(show(problem.spec, t.expected)),
-            },
-          ]
-        : [],
-    );
+    const entry = (i: number, hidden: boolean) => ({
+      note: o.tests[i].note ?? "",
+      hidden,
+      ok: o.cases[i]?.status === "pass",
+      input: clip(formatPyArgs(o.tests[i].args)),
+      output: clip(show(problem.spec, o.cases[i]?.result)),
+      expected: clip(show(problem.spec, o.tests[i].expected)),
+    });
+    const indexes = o.tests.map((_, i) => i);
+    const edges = [
+      ...indexes.filter((i) => o.tests[i].note).map((i) => entry(i, false)),
+      ...indexes.filter((i) => i >= problem.examples.length && !o.tests[i].note).map((i) => entry(i, true)),
+    ];
     setCleared({ result, prev, best, hints: a.hints, peeked: a.peeked, tests: { passed: o.passed, total: o.total, edges } });
   }
 
@@ -204,7 +205,8 @@ export default function GameStage({
           title={problem.title}
           world={stage.world.n}
           info={cleared}
-          nextHref={stage.next ? `/python/${stage.next.slug}` : `/python/quiz/${stage.world.n}`}
+          // Next returns to this world's stage select (with the next stage highlighted); after the last stage it goes on to the boss.
+          nextHref={stage.next ? `/python/world/${stage.world.n}?next=${stage.next.slug}` : `/python/quiz/${stage.world.n}`}
           nextLabel={stage.next ? "Next" : "Boss"}
           onReplay={replay}
         />
