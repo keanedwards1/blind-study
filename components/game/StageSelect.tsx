@@ -23,7 +23,7 @@ import Markdown from "../Markdown";
 import GameShell from "./GameShell";
 import { Leaf, Lock, Owl } from "./icons";
 import Scenery from "./Scenery";
-import { ambienceFor, WORLD_THEME } from "./theme";
+import { ambienceFor, WORLD_THEME, worldInk } from "./theme";
 import { Button, LeafRow } from "./ui";
 
 export type WorldInfo = {
@@ -55,7 +55,7 @@ export function WorldIntro({
         data-biome={biome}
       >
         <Scenery biome={biome} />
-        <p className="n-rise-in text-sm tracking-[0.25em] text-[#c9bda4] uppercase">
+        <p className="n-rise-in text-sm tracking-[0.25em] text-(--n-dim) uppercase">
           World {world.n}
         </p>
         <span className="n-rise-in" style={{ animationDelay: "150ms" }}>
@@ -71,7 +71,7 @@ export function WorldIntro({
         </h2>
         {world.summary && (
           <div
-            className="n-fade n-on-dark max-w-xl text-[#e5dccb]"
+            className="n-fade n-on-dark max-w-xl text-(--n-ink-2)"
             style={{ animationDelay: "600ms" }}
           >
             <Markdown>{world.summary}</Markdown>
@@ -111,7 +111,7 @@ export default function StageSelect({
   const back = { href: "/python", label: "Trail map" };
   if (!hydrated)
     return (
-      <GameShell biome={biome} back={back}>
+      <GameShell themed biome={biome} back={back}>
         {null}
       </GameShell>
     );
@@ -149,15 +149,15 @@ export default function StageSelect({
 
   if (!playable) {
     return (
-      <GameShell biome={biome} back={back}>
+      <GameShell themed biome={biome} back={back}>
         <div className="flex flex-1 flex-col items-center justify-center gap-5 px-4 text-center">
-          <span className="grid h-20 w-20 place-items-center rounded-full bg-black/30 text-[#c9bda4]">
+          <span className="grid h-20 w-20 place-items-center rounded-full bg-black/30 text-(--n-dim)">
             <Lock size={36} />
           </span>
           <p className="font-display text-2xl font-bold">
             World {world.n} is still overgrown
           </p>
-          <p className="max-w-md text-[#c9bda4]">
+          <p className="max-w-md text-(--n-dim)">
             {placement
               ? `Clear every stage of world ${world.n - 1} and get past its guardian to open this path.`
               : "Start your trail from the map first."}
@@ -180,7 +180,7 @@ export default function StageSelect({
   }
 
   return (
-    <GameShell
+    <GameShell themed
       biome={biome}
       back={back}
       title={
@@ -189,12 +189,12 @@ export default function StageSelect({
             <Icon size={42} />
           </span>
           <div className="text-left">
-            <p className="text-[11px] tracking-[0.2em] text-[#c9bda4] uppercase">
+            <p className="text-[11px] tracking-[0.2em] text-(--n-dim) uppercase">
               World {world.n}
             </p>
             <h1
               className="font-display text-xl leading-tight font-extrabold sm:text-2xl"
-              style={{ color }}
+              style={{ color: worldInk(color) }}
             >
               {world.title}
             </h1>
@@ -216,7 +216,7 @@ export default function StageSelect({
         className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 pt-6 pb-14"
         style={{ "--world": color } as React.CSSProperties}
       >
-        <p className="flex items-center justify-center gap-1.5 text-sm text-[#c9bda4]">
+        <p className="flex items-center justify-center gap-1.5 text-sm text-(--n-dim)">
           <Leaf size={15} /> {leafCount} of {slugs.length * 3} leaves collected
         </p>
 
@@ -229,7 +229,7 @@ export default function StageSelect({
               <div className="flex flex-wrap items-center gap-2">
                 {shaky[zone.id] && (
                   <span
-                    className="rounded-md bg-[#ff7a2f]/20 px-2 py-1 text-[11px] font-semibold text-[#ffb27a]"
+                    className="rounded-md bg-[#ff7a2f]/20 px-2 py-1 text-[11px] font-semibold text-(--n-warn)"
                     title={`Why: ${shaky[zone.id].reasons.join("; ")}.`}
                   >
                     Shaky · rep it
@@ -260,7 +260,7 @@ export default function StageSelect({
               </div>
             </div>
             {shaky[zone.id] && (
-              <p className="-mt-1 text-xs text-[#ffb27a]">
+              <p className="-mt-1 text-xs text-(--n-warn)">
                 Why: {shaky[zone.id].reasons.join("; ")}.
               </p>
             )}
@@ -312,13 +312,13 @@ export default function StageSelect({
               <Owl size={64} />
             </span>
             <div>
-              <p className="text-[11px] tracking-[0.2em] text-[#c9bda4] uppercase">
+              <p className="text-[11px] tracking-[0.2em] text-(--n-dim) uppercase">
                 The guardian
               </p>
               <p className="font-display text-lg font-semibold">
                 Guardian of {world.title}
               </p>
-              <p className="mt-1 text-sm text-[#c9bda4]">
+              <p className="mt-1 text-sm text-(--n-dim)">
                 {quiz[world.n]
                   ? "You've earned its respect. Visit again any time."
                   : boss

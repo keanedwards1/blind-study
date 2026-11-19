@@ -1,0 +1,91 @@
+/*
+ * Light and dark for the Learn Python trail map and world pages (imported by GameShell, so it hot-reloads).
+ * The base game palette lives in app/globals.css (.game); this file adds the extra colour variables the themed screens
+ * use, then light-mode values for screens marked .n-themed. Other game screens (the guardian, the clear screen, the
+ * rep room) don't get .n-themed and stay dark in both themes.
+ */
+.game {
+  /* Tokens the themed screens (trail map, world pages) swap for light mode; see the .n-themed block below. */
+  --n-ink-2: #e5dccb;
+  --n-warn: #ffb27a;
+  --n-chip: #22170e;
+  --n-hover: rgba(255, 255, 255, 0.1);
+  --n-ghost-bg: rgba(244, 236, 220, 0.08);
+  --n-ghost-line: rgba(244, 236, 220, 0.2);
+  --n-shadow: rgba(0, 0, 0, 0.35);
+  /* World colours are bright, made for dark scenes; text in a world colour mixes this much of it with dark ink. */
+  --n-world-ink: 100%;
+  --n-pine-1: #163222;
+  --n-pine-2: #11281b;
+  --n-pine-3: #0b1c13;
+  --n-burnt: #1f0b07;
+  --n-burnt-branch: #140705;
+  --n-pebble: #5a4330;
+  --n-fire-glow: rgba(255, 122, 47, 0.45);
+}
+
+/* The ghost button reads its colours from variables so it can flip with the theme. */
+.game .n-btn.ghost {
+  background: var(--n-ghost-bg);
+  box-shadow: inset 0 0 0 1px var(--n-ghost-line);
+}
+
+/* Light mode. Soil is warm parchment, forest is pale sage, fire is soft peach. */
+:root:not([data-theme="dark"]) .game.n-themed {
+  --n-ink: #2b1d14;
+  --n-ink-2: #3d2e22;
+  --n-dim: #6b5843;
+  --n-faint: #8f7c64;
+  --n-warn: #b4521a;
+  --n-chip: #e6dccb;
+  --n-hover: rgba(43, 29, 20, 0.08);
+  --n-card: rgba(255, 252, 245, 0.75);
+  --n-card-line: rgba(60, 40, 20, 0.12);
+  --n-ghost-bg: rgba(43, 29, 20, 0.05);
+  --n-ghost-line: rgba(43, 29, 20, 0.2);
+  --n-shadow: rgba(60, 40, 20, 0.18);
+  --n-world-ink: 55%;
+  --n-sky-1: #f8f1e4;
+  --n-sky-2: #ebdcc2;
+  --n-pine-1: #b4d39f;
+  --n-pine-2: #9cc487;
+  --n-pine-3: #86b473;
+  --n-burnt: #f0c4a8;
+  --n-burnt-branch: #e2a985;
+  --n-pebble: #b59a78;
+  --n-leaf-empty: rgba(43, 29, 20, 0.08);
+  --n-leaf-empty-line: rgba(43, 29, 20, 0.3);
+}
+:root:not([data-theme="dark"]) .game.n-themed[data-biome="forest"] {
+  --n-sky-1: #eef6e8;
+  --n-sky-2: #d5e8c8;
+}
+:root:not([data-theme="dark"]) .game.n-themed[data-biome="fire"] {
+  /* A golden late-afternoon sky with a soft amber glow and tan, sun-bleached trees. */
+  --n-sky-1: #fff8ea;
+  --n-sky-2: #fce3b6;
+  --n-fire-glow: rgba(245, 158, 11, 0.22);
+  --n-burnt: #e7cba3;
+  --n-burnt-branch: #d6ae7f;
+}
+:root:not([data-theme="dark"]) .game.n-themed .n-card {
+  box-shadow: 0 10px 30px rgba(60, 40, 20, 0.12);
+}
+:root:not([data-theme="dark"]) .game.n-themed .n-stone[data-state="locked"] {
+  background: radial-gradient(circle at 35% 30%, #e4dbcc, #c3b59f 80%);
+  color: #7a6b57;
+}
+:root:not([data-theme="dark"]) .game.n-themed .n-clearing .ring {
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.85), rgba(60, 40, 20, 0.12));
+  box-shadow: inset 0 0 0 2px rgba(60, 40, 20, 0.15), 0 8px 18px rgba(60, 40, 20, 0.15);
+}
+/* Keep the current world's glowing ring (the light .ring rule above would otherwise replace it). */
+:root:not([data-theme="dark"]) .game.n-themed .n-clearing[data-current="true"] .ring {
+  box-shadow: inset 0 0 0 3px var(--world), 0 0 0 6px color-mix(in srgb, var(--world) 30%, transparent), 0 0 30px color-mix(in srgb, var(--world) 60%, transparent);
+}
+:root:not([data-theme="dark"]) .game.n-themed .n-clearing[data-locked="true"] {
+  filter: grayscale(0.85) opacity(0.7);
+}
+:root:not([data-theme="dark"]) .game.n-themed .n-trail {
+  border-color: rgba(176, 122, 28, 0.55);
+}

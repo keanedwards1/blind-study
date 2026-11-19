@@ -42,7 +42,12 @@ function Particles({ kind, count, seed }: { kind: "n-firefly" | "n-ember" | "n-l
   );
 }
 
-/** Illustrated background for a biome. Sits behind the page content and ignores the pointer. */
+/**
+ * Illustrated background for a biome. Sits behind the page content and ignores the pointer. Silhouette colours come from
+ * the .game colour variables, so the light trail and world pages get lighter pines and burnt trees. The tree rows use
+ * `overflow-visible`: their "slice" scaling crops the top edge in wide, short boxes (the trail map bands), which
+ * flattened the tallest trees; this lets the tips show.
+ */
 export default function Scenery({ biome }: { biome: Biome }) {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
@@ -66,7 +71,7 @@ export default function Scenery({ biome }: { biome: Biome }) {
           <svg className="absolute bottom-0 left-0 h-40 w-full opacity-40" viewBox="0 0 1200 160" preserveAspectRatio="xMidYMax slice">
             {Array.from({ length: 26 }, (_, i) => {
               const r = seeded(i + 7);
-              return <ellipse key={i} cx={r() * 1200} cy={40 + r() * 110} rx={6 + r() * 14} ry={4 + r() * 7} fill="#5a4330" />;
+              return <ellipse key={i} cx={r() * 1200} cy={40 + r() * 110} rx={6 + r() * 14} ry={4 + r() * 7} style={{ fill: "var(--n-pebble)" }} />;
             })}
           </svg>
           <Particles kind="n-leaf" count={9} seed={3} />
@@ -76,10 +81,10 @@ export default function Scenery({ biome }: { biome: Biome }) {
       {biome === "forest" && (
         <>
           <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_70%_0%,rgba(246,240,160,0.12),transparent_60%)]" />
-          <svg className="absolute bottom-0 left-0 h-[55%] w-full" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice">
-            <path d={pines(11, 400, 300, 26)} fill="#163222" />
-            <path d={pines(23, 400, 220, 22)} fill="#11281b" />
-            <path d={pines(37, 400, 140, 30)} fill="#0b1c13" />
+          <svg className="absolute bottom-0 left-0 h-[55%] w-full overflow-visible" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice">
+            <path d={pines(11, 400, 300, 26)} style={{ fill: "var(--n-pine-1)" }} />
+            <path d={pines(23, 400, 220, 22)} style={{ fill: "var(--n-pine-2)" }} />
+            <path d={pines(37, 400, 140, 30)} style={{ fill: "var(--n-pine-3)" }} />
           </svg>
           <Particles kind="n-firefly" count={18} seed={5} />
         </>
@@ -87,13 +92,13 @@ export default function Scenery({ biome }: { biome: Biome }) {
 
       {biome === "fire" && (
         <>
-          <div className="absolute inset-x-0 bottom-0 h-[60%] bg-[radial-gradient(ellipse_at_50%_100%,rgba(255,122,47,0.45),transparent_65%)]" />
-          <svg className="absolute bottom-0 left-0 h-[45%] w-full" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice">
-            <path d={pines(41, 300, 230, 18)} fill="#1f0b07" />
+          <div className="absolute inset-x-0 bottom-0 h-[60%] bg-[radial-gradient(ellipse_at_50%_100%,var(--n-fire-glow),transparent_65%)]" />
+          <svg className="absolute bottom-0 left-0 h-[45%] w-full overflow-visible" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice">
+            <path d={pines(41, 300, 230, 18)} style={{ fill: "var(--n-burnt)" }} />
             {Array.from({ length: 9 }, (_, i) => {
               const r = seeded(i + 51);
               const x = 60 + i * 135 + r() * 40;
-              return <path key={i} d={`M${x} 300V${170 - r() * 60}M${x} ${230 - r() * 30}l${-18 - r() * 10} -26M${x} ${200 - r() * 20}l${16 + r() * 10} -22`} stroke="#140705" strokeWidth={6} strokeLinecap="round" />;
+              return <path key={i} d={`M${x} 300V${170 - r() * 60}M${x} ${230 - r() * 30}l${-18 - r() * 10} -26M${x} ${200 - r() * 20}l${16 + r() * 10} -22`} style={{ stroke: "var(--n-burnt-branch)" }} strokeWidth={6} strokeLinecap="round" />;
             })}
           </svg>
           <Particles kind="n-ember" count={26} seed={9} />

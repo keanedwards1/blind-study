@@ -6,6 +6,7 @@ import { audio, sfx, useAudioSettings } from "@/lib/audio/engine";
 import { MusicNote, Speaker } from "./icons";
 import Scenery from "./Scenery";
 import type { Biome } from "./theme";
+import "./game-theme.css";
 
 /** Browsers only allow sound after a user gesture, so the first click or key press anywhere unlocks audio. */
 export function useAudioUnlock() {
@@ -25,7 +26,7 @@ export function SoundButtons({ tone = "game" }: { tone?: "game" | "site" }) {
   const [settings, setSettings] = useAudioSettings();
   const cls = (on: boolean) =>
     `grid h-9 w-9 place-items-center rounded-full transition-opacity ${on ? "" : "opacity-50"} ${
-      tone === "game" ? "text-[#f4ecdc] hover:bg-white/10" : "text-muted hover:bg-hover hover:text-fg"
+      tone === "game" ? "text-(--n-ink) hover:bg-(--n-hover)" : "text-muted hover:bg-hover hover:text-fg"
     }`;
   return (
     <div className="flex items-center gap-1">
@@ -58,16 +59,32 @@ export function SoundButtons({ tone = "game" }: { tone?: "game" | "site" }) {
 
 type Back = { href: string; label: string };
 
-/** Full-height game screen: biome scenery behind, and a top bar with an optional back link, a title, and the sound menu. */
-export default function GameShell({ biome, back, title, children }: { biome: Biome; back?: Back; title?: React.ReactNode; children: React.ReactNode }) {
+/**
+ * Full-height game screen: biome scenery behind, and a top bar with an optional back link, a title, and the sound menu.
+ * `themed` screens (the trail map and world pages) follow the site's light/dark theme; the rest stay dark.
+ */
+export default function GameShell({
+  biome,
+  back,
+  title,
+  themed = false,
+  children,
+}: {
+  biome: Biome;
+  back?: Back;
+  title?: React.ReactNode;
+  themed?: boolean;
+  children: React.ReactNode;
+}) {
   useAudioUnlock();
   return (
-    <div className="game relative flex min-h-[calc(100vh-var(--header-h))] flex-1 flex-col" data-biome={biome}>
+    <div className={`game relative flex min-h-[calc(100vh-var(--header-h))] flex-1 flex-col ${themed ? "n-themed" : ""}`} data-biome={biome}>
       <Scenery biome={biome} />
-      <div className={`relative z-10 mx-auto grid w-full max-w-5xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 ${biome === "soil" ? "pt-12" : "pt-5"}`}>
+      {/* Soil's canopy scales with the page width (its wavy edge is ~3.4vw down), so the top padding grows with it. */}
+      <div className={`relative z-10 mx-auto grid w-full max-w-5xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 ${biome === "soil" ? "pt-[max(3rem,calc(3.4vw+1.5rem))]" : "pt-5"}`}>
         <div>
           {back && (
-            <Link href={back.href} onClick={() => sfx("click")} className="text-sm text-[#c9bda4] hover:text-[#f4ecdc]">
+            <Link href={back.href} onClick={() => sfx("click")} className="text-sm text-(--n-dim) hover:text-(--n-ink)">
               ← {back.label}
             </Link>
           )}

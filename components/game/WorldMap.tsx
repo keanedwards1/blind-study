@@ -10,7 +10,7 @@ import { struggles, useMisses, useRepClears } from "@/lib/concept-progress";
 import GameShell from "./GameShell";
 import { Leaf, Lock } from "./icons";
 import Scenery from "./Scenery";
-import { type Biome, BIOME_NAME, WORLD_THEME } from "./theme";
+import { type Biome, BIOME_NAME, WORLD_THEME, worldInk } from "./theme";
 import { Button } from "./ui";
 
 export type MapWorld = LevelInfo & { title: string; kind: "python" | "blind"; concepts: { id: string; title: string; problems: string[] }[] };
@@ -32,10 +32,10 @@ function Welcome({ onBegin }: { onBegin: () => void }) {
           );
         })}
       </div>
-      <h1 className="font-display n-rise-in text-5xl font-extrabold text-[#f4ecdc] sm:text-6xl" style={{ animationDelay: "300ms" }}>
+      <h1 className="font-display n-rise-in text-5xl font-extrabold text-(--n-ink) sm:text-6xl" style={{ animationDelay: "300ms" }}>
         Learn Python
       </h1>
-      <p className="n-fade max-w-md text-lg text-[#c9bda4]" style={{ animationDelay: "600ms" }}>
+      <p className="n-fade max-w-md text-lg text-(--n-dim)" style={{ animationDelay: "600ms" }}>
         A trail from the first seed to the firelands. Ten worlds, one guardian at the end of each.
       </p>
       <div className="n-rise-in" style={{ animationDelay: "900ms" }}>
@@ -66,11 +66,11 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
   const [shaking, setShaking] = useState<number | null>(null);
   useMusic("forest");
 
-  if (!hydrated) return <GameShell biome="forest">{null}</GameShell>;
+  if (!hydrated) return <GameShell themed biome="forest">{null}</GameShell>;
 
   if (!welcomed && !load<boolean>(WELCOME_KEY, false)) {
     return (
-      <GameShell biome="forest">
+      <GameShell themed biome="forest">
         <Welcome
           onBegin={() => {
             audio().unlock();
@@ -119,21 +119,21 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
             <Icon size={58} />
           </span>
           {locked && (
-            <span className="absolute grid h-9 w-9 place-items-center rounded-full bg-[#22170e] text-[#c9bda4]">
+            <span className="absolute grid h-9 w-9 place-items-center rounded-full bg-(--n-chip) text-(--n-dim)">
               <Lock size={18} />
             </span>
           )}
         </span>
-        <span className="text-[11px] tracking-wide text-[#c9bda4] uppercase">World {n}</span>
-        <span className="font-display text-sm leading-snug font-semibold" style={{ color: locked ? "#8f8470" : color }}>
+        <span className="text-[11px] tracking-wide text-(--n-dim) uppercase">World {n}</span>
+        <span className="font-display text-sm leading-snug font-semibold" style={{ color: locked ? "var(--n-faint)" : worldInk(color) }}>
           {w.title}
         </span>
-        <span className="flex items-center gap-1 text-xs text-[#c9bda4]">
+        <span className="flex items-center gap-1 text-xs text-(--n-dim)">
           <Leaf size={13} /> {leaves(w)}/{leavesTotal[n]}
         </span>
-        {STATE_NOTE[state] && <span className="text-[11px] text-[#8f8470]">{STATE_NOTE[state]}</span>}
+        {STATE_NOTE[state] && <span className="text-[11px] text-(--n-faint)">{STATE_NOTE[state]}</span>}
         {!locked && shakyCount(w) > 0 && (
-          <span className="rounded-md bg-[#ff7a2f]/20 px-1.5 py-0.5 text-[11px] font-semibold text-[#ffb27a]" title="Concepts that could use a few reps">
+          <span className="rounded-md bg-[#ff7a2f]/20 px-1.5 py-0.5 text-[11px] font-semibold text-(--n-warn)" title="Concepts that could use a few reps">
             {shakyCount(w)} to rep
           </span>
         )}
@@ -142,12 +142,12 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
   };
 
   return (
-    <GameShell biome="forest" title={<h1 className="font-display text-2xl font-extrabold">The trail</h1>}>
+    <GameShell themed biome="forest" title={<h1 className="font-display text-2xl font-extrabold">The trail</h1>}>
       <div className="mx-auto flex w-full max-w-5xl flex-col px-4 pt-6 pb-14">
         {!placement && (
           <div className="n-card n-rise-in mx-auto mb-8 flex max-w-xl flex-col items-center gap-4 p-6 text-center">
             <p className="font-display text-xl font-semibold">Where does your trail start?</p>
-            <p className="text-[#c9bda4]">Take the 20-task placement test to find your starting world, or start at the very first seed.</p>
+            <p className="text-(--n-dim)">Take the 20-task placement test to find your starting world, or start at the very first seed.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button href="/python/placement">Placement test</Button>
               <Button ghost onClick={() => savePlacement({ level: 1, at: Date.now(), results: [] })}>
@@ -164,9 +164,9 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
                 <span className="n-trail down" />
               </div>
             )}
-            <section className="game relative overflow-hidden rounded-3xl px-4 py-10 sm:px-8" data-biome={band.biome} style={{ minHeight: 280 }}>
+            <section className="game n-themed relative overflow-hidden rounded-3xl px-4 py-10 sm:px-8" data-biome={band.biome} style={{ minHeight: 280 }}>
               <Scenery biome={band.biome} />
-              <p className="font-display relative mb-12 text-center text-sm tracking-[0.2em] text-[#c9bda4] uppercase">{BIOME_NAME[band.biome]}</p>
+              <p className="font-display relative mb-12 text-center text-sm tracking-[0.2em] text-(--n-dim) uppercase">{BIOME_NAME[band.biome]}</p>
               <div className={`relative flex flex-col items-center sm:items-start ${band.reverse ? "sm:flex-row-reverse" : "sm:flex-row"}`}>
                 {band.worlds.map((n, i) => (
                   <Fragment key={n}>
@@ -185,9 +185,9 @@ export default function WorldMap({ worlds, leavesTotal }: { worlds: MapWorld[]; 
         ))}
 
         {placement && (
-          <p className="mt-8 text-center text-xs text-[#8f8470]">
+          <p className="mt-8 text-center text-xs text-(--n-faint)">
             Placed at world {placement.level} ·{" "}
-            <Link href="/python/placement" className="underline hover:text-[#c9bda4]">
+            <Link href="/python/placement" className="underline hover:text-(--n-dim)">
               retake the placement test
             </Link>
           </p>

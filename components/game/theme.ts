@@ -16,6 +16,9 @@ export const WORLD_THEME: Record<number, { biome: Biome; color: string; Icon: (p
   10: { biome: "fire", color: "#ff5a1f", Icon: Blaze },
 };
 
+/** A world colour used as text: full strength on dark scenes, darkened on the light trail and world pages (--n-world-ink). */
+export const worldInk = (color: string) => `color-mix(in srgb, ${color} var(--n-world-ink, 100%), #1b120b)`;
+
 export const BIOME_NAME: Record<Biome, string> = { soil: "Soil & roots", forest: "The deep forest", fire: "The firelands" };
 
 /** Full ambience between stages; the calm version while coding. Worlds 8-10 crackle with fire. */

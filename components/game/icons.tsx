@@ -107,8 +107,19 @@ export function Blaze({ size = 48, className }: IconProps) {
 export function Leaf({ size = 20, filled = true, className }: IconProps & { filled?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-hidden>
-      <path d="M4 20C4 9 11 3 21 3c0 11-6 18-17 17z" fill={filled ? "#e9b44c" : "rgba(244,236,220,0.14)"} stroke={filled ? "#b98326" : "rgba(244,236,220,0.3)"} strokeWidth="1.2" />
-      <path d="M5 19C9 14 13 10 18 6" stroke={filled ? "#b98326" : "rgba(244,236,220,0.3)"} strokeWidth="1.2" fill="none" strokeLinecap="round" />
+      {/* An empty leaf takes its colours from --n-leaf-empty(-line), so it shows on the light trail and world pages too. */}
+      <path
+        d="M4 20C4 9 11 3 21 3c0 11-6 18-17 17z"
+        style={filled ? { fill: "#e9b44c", stroke: "#b98326" } : { fill: "var(--n-leaf-empty, rgba(244,236,220,0.14))", stroke: "var(--n-leaf-empty-line, rgba(244,236,220,0.3))" }}
+        strokeWidth="1.2"
+      />
+      <path
+        d="M5 19C9 14 13 10 18 6"
+        style={{ stroke: filled ? "#b98326" : "var(--n-leaf-empty-line, rgba(244,236,220,0.3))" }}
+        strokeWidth="1.2"
+        fill="none"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
