@@ -1,6 +1,7 @@
 export type Difficulty = "Easy" | "Medium" | "Hard";
 
-export type TestCase = { args: unknown[]; expected: unknown };
+/** `note` labels an edge case ("empty list"); the IDE lists them so you know what Submit checks. */
+export type TestCase = { args: unknown[]; expected: unknown; note?: string };
 
 export type RunSpec = {
   fn?: string;

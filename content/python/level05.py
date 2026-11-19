@@ -553,11 +553,14 @@ Example: one counter called three times gives `1, 2, 3`; a second counter's firs
 A settings system lets each value be either a plain value or a function that computes it. Write `resolve_value(x, arg)` to return `x(arg)` if `x` can be called, and `x` itself otherwise.
 
 Example: `resolve_value(len, "abc")` returns `3`, and `resolve_value(5, "abc")` returns `5`.
+
+In the test inputs, a string like `"fn:len"` stands for the function `len` itself.
 """,
                   "def resolve_value(x, arg):\n    return x(arg) if callable(x) else x\n",
-                  [([], [3, "HI", 5, "text"])], [[]],
-                  params=[],
-                  driver='def driver(ns):\n    f = resolve(ns, "resolve_value")\n    return [f(len, "abc"), f(str.upper, "hi"), f(5, "ignored"), f("text", "ignored")]\n',
+                  [(["fn:len", "abc"], 3), ([5, "abc"], 5)], [["fn:upper", "hi"], ["text", "ignored"]],
+                  params=["x", "arg"],
+                  # A string like "fn:len" stands for that function, since tests can only pass plain values.
+                  driver='def driver(ns, x, arg):\n    funcs = {"fn:len": len, "fn:upper": str.upper, "fn:abs": abs, "fn:sorted": sorted, "fn:int": int}\n    return resolve(ns, "resolve_value")(funcs.get(x, x) if isinstance(x, str) else x, arg)\n',
                   require=["callable"],
                   grammar="""
 ## Building blocks

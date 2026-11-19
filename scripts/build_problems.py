@@ -11,6 +11,7 @@ Usage: python3 scripts/build_problems.py
 import ast
 import importlib.util
 import json
+import os
 import runpy
 import sys
 from pathlib import Path
@@ -37,6 +38,20 @@ for _path in sorted((ROOT / "content" / "hints").glob("*.py")):
     for _slug, _hints in runpy.run_path(str(_path))["HINTS"].items():
         assert _slug not in HINTS, f"{_path.name}: hints for {_slug} are defined twice"
         HINTS[_slug] = list(_hints)
+
+# Edge cases live in content/edges/*.py (EDGES = {slug: [(note, args), ...]}). Each one becomes a hidden test whose expected
+# value comes from the reference solution, and its note ("empty list", "all the same") is shown in the IDE so you know what
+# Submit will throw at your code. A note whose args match an existing example or test labels that case instead.
+# A file's EXHAUSTIVE set names tasks whose every valid input is already tested (days 1-7), so they can't reach MIN_TESTS.
+EDGES, EXHAUSTIVE = {}, set()
+for _path in sorted((ROOT / "content" / "edges").glob("*.py")):
+    _mod = runpy.run_path(str(_path))
+    EXHAUSTIVE |= set(_mod.get("EXHAUSTIVE", ()))
+    for _slug, _cases in _mod["EDGES"].items():
+        assert _slug not in EDGES, f"{_path.name}: edge cases for {_slug} are defined twice"
+        EDGES[_slug] = [(note, list(args)) for note, args in _cases]
+MIN_TESTS, MIN_EDGES = 8, 3
+SHORT = []  # problems below the minimums, reported (and failed) at the end of the build
 
 
 def _norm(s):
@@ -121,6 +136,24 @@ def build_one(p, category):
             raise AssertionError(f"{p['slug']}: checker rejects the reference output for {args!r}")
         tests.append({"args": args, "expected": r["result"]})
 
+    for note, args in EDGES.get(p["slug"], []):
+        assert note.strip() and len(note) <= 60, f"{p['slug']}: edge-case notes are short labels: {note!r}"
+        same = next((t for t in tests if json.dumps(t["args"]) == json.dumps(args)), None)
+        if same is not None:
+            assert "note" not in same, f"{p['slug']}: two edge-case notes for {args!r}"
+            same["note"] = note
+            continue
+        r = sol.run(args, has_expected=False)
+        if r["error"]:
+            raise AssertionError(f"{p['slug']}: edge case {note!r} {args!r} raised {r['error']}")
+        if not sol.check(args, r["result"], r["result"]):
+            raise AssertionError(f"{p['slug']}: checker rejects the reference output for edge case {note!r}")
+        tests.append({"args": args, "expected": r["result"], "note": note})
+    notes = [t["note"] for t in tests if t.get("note")]
+    assert len(set(notes)) == len(notes), f"{p['slug']}: repeated edge-case note"
+    if (len(tests) < MIN_TESTS and p["slug"] not in EXHAUSTIVE) or len(notes) < MIN_EDGES:
+        SHORT.append(f"{p['slug']}: {len(tests)} tests, {len(notes)} edge cases")
+
     # The starter must at least compile and run through the harness without crashing it.
     starter = harness.Session(p["starter"], run_spec, rules=False)
     for t in tests:
@@ -147,6 +180,11 @@ def build_one(p, category):
     }
 
 
+def _python_slugs():
+    data = json.loads((ROOT / "data" / "python.json").read_text())
+    return [p["slug"] for p in data["problems"]]
+
+
 def main():
     out, slugs, categories = [], set(), []
     for path in sorted((ROOT / "content").glob("[0-9]*.py")):
@@ -168,6 +206,12 @@ def main():
     dest.write_text(json.dumps({"categories": categories, "problems": out}, separators=(",", ":")))
     print(f"OK: {len(out)} problems, {sum(len(p['tests']) for p in out)} test cases -> {dest.relative_to(ROOT)} ({dest.stat().st_size // 1024} KB)")
     python_levels.build_python(out, categories, build_one)
+    unknown = set(EDGES) - {p["slug"] for p in out} - set(_python_slugs())
+    assert not unknown, f"edge cases for unknown slugs: {sorted(unknown)}"
+    if SHORT:
+        limit = int(os.environ.get("EDGE_REPORT", "40"))
+        print("\n".join(SHORT[:limit]) + (f"\n... and {len(SHORT) - limit} more" if len(SHORT) > limit else ""))
+        raise SystemExit(f"{len(SHORT)} problems need at least {MIN_TESTS} tests and {MIN_EDGES} labelled edge cases (content/edges/)")
 
 
 if __name__ == "__main__":

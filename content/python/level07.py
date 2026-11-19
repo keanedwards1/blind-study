@@ -306,11 +306,11 @@ Sometimes the attribute name is in a variable:
 - **Every item passes:** `all(...)`
 """),
                 P("py-strip-private", "Remove Private Fields", "def strip_private(obj) -> Dict[str, int]:",
-                  "Delete every attribute of `obj` whose name starts with `_`, then return `vars(obj)`. The tests' object has `a`, `_b` and `_c`.",
+                  "Delete every attribute of `obj` whose name starts with `_`, then return `vars(obj)`. The tests build `obj` with the attributes in `fields` (name to value), so `{\"a\": 1, \"_b\": 2}` means `obj.a = 1` and `obj._b = 2`.",
                   "def strip_private(obj) -> Dict[str, int]:\n    for name in list(vars(obj)):\n        if name.startswith(\"_\"):\n            delattr(obj, name)\n    return vars(obj)\n",
-                  [([], {"a": 1})], [[]],
-                  params=[], require=["delattr", "vars"],
-                  driver='def driver(ns):\n    class Obj:\n        pass\n    o = Obj()\n    o.a, o._b, o._c = 1, 2, 3\n    return resolve(ns, "strip_private")(o)\n',
+                  [([{"a": 1, "_b": 2, "_c": 3}], {"a": 1})], [[{}]],
+                  params=["fields"], require=["delattr", "vars"],
+                  driver='def driver(ns, fields):\n    class Obj:\n        pass\n    o = Obj()\n    for k, v in fields.items():\n        setattr(o, k, v)\n    return resolve(ns, "strip_private")(o)\n',
                   hints=["Changing a dict while looping over it is an error, so loop over `list(vars(obj))`."],
                   grammar="""
 ## Building blocks
@@ -319,11 +319,11 @@ Sometimes the attribute name is in a variable:
 - **Delete by name:** `delattr(target, person)`
 """),
                 P("py-public-methods", "Public Names", "def public_names(obj) -> List[str]:",
-                  "Return every name in `dir(obj)` that doesn't start with `_`, in order. The tests pass an object of a class with methods `go` and `stop` and an attribute `speed`.",
+                  "Return every name in `dir(obj)` that doesn't start with `_`, in order. The tests build `obj` from a class with the methods named in `methods`, and give it the attributes named in `attrs`.",
                   "def public_names(obj) -> List[str]:\n    return [n for n in dir(obj) if not n.startswith(\"_\")]\n",
-                  [([], ["go", "speed", "stop"])], [[]],
-                  params=[], require=["dir"],
-                  driver='def driver(ns):\n    class Car:\n        def __init__(self):\n            self.speed = 0\n        def go(self):\n            pass\n        def stop(self):\n            pass\n    return resolve(ns, "public_names")(Car())\n',
+                  [([["go", "stop"], ["speed"]], ["go", "speed", "stop"])], [[[], []]],
+                  params=["methods", "attrs"], require=["dir"],
+                  driver='def driver(ns, methods, attrs):\n    Thing = type("Thing", (), {m: (lambda self: None) for m in methods})\n    obj = Thing()\n    for a in attrs:\n        setattr(obj, a, 0)\n    return resolve(ns, "public_names")(obj)\n',
                   grammar="""
 ## Building blocks
 - **Every usable name:** `dir(obj)`, already sorted, including methods and dunders.
