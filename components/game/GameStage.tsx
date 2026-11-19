@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Concept, Problem, RunOutcome } from "@/lib/types";
+import { show } from "@/lib/format";
+import { formatPyArgs } from "@/lib/py-args";
 import { type Attempt, NEW_ATTEMPT, scoreAttempt, stageStates } from "@/lib/game-score";
 import { useMusic } from "@/lib/audio/engine";
 import {
@@ -119,7 +121,22 @@ export default function GameStage({
     done.current = true;
     attempt.current = NEW_ATTEMPT;
     saveAttempt(slug, null);
-    setCleared({ result, prev, best, hints: a.hints, peeked: a.peeked });
+    // The submit's test results, for the clear screen: the totals plus each labelled edge case with its input and answer.
+    const clip = (text: string) => (text.length > 120 ? `${text.slice(0, 117)}…` : text);
+    const edges = o.tests.flatMap((t, i) =>
+      t.note
+        ? [
+            {
+              note: t.note,
+              ok: o.cases[i]?.status === "pass",
+              input: clip(formatPyArgs(t.args)),
+              output: clip(show(problem.spec, o.cases[i]?.result)),
+              expected: clip(show(problem.spec, t.expected)),
+            },
+          ]
+        : [],
+    );
+    setCleared({ result, prev, best, hints: a.hints, peeked: a.peeked, tests: { passed: o.passed, total: o.total, edges } });
   }
 
   function bump(change: Partial<Attempt>) {

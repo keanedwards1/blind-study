@@ -16,9 +16,11 @@ export type ClearInfo = {
   best: StageResult;
   hints: number;
   peeked: boolean;
+  /** The winning submit's tests: totals, and each edge case with the input it ran, your output and the expected answer. */
+  tests?: { passed: number; total: number; edges: { note: string; ok: boolean; input: string; output: string; expected: string }[] };
 };
 
-/** The between-stages screen: leaves earned, score, time, tries, best, and where to go next. */
+/** The between-stages screen: leaves earned, score, time, tries, tests passed, the edge cases handled, best, and where to go next. */
 export default function StageClear({
   label,
   title,
@@ -38,7 +40,7 @@ export default function StageClear({
 }) {
   const router = useRouter();
   const [leavesDone, setLeavesDone] = useState(false);
-  const { result, prev, hints, peeked } = info;
+  const { result, prev, hints, peeked, tests } = info;
   const firstClear = !prev;
   const newBest = Boolean(prev && result.score > prev.score);
   const { color, biome } = WORLD_THEME[world];
@@ -81,7 +83,7 @@ export default function StageClear({
         <div className="absolute top-4 right-4">
           <SoundButtons />
         </div>
-        <div className="n-card n-rise-in relative flex w-full max-w-md flex-col items-center gap-4 p-7 text-center">
+        <div className="n-card n-rise-in relative flex w-full max-w-lg flex-col items-center gap-4 p-7 text-center">
           <p className="text-xs tracking-[0.25em] text-[#c9bda4] uppercase">
             Stage {label}
           </p>
@@ -112,6 +114,7 @@ export default function StageClear({
           <div className="w-full text-sm">
             {row("Time", formatTime(result.ms), 1300)}
             {row("Tries", result.tries, 1400)}
+            {tests && row("Tests passed", `${tests.passed} / ${tests.total}`, 1450)}
             {hints > 0 && row("Hints used", hints, 1500)}
             {peeked && row("Solution", "Peeked", 1500)}
             {row(
@@ -120,6 +123,32 @@ export default function StageClear({
               1600,
             )}
           </div>
+          {tests && tests.edges.length > 0 && (
+            <div className="n-rise-in w-full text-left" style={{ animationDelay: "1700ms" }}>
+              <p className="mb-1.5 text-xs tracking-wide text-[#c9bda4] uppercase">Edge cases handled</p>
+              <ul className="flex max-h-64 flex-col gap-1.5 overflow-auto pr-1">
+                {tests.edges.map((e) => (
+                  <li key={e.note} className="rounded bg-black/25 px-3 py-2">
+                    <p className={`text-sm font-semibold ${e.ok ? "text-[#9bc26b]" : "text-[#ff7a5c]"}`}>
+                      {e.ok ? "✓" : "✗"} {e.note}
+                    </p>
+                    <div className="mt-1 grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-2 font-mono text-xs leading-5 [font-variant-ligatures:none]">
+                      <span className="text-[#c9bda4]">input</span>
+                      <span className="break-words whitespace-pre-wrap text-[#f4ecdc]">{e.input}</span>
+                      <span className="text-[#c9bda4]">output</span>
+                      <span className="break-words whitespace-pre-wrap text-[#f4ecdc]">{e.output}</span>
+                      {!e.ok && (
+                        <>
+                          <span className="text-[#c9bda4]">expected</span>
+                          <span className="break-words whitespace-pre-wrap text-[#f4ecdc]">{e.expected}</span>
+                        </>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Button ghost href={`/python/world/${world}`}>
               Menu
