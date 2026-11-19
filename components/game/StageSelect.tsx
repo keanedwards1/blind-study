@@ -287,7 +287,10 @@ export default function StageSelect({
                       {state === "locked" ? (
                         <Lock size={18} />
                       ) : (
-                        <span className="text-sm">{s.label}</span>
+                        <span className="flex flex-col items-center leading-none">
+                          <span className="text-[9px] font-semibold tracking-[0.15em] uppercase opacity-60">Lvl</span>
+                          <span className="mt-0.5 text-xl font-bold tabular-nums">{s.label}</span>
+                        </span>
                       )}
                     </button>
                     {state !== "locked" && (

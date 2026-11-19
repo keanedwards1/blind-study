@@ -44,9 +44,9 @@ export function stageProblem(slug: string): Problem | undefined {
   return level.kind === "blind" ? getProblem(slug) : getPyProblem(slug);
 }
 
-/** "3-4": world 3, stage 4. */
+/** "4": the stage's number within its world. Every screen that shows it already names the world, so there's no "3-" prefix. */
 export function stageLabel(level: PyLevel, slug: string): string {
-  return `${level.n}-${level.problems.indexOf(slug) + 1}`;
+  return String(level.problems.indexOf(slug) + 1);
 }
 
 export type StageInfo = { slug: string; title: string; difficulty: string; label: string };
