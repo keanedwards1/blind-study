@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CaseResult, Problem, RunOutcome } from "@/lib/types";
+import { runCases } from "@/lib/edge-cases";
 import { py, show } from "@/lib/format";
 
 const chip: Record<string, string> = {
@@ -68,6 +69,7 @@ export default function ResultsPanel({
     }
   }
 
+  const cases = runCases(problem);
   const tabBtn = (id: "cases" | "result", label: string) => (
     <button
       onClick={() => setTab(id)}
@@ -87,24 +89,26 @@ export default function ResultsPanel({
         {tab === "cases" && (
           <>
             <div className="flex flex-wrap gap-2">
-              {problem.examples.map((_, i) => (
+              {cases.map((t, i) => (
                 <button
                   key={i}
                   onClick={() => setSel(i)}
                   className={`rounded-md border px-2.5 py-1 text-xs ${sel === i ? "border-line-strong bg-raised text-fg" : "border-line text-muted"}`}
                 >
-                  Case {i + 1}
+                  {i < problem.examples.length ? `Case ${i + 1}` : t.note}
                 </button>
               ))}
             </div>
-            {problem.examples[sel] && (
+            {cases[sel] && (
               <>
-                <Inputs problem={problem} args={problem.examples[sel].args} />
-                <Field label={problem.spec.out === "stdout" ? "Expected printed output" : "Expected"}>{show(problem.spec, problem.examples[sel].expected)}</Field>
+                {cases[sel].note && <div className="text-xs text-subtle">{sel < problem.examples.length ? `Case ${sel + 1} · ` : "Edge case · "}{cases[sel].note}</div>}
+                <Inputs problem={problem} args={cases[sel].args} />
+                <Field label={problem.spec.out === "stdout" ? "Expected printed output" : "Expected"}>{show(problem.spec, cases[sel].expected)}</Field>
               </>
             )}
             <p className="text-xs text-subtle">
-              <b>Run</b> (⌘/Ctrl + Enter) checks these examples. <b>Submit</b> (⌘/Ctrl + Shift + Enter) runs all {problem.tests.length} tests, including hidden ones.
+              <b>Run</b> (⌘/Ctrl + Enter) checks the examples and the edge cases. <b>Submit</b> (⌘/Ctrl + Shift + Enter) runs all {problem.tests.length} tests,
+              including {problem.tests.length - cases.length} hidden ones.
             </p>
           </>
         )}
@@ -153,15 +157,20 @@ function OutcomeView({ problem, outcome, sel, setSel }: { problem: Problem; outc
                 key={i}
                 onClick={() => setSel(i)}
                 className={`rounded-md border px-2 py-0.5 text-xs ${chip[cr.status]} ${sel === i ? "ring-1 ring-fg-2" : ""}`}
-                title={cr.status}
+                title={outcome.tests[i]?.note ? `${cr.status} · ${outcome.tests[i].note}` : cr.status}
               >
-                {outcome.kind === "submit" && i >= problem.examples.length ? `T${i - problem.examples.length + 1}` : `Case ${i + 1}`}
+                {i < problem.examples.length ? `Case ${i + 1}` : outcome.kind === "run" ? outcome.tests[i]?.note : `T${i - problem.examples.length + 1}`}
               </button>
             ))}
           </div>
           {c && t && (
             <div className="space-y-3">
-              {hidden && <div className="text-xs text-subtle">Hidden test {sel - problem.examples.length + 1}</div>}
+              {(hidden || t.note) && (
+                <div className="text-xs text-subtle">
+                  {sel < problem.examples.length ? `Case ${sel + 1}` : t.note ? "Edge case" : `Hidden test ${sel - problem.examples.length + 1}`}
+                  {t.note && ` · ${t.note}`}
+                </div>
+              )}
               <Inputs problem={problem} args={t.args} />
               {c.status === "skipped" ? (
                 <div className="text-sm text-subtle">Not run (an earlier test timed out).</div>

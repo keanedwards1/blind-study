@@ -46,3 +46,22 @@
   --ide-tab-fg: #c8d3e2;
   --ide-tab-on: #4f7fd6;
 }
+
+/* The lesson behind the "?" in the editor bar: shown while the "?" or the card is hovered or focused, or pinned by a click.
+   The card's top padding bridges the gap under the button so the pointer can move onto it without closing it. */
+.lesson-peek-card {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 40;
+  width: min(32rem, calc(100vw - 2rem));
+  max-height: 70vh;
+  overflow: auto;
+  padding-top: 6px;
+}
+.lesson-peek:hover .lesson-peek-card,
+.lesson-peek:focus-within .lesson-peek-card,
+.lesson-peek[data-open] .lesson-peek-card {
+  display: block;
+}

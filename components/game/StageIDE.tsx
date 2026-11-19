@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CaseResult, Concept, Problem, RunOutcome } from "@/lib/types";
 import { show } from "@/lib/format";
 import { formatPyArgs, parsePyArgs } from "@/lib/py-args";
+import { edgeCases, runCaseIndexes } from "@/lib/edge-cases";
 import { getRunner } from "@/lib/runner";
 import { load, markAttempted, markSolved, save, useStored } from "@/lib/storage";
 import CodeEditor, { type Keymap } from "../CodeEditor";
@@ -19,11 +20,13 @@ import "./stage-ide.css";
 /**
  * The Learn Python stage IDE: three flush columns.
  * - Problem: the statement, examples and tags, with Problem, Hints, Learn mode and Solution as tab buttons (plus the music visual).
- * - Editor: Vim / Emacs keybindings, a theme switch and Reset.
+ * - Editor: a "?" that shows the concept's lesson on hover, Vim / Emacs keybindings, a theme switch and Reset.
  * - Console: "Run Code" runs your function on arguments you type; "Run Test Cases" checks the examples; "Submit" runs every test.
+ *   Run Test Cases also runs every labelled edge case; the edge cases are listed at the bottom (click one for its input and
+ *   expected output) and turn green or red after each run.
  */
 
-type View = "problem" | "lesson" | "hints" | "learn" | "solution";
+type View = "problem" | "hints" | "learn" | "solution";
 /** One console row: plain text, or a labelled value ("in", "out", "print"…). */
 type Row = { text: string; label?: string; tone?: "head" | "good" | "bad" | "dim" };
 
@@ -45,7 +48,7 @@ export default function StageIDE({
   concepts: Concept[];
   /** The concept (or Blind 75 pattern) and the world. */
   tags: string[];
-  /** The lesson for this stage's concept group (Learn Python worlds 1-7), shown in the Lesson tab. */
+  /** The lesson for this stage's concept group (Learn Python worlds 1-7), shown by hovering the "?" in the editor bar. */
   lesson?: { title: string; intro: string };
   back: { href: string; label: string };
   /** Controls for the top bar's right side (visual and sound switches). */
@@ -84,6 +87,22 @@ export default function StageIDE({
   useEffect(() => getRunner().warm(), []);
 
   const add = (...r: Row[]) => setRows((prev) => [...prev, ...r]);
+  // Edge cases: labelled tests (an example can carry a label too). Run Test Cases checks the examples and every edge case;
+  // Submit adds the hidden tests. `results` keeps each test's latest result from either, by its index in problem.tests.
+  const edges = edgeCases(problem);
+  const runIdx = runCaseIndexes(problem);
+  const exampleCount = problem.examples.length;
+  const edgeRunCount = runIdx.length - exampleCount;
+  const hiddenCount = problem.tests.length - runIdx.length;
+  const [results, setResults] = useState<Record<number, CaseResult>>({});
+  const [openEdge, setOpenEdge] = useState<number | null>(null);
+  const caseTitle = (i: number) => {
+    const note = problem.tests[i]?.note;
+    if (i < exampleCount) return note ? `Example ${i + 1} · ${note}` : `Example ${i + 1}`;
+    return note ? `Edge case · ${note}` : `Hidden test ${i - exampleCount + 1}`;
+  };
+  const record = (o: RunOutcome, idx: number[]) => setResults((prev) => ({ ...prev, ...Object.fromEntries(o.cases.map((c, j) => [idx[j], c])) }));
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
   const gap: Row = { text: "" };
   const showValue = (v: unknown) => show(problem.spec, v);
 
@@ -118,9 +137,15 @@ export default function StageIDE({
         add({ text: `✗ ${(e as Error).message}`, tone: "bad" });
         return;
       }
-      target = { ...problem, examples: [{ args: customArgs, expected: null }] };
+      target = { ...problem, examples: [{ args: customArgs, expected: null }], tests: [] };
     }
-    begin(kind === "custom" ? "▸ Trying your input" : kind === "run" ? `▸ Running ${problem.examples.length} example${problem.examples.length === 1 ? "" : "s"}` : `▸ Submitting · ${problem.tests.length} tests`);
+    begin(
+      kind === "custom"
+        ? "▸ Trying your input"
+        : kind === "run"
+          ? `▸ Running ${plural(exampleCount, "example")}${edgeRunCount ? ` and ${plural(edgeRunCount, "edge case")}` : ""}`
+          : `▸ Submitting · ${plural(problem.tests.length, "test")}${hiddenCount ? ` (${hiddenCount} hidden)` : ""}`,
+    );
     setRunning(true);
     save(key, code);
     try {
@@ -131,14 +156,22 @@ export default function StageIDE({
       } else if (kind === "custom") {
         logCase("Your input", customArgs, o.cases[0], null, false);
       } else if (kind === "run") {
-        o.cases.forEach((c, i) => logCase(`Example ${i + 1}`, o.tests[i].args, c, o.tests[i].expected, true));
+        o.cases.forEach((c, j) => logCase(caseTitle(runIdx[j]), o.tests[j].args, c, o.tests[j].expected, true));
         const ok = o.passed === o.total;
-        add({ text: ok ? `✓ All ${o.total} examples pass. Submit when ready.` : `${o.passed} of ${o.total} examples pass`, tone: ok ? "good" : "bad" });
+        const next = hiddenCount ? ` Submit also runs ${plural(hiddenCount, "hidden test")}.` : " Submit when ready.";
+        add({ text: ok ? `✓ All ${o.total} pass.${next}` : `${o.passed} of ${o.total} pass`, tone: ok ? "good" : "bad" });
+        record(o, runIdx);
       } else {
         // Submit: only what failed (hidden tests included), then the score.
         const failed = o.cases.map((c, i) => [c, i] as const).filter(([c]) => c.status !== "pass");
-        failed.slice(0, 3).forEach(([c, i]) => logCase(i < problem.examples.length ? `Example ${i + 1}` : `Hidden test ${i - problem.examples.length + 1}`, o.tests[i].args, c, o.tests[i].expected, true));
+        failed.slice(0, 3).forEach(([c, i]) => logCase(caseTitle(i), o.tests[i].args, c, o.tests[i].expected, true));
         if (failed.length > 3) add({ text: `… and ${failed.length - 3} more`, tone: "dim" }, gap);
+        if (edges.length > 0) {
+          add({ text: "Edge cases", tone: "head" });
+          edges.forEach((e) => add(o.cases[e.i]?.status === "pass" ? { text: `✓ ${e.note}`, tone: "good" } : { text: `✗ ${e.note}`, tone: "bad" }));
+          add(gap);
+        }
+        record(o, o.cases.map((_, i) => i));
         add(o.passed === o.total ? { text: `✓ All ${o.total} tests passed`, tone: "good" } : { text: `${o.passed} of ${o.total} tests passed`, tone: "bad" });
       }
       if (kind !== "custom") markAttempted(problem.slug);
@@ -205,7 +238,6 @@ export default function StageIDE({
               <span className={`rounded px-2 py-0.5 text-sm text-white lowercase ${DIFFICULTY_PILL[problem.difficulty] ?? "bg-subtle"}`}>{problem.difficulty}</span>
               <div className="flex flex-wrap gap-2" role="tablist" aria-label="Problem panel">
                 {tabBtn("problem", "Problem")}
-                {lesson && tabBtn("lesson", "Lesson")}
                 {tabBtn("hints", `Hints${problem.hints.length ? ` (${problem.hints.length})` : ""}`)}
                 {problem.grammar.length > 0 && tabBtn("learn", "Learn mode")}
                 {tabBtn("solution", "Solution")}
@@ -267,14 +299,6 @@ export default function StageIDE({
               </div>
             )}
 
-            {view === "lesson" && lesson && (
-              <div className="flex flex-col gap-3">
-                <p className="text-xs tracking-wide text-(--ide-muted) uppercase">Lesson</p>
-                <h2 className="text-lg font-bold text-(--ide-text)">{lesson.title}</h2>
-                <Markdown>{lesson.intro}</Markdown>
-              </div>
-            )}
-
             {view === "learn" && <LearnMode sections={problem.grammar} />}
 
             {view === "solution" &&
@@ -307,6 +331,7 @@ export default function StageIDE({
         {/* ---- editor */}
         <section className="flex min-h-[420px] min-w-0 flex-col border-(--ide-line) bg-(--ide-editor) lg:min-h-0 lg:border-r">
           <div className="flex flex-wrap items-center justify-end gap-3 px-3 py-2">
+            {lesson && <LessonPeek lesson={lesson} />}
             {(["vim", "emacs"] as const).map((k) => (
               <button
                 key={k}
@@ -379,7 +404,7 @@ export default function StageIDE({
           </div>
           <div ref={logRef} className="min-h-0 flex-1 overflow-auto px-3 py-3 font-mono text-[13px] leading-6 [font-variant-ligatures:none]" aria-live="polite">
             {rows.length === 0 && !running && (
-              <p className="opacity-60">Run Code runs your function on the arguments above. Run Test Cases checks the examples; Submit runs every test.</p>
+              <p className="opacity-60">Run Code runs your function on the arguments above. Run Test Cases checks the examples and the edge cases below; Submit also runs the hidden tests.</p>
             )}
             {rows.map((r, i) =>
               r.label ? (
@@ -395,7 +420,106 @@ export default function StageIDE({
             )}
             {running && <div className="opacity-60">Running…</div>}
           </div>
+          {edges.length > 0 && (
+            <div className="max-h-[50%] overflow-auto border-t border-(--ide-line) px-3 py-3">
+              <p className="text-xs font-semibold tracking-wide text-(--ide-muted) uppercase">Edge cases</p>
+              <p className="mb-2 text-xs text-(--ide-muted)">Run Test Cases and Submit both check these. Click one to see its input and expected output.</p>
+              <ul className="flex flex-wrap gap-1.5 text-[13px]">
+                {edges.map((e) => {
+                  const r = results[e.i];
+                  const ok = r && r.status === "pass";
+                  return (
+                    <li key={e.i}>
+                      <button
+                        type="button"
+                        aria-expanded={openEdge === e.i}
+                        onClick={() => setOpenEdge(openEdge === e.i ? null : e.i)}
+                        className={`rounded px-2 py-0.5 ${!r ? "bg-(--ide-chip) text-(--ide-chip-fg)" : ok ? "bg-[#2fae4e]/15 text-[#2fae4e]" : "bg-[#e5534b]/15 text-[#e5534b]"} ${
+                          openEdge === e.i ? "ring-1 ring-(--ide-link)" : ""
+                        }`}
+                      >
+                        {!r ? "" : ok ? "✓ " : "✗ "}
+                        {e.note}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+              {openEdge !== null && problem.tests[openEdge] && (
+                <EdgeDetail
+                  test={problem.tests[openEdge]}
+                  result={results[openEdge]}
+                  stdout={problem.spec.out === "stdout"}
+                  showValue={showValue}
+                  onUse={() => setInput(formatPyArgs(problem.tests[openEdge].args))}
+                />
+              )}
+            </div>
+          )}
         </section>
+      </div>
+    </div>
+  );
+}
+
+/** One edge case opened from the console: its input, the expected output, and your latest result. */
+function EdgeDetail({
+  test,
+  result,
+  stdout,
+  showValue,
+  onUse,
+}: {
+  test: { args: unknown[]; expected: unknown; note?: string };
+  result?: CaseResult;
+  stdout: boolean;
+  showValue: (v: unknown) => string;
+  onUse: () => void;
+}) {
+  const row = (label: string, text: string, tone = "") => (
+    <div className={`grid grid-cols-[5.5rem_minmax(0,1fr)] ${tone}`}>
+      <span className="text-(--ide-muted)">{label}</span>
+      <span className="break-words whitespace-pre-wrap">{text}</span>
+    </div>
+  );
+  return (
+    <div className="mt-3 rounded bg-(--ide-example) p-3 font-mono text-[13px] leading-6 [font-variant-ligatures:none]">
+      <p className="mb-1 font-sans font-semibold text-(--ide-text)">{test.note}</p>
+      {row("input", formatPyArgs(test.args))}
+      {row(stdout ? "prints" : "expected", showValue(test.expected))}
+      {result &&
+        (result.status === "timeout"
+          ? row("yours", "took too long (over 6 s)", "text-[#e5534b]")
+          : result.error
+            ? row("yours", result.error, "text-[#e5534b]")
+            : row("yours", showValue(result.result), result.status === "pass" ? "text-[#2fae4e]" : "text-[#e5534b]"))}
+      <button type="button" onClick={onUse} className="mt-2 font-sans text-xs text-(--ide-link) hover:underline">
+        Use this input for Run Code
+      </button>
+    </div>
+  );
+}
+
+/** A "?" that shows the concept's lesson while hovered or focused (cursor: help). Clicking pins it open; Escape closes it. */
+function LessonPeek({ lesson }: { lesson: { title: string; intro: string } }) {
+  const [pinned, setPinned] = useState(false);
+  return (
+    <div className="lesson-peek relative" data-open={pinned || undefined} onKeyDown={(e) => e.key === "Escape" && setPinned(false)}>
+      <button
+        type="button"
+        aria-label={`Lesson: ${lesson.title}`}
+        aria-expanded={pinned}
+        onClick={() => setPinned(!pinned)}
+        className="grid h-6 w-6 cursor-help place-items-center rounded-full border border-(--ide-line) text-sm font-semibold text-(--ide-link) hover:border-(--ide-link)"
+      >
+        ?
+      </button>
+      <div className="lesson-peek-card" role="tooltip">
+        <div className="flex flex-col gap-3 rounded border border-(--ide-line) bg-(--ide-problem) p-4 text-(--ide-text) shadow-xl">
+          <p className="text-xs tracking-wide text-(--ide-muted) uppercase">Lesson</p>
+          <h2 className="text-lg font-bold">{lesson.title}</h2>
+          <Markdown>{lesson.intro}</Markdown>
+        </div>
       </div>
     </div>
   );

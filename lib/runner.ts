@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { CaseResult, Problem, RunOutcome, TestCase } from "./types";
+import { runCases } from "./edge-cases";
 
 export type RunnerStatus = "idle" | "loading" | "ready" | "running" | "error";
 
@@ -106,7 +107,7 @@ class PyRunner {
     if (!this.worker || this.status === "error") this.restart();
     await this.ready;
     const worker = this.worker!;
-    const tests: TestCase[] = kind === "run" ? problem.examples : problem.tests;
+    const tests: TestCase[] = kind === "run" ? runCases(problem) : problem.tests;
     const id = this.nextId++;
     const cases: CaseResult[] = tests.map(() => ({ status: "skipped" }));
     this.setStatus("running");
