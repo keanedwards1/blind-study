@@ -1,0 +1,58 @@
+/*
+ * The header on Learn Python pages (/python…) takes the game's greens. HeaderSwitch wraps it in data-section="python",
+ * and this file redefines the site's colour tokens inside that wrapper only. The tokens are mapped with `@theme inline`
+ * (app/globals.css), so every utility in the header follows: the bar (bg-panel, border-line), nav text (text-fg,
+ * text-muted), the active underline (border-accent), the logo's window cells (fill-accent), "FROM SCRATCH"
+ * (text-accent-text) and the logo's arrow (stroke-done, amber like the game's leaves).
+ */
+[data-section="python"] {
+  --panel: #d3e7bd;
+  --line: #b3d095;
+  --fg: #1c3313;
+  --muted: #47683a;
+  --accent: #3d7a24;
+  --accent-text: #3d7a24;
+  --done: #b8821c;
+}
+:root[data-theme="dark"] [data-section="python"] {
+  --panel: #3b5a2e;
+  --line: #52773f;
+  --fg: #f1f6e8;
+  --muted: #c6d9b0;
+  --accent: #c6e48e;
+  --accent-text: #c6e48e;
+  --done: #e9b44c;
+}
+
+/* Fire worlds (8-10): the firelands palette, burnt orange on golden cream in light mode, amber on deep ember in dark. */
+[data-section="python"][data-biome="fire"] {
+  --panel: #fbe2b8;
+  --line: #efc685;
+  --fg: #3d1a08;
+  --muted: #8a4a1c;
+  --accent: #c2410c;
+  --accent-text: #c2410c;
+  --done: #e0711d;
+}
+:root[data-theme="dark"] [data-section="python"][data-biome="fire"] {
+  /* Charred: a near-black ember brown, with glowing orange for the accents. */
+  --panel: #2e0f07;
+  --line: #5a1d0c;
+  --fg: #ffeee2;
+  --muted: #e8a983;
+  --accent: #ff8a2b;
+  --accent-text: #ff9f4a;
+  --done: #ff5a1f;
+}
+
+/*
+ * Scrolling past the top or bottom (overscroll) shows the root background, which otherwise comes from the body's blue
+ * --page. On Learn Python pages it's a very pale green, in both themes. The body keeps its own background, so nothing
+ * inside the page changes.
+ */
+html:has([data-section="python"]) {
+  background-color: #f2f8ea;
+}
+html:has([data-section="python"][data-biome="fire"]) {
+  background-color: #fff6e8;
+}

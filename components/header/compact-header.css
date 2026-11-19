@@ -3,6 +3,7 @@
   --header-h-compact: 2.75rem;
 }
 
-body:has(> .site-header-compact) {
+/* Not a direct-child selector: on Learn Python pages the header sits inside a display: contents wrapper. */
+body:has(.site-header-compact) {
   --header-h: var(--header-h-compact);
 }
