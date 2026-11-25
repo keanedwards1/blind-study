@@ -31,7 +31,10 @@ greet("Ada", greeting="Hey")   # keyword argument: clearer
                   """
 A notification helper greets users, and most callers don't care which greeting it uses. Write `greet(name, greeting)` to return `"GREETING, NAME!"`, where `greeting` defaults to `"Hello"`.
 
-Example: `greet("Ada")` returns `"Hello, Ada!"`, and `greet("Ada", greeting="Hi")` returns `"Hi, Ada!"`.
+The tests call `greet(name)`, then `greet(name, greeting="Hi")`.
+
+**Constraints**
+- `0 <= len(name) <= 10^4`
 """,
                   'def greet(name: str, greeting: str = "Hello") -> str:\n    return f"{greeting}, {name}!"\n',
                   [(["Ada"], ["Hello, Ada!", "Hi, Ada!"])], [["Bo"], [""]],
@@ -47,7 +50,10 @@ Example: `greet("Ada")` returns `"Hello, Ada!"`, and `greet("Ada", greeting="Hi"
                   """
 A maths helper raises a number to a power, and most calls just want the square. Write `power(x, exp)` to return `x ** exp`, where `exp` defaults to `2`.
 
-Example: `power(3)` returns `9`, and `power(3, 3)` returns `27`.
+The tests call `power(x)`, then `power(x, 3)`.
+
+**Constraints**
+- `-10^16 <= x <= 10^16`
 """,
                   "def power(x: int, exp: int = 2) -> int:\n    return x ** exp\n",
                   [([3], [9, 27])], [[0], [-2], [10]],
@@ -62,7 +68,11 @@ Example: `power(3)` returns `9`, and `power(3, 3)` returns `27`.
                   """
 This `add_tag(tag, tags)` helper appends a tag and returns the list. Called without a list, it should start a new empty one each time, but the starter code has a well-known bug: `add_tag("a")` followed by `add_tag("b")` returns `["a", "b"]` the second time. Fix it.
 
-Example: calling it with `"a"` and then `"b"`, with no list, should return `["a"]` and then `["b"]`.
+The tests call `add_tag` once for each tag in `tags`, never passing a list.
+
+**Constraints**
+- `0 <= len(tags) <= 10^4`
+- Each tag is a string
 """,
                   "def add_tag(tag: str, tags: Optional[List[str]] = None) -> List[str]:\n    if tags is None:\n        tags = []\n    tags.append(tag)\n    return tags\n",
                   [([["a", "b"]], [["a"], ["b"]])], [[["x", "y", "z"]]],
@@ -100,7 +110,11 @@ Example: calling it with `"a"` and then `"b"`, with no list, should return `["a"
                   """
 A billing helper totals however many line amounts it's given. Write `add_all` so it accepts any number of numbers and returns their sum.
 
-Example: `add_all(1, 2, 3)` returns `6`, and `add_all()` returns `0`.
+The tests pass each item of `values` as a separate argument.
+
+**Constraints**
+- Up to `10^4` numbers are passed
+- Each number is from `-10^16` to `10^16`
 """,
                   "def add_all(*nums: int) -> int:\n    return sum(nums)\n",
                   [([[1, 2, 3]], 6), ([[]], 0)], [[[5]], [list(range(10))]],
@@ -116,7 +130,11 @@ Example: `add_all(1, 2, 3)` returns `6`, and `add_all()` returns `0`.
                   """
 A sign-up form always sends a name and may send any number of extra fields. Write `profile(name, **details)` to return a dict with `"name"` plus every keyword argument.
 
-Example: `profile("Ada", city="London")` returns `{"name": "Ada", "city": "London"}`, and `profile("Bo")` returns `{"name": "Bo"}`.
+The tests call `profile(name, **keyword_args)`.
+
+**Constraints**
+- `0 <= len(name) <= 10^4`
+- Up to `10^4` keyword arguments, none of them called `name`
 """,
                   'def profile(name: str, **details: str) -> Dict[str, str]:\n    return {"name": name, **details}\n',
                   [(["Ada", {"city": "London"}], {"name": "Ada", "city": "London"}), (["Bo", {}], {"name": "Bo"})], [["Cy", {"a": "1", "b": "2"}]],
@@ -132,7 +150,11 @@ Example: `profile("Ada", city="London")` returns `{"name": "Ada", "city": "Londo
                   """
 A debugging helper reports how a function was called. Write `count_args(*args, **kwargs)` to return `[number of positional arguments, number of keyword arguments]`.
 
-Example: `count_args(1, 2, x=3)` returns `[2, 1]`, and `count_args()` returns `[0, 0]`.
+The tests call `count_args(*positional, **keyword)`.
+
+**Constraints**
+- Up to `10^4` positional and `10^4` keyword arguments
+- Arguments can be values of any type
 """,
                   "def count_args(*args, **kwargs) -> List[int]:\n    return [len(args), len(kwargs)]\n",
                   [([[1, 2], {"x": 3}], [2, 1]), ([[], {}], [0, 0])], [[[None] * 5, {"a": 1, "b": 2, "c": 3}]],
@@ -174,9 +196,11 @@ Returning a tuple from the key sorts by several things in order.
             problems=[
                 P("py-sort-by-last-letter", 'Sort by Last Letter', "def by_last_letter(words: List[str]) -> List[str]:",
                   """
-A rhyming dictionary lists words by their last letter. Write `by_last_letter(words)` to return the words sorted by their last letter, with words that share a last letter kept in their original order. No word is empty.
+A rhyming dictionary lists words by their last letter. Write `by_last_letter(words)` to return the words sorted by their last letter, with words that share a last letter kept in their original order.
 
-Example: `by_last_letter(["zoo", "bee", "ant"])` returns `["bee", "zoo", "ant"]`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
+- `1 <= len(words[i]) <= 100`
 """,
                   "def by_last_letter(words: List[str]) -> List[str]:\n    return sorted(words, key=lambda w: w[-1])\n",
                   [([["cab", "bad", "ace"]], ["cab", "bad", "ace"]), ([["zoo", "bee", "ant"]], ["bee", "zoo", "ant"])], [[[]], [["x", "y", "z", "a"]]],
@@ -188,9 +212,10 @@ Example: `by_last_letter(["zoo", "bee", "ant"])` returns `["bee", "zoo", "ant"]`
 """),
                 P("py-longest-word", 'Longest Word', "def longest(words: List[str]) -> str:",
                   """
-A text layout routine needs the longest word to size a column. Write `longest(words)` to return the longest word, or the first one if several tie. The list isn't empty.
+A text layout routine needs the longest word to size a column. Write `longest(words)` to return the longest word, or the first one if several tie.
 
-Example: `longest(["a", "abc", "ab"])` returns `"abc"`, and `longest(["xx", "yy"])` returns `"xx"`.
+**Constraints**
+- `1 <= len(words) <= 10^4`
 """,
                   "def longest(words: List[str]) -> str:\n    return max(words, key=len)\n",
                   [([["a", "abc", "ab"]], "abc"), ([["xx", "yy"]], "xx")], [[["solo"]], [["", "a"]]],
@@ -203,7 +228,9 @@ Example: `longest(["a", "abc", "ab"])` returns `"abc"`, and `longest(["xx", "yy"
                   """
 A leaderboard shows players by score. Write `ranking(results)`, where `results` is a list of `[name, score]` pairs, to return the names ordered by score, highest first. Players with equal scores go in alphabetical order.
 
-Example: `ranking([["bo", 3], ["ada", 5], ["cy", 3]])` returns `["ada", "bo", "cy"]`.
+**Constraints**
+- `0 <= len(results) <= 10^4`
+- `-10^16 <= results[i][1] <= 10^16`
 """,
                   "def ranking(results: List[List]) -> List[str]:\n    return [name for name, score in sorted(results, key=lambda r: (-r[1], r[0]))]\n",
                   [([[["bo", 3], ["ada", 5], ["cy", 3]]], ["ada", "bo", "cy"]), ([[]], [])], [[[["z", 1], ["a", 1]]]],
@@ -246,7 +273,9 @@ Comprehensions (next lesson) do the same job and are often clearer, but `map(int
                   """
 A form sends every field as text. Write `to_ints(items)` to convert a list of number strings to ints, using `map`.
 
-Example: `to_ints(["1", "20"])` returns `[1, 20]`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Each item is a whole number written as text, possibly with spaces around it or a `+`/`-` sign
 """,
                   "def to_ints(items: List[str]) -> List[int]:\n    return list(map(int, items))\n",
                   [([["1", "20"]], [1, 20]), ([[]], [])], [[["-5", "0", "007"]]],
@@ -260,7 +289,9 @@ Example: `to_ints(["1", "20"])` returns `[1, 20]`.
                   """
 Write `squares(nums)` to return the square of every number, using `map` with a `lambda`.
 
-Example: `squares([1, 2, 3])` returns `[1, 4, 9]`.
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def squares(nums: List[int]) -> List[int]:\n    return list(map(lambda x: x * x, nums))\n",
                   [([[1, 2, 3]], [1, 4, 9]), ([[]], [])], [[[-3, 0]]],
@@ -273,7 +304,9 @@ Example: `squares([1, 2, 3])` returns `[1, 4, 9]`.
                   """
 A report only shows even-numbered rows. Write `evens(nums)` to return the even numbers in order, using `filter`.
 
-Example: `evens([1, 2, 3, 4])` returns `[2, 4]`.
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def evens(nums: List[int]) -> List[int]:\n    return list(filter(lambda x: x % 2 == 0, nums))\n",
                   [([[1, 2, 3, 4]], [2, 4]), ([[1, 3]], [])], [[[]], [[0, -2, -3]]],
@@ -287,7 +320,8 @@ Example: `evens([1, 2, 3, 4])` returns `[2, 4]`.
                   """
 A CSV row has some empty fields that should be skipped. Write `non_empty(items)` to return the strings that aren't empty, in order. `filter(None, items)` keeps only truthy items.
 
-Example: `non_empty(["a", "", "b", ""])` returns `["a", "b"]`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
 """,
                   "def non_empty(items: List[str]) -> List[str]:\n    return list(filter(None, items))\n",
                   [([["a", "", "b", ""]], ["a", "b"]), ([[""]], [])], [[[]], [[" ", "x"]]],
@@ -328,7 +362,9 @@ Read them left to right as "give me `this` for each `item` in `items` if `condit
                   """
 Write `squares(nums)` to return the square of every number, using a list comprehension this time.
 
-Example: `squares([1, 2, 3])` returns `[1, 4, 9]`.
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def squares(nums: List[int]) -> List[int]:\n    return [x * x for x in nums]\n",
                   [([[1, 2, 3]], [1, 4, 9]), ([[]], [])], [[[-1, 10]]],
@@ -341,7 +377,9 @@ Example: `squares([1, 2, 3])` returns `[1, 4, 9]`.
                   """
 A pricing script doubles every positive adjustment and ignores the rest. Write `double_positives(nums)` to return double each positive number, skipping zero and negatives, in one comprehension.
 
-Example: `double_positives([1, -2, 3, 0])` returns `[2, 6]`.
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def double_positives(nums: List[int]) -> List[int]:\n    return [2 * x for x in nums if x > 0]\n",
                   [([[1, -2, 3, 0]], [2, 6]), ([[-1]], [])], [[[]], [[5, 5]]],
@@ -354,7 +392,8 @@ Example: `double_positives([1, -2, 3, 0])` returns `[2, 6]`.
                   """
 A text tool shows each word's length. Write `lengths(words)` to return a dict from each word to its length, using a dict comprehension.
 
-Example: `lengths(["hi", "hello"])` returns `{"hi": 2, "hello": 5}`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
 """,
                   "def lengths(words: List[str]) -> Dict[str, int]:\n    return {w: len(w) for w in words}\n",
                   [([["hi", "hello"]], {"hi": 2, "hello": 5}), ([[]], {})], [[["a", "a"]]],
@@ -367,7 +406,8 @@ Example: `lengths(["hi", "hello"])` returns `{"hi": 2, "hello": 5}`.
                   """
 Write `distinct_lengths(words)` to return the set of different word lengths, using a set comprehension.
 
-Example: `distinct_lengths(["a", "bb", "cc"])` returns `{1, 2}`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
 """,
                   "def distinct_lengths(words: List[str]) -> Set[int]:\n    return {len(w) for w in words}\n",
                   [([["a", "bb", "cc"]], {1, 2}), ([[]], set())], [[["", "x"]]],
@@ -380,7 +420,9 @@ Example: `distinct_lengths(["a", "bb", "cc"])` returns `{1, 2}`.
                   """
 Write `odd_square_sum(nums)` to return the sum of the squares of the odd numbers, using a generator expression inside `sum`.
 
-Example: `odd_square_sum([1, 2, 3])` returns `10` (1 + 9).
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def odd_square_sum(nums: List[int]) -> int:\n    return sum(x * x for x in nums if x % 2)\n",
                   [([[1, 2, 3]], 10), ([[2, 4]], 0)], [[[]], [list(range(20))]],
@@ -393,7 +435,10 @@ Example: `odd_square_sum([1, 2, 3])` returns `10` (1 + 9).
                   """
 A spreadsheet export stores rows as lists, and the next step needs one flat list. Write `flatten(grid)` to return every value in row order, using a single comprehension.
 
-Example: `flatten([[1, 2], [3]])` returns `[1, 2, 3]`.
+**Constraints**
+- `0 <= len(grid) <= 10^4`
+- `0 <= len(grid[i]) <= 100`
+- Items can be values of any type
 """,
                   "def flatten(grid: List[List[int]]) -> List[int]:\n    return [x for row in grid for x in row]\n",
                   [([[[1, 2], [3]]], [1, 2, 3]), ([[]], [])], [[[[], [4, 5]]]],
@@ -434,7 +479,8 @@ def countdown_sum(n):
                   """
 Write `factorial(n)` to return `n!`, which is 1 × 2 × … × n, using recursion. By definition `0!` is `1`.
 
-Example: `factorial(5)` returns `120`, and `factorial(0)` returns `1`.
+**Constraints**
+- `0 <= n <= 100`
 """,
                   "def factorial(n: int) -> int:\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n",
                   [([5], 120), ([0], 1), ([1], 1)], [[10], [20]],
@@ -448,7 +494,9 @@ Example: `factorial(5)` returns `120`, and `factorial(0)` returns `1`.
                   """
 Write `rsum(nums)` to return the sum of the list using recursion: the first number plus the sum of the rest. Don't use loops or `sum`.
 
-Example: `rsum([1, 2, 3])` returns `6`, and `rsum([])` returns `0`.
+**Constraints**
+- `0 <= len(nums) <= 100`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def rsum(nums: List[int]) -> int:\n    if not nums:\n        return 0\n    return nums[0] + rsum(nums[1:])\n",
                   [([[1, 2, 3]], 6), ([[]], 0)], [[[5]], [list(range(100))]],
@@ -462,7 +510,8 @@ Example: `rsum([1, 2, 3])` returns `6`, and `rsum([])` returns `0`.
                   """
 Write `rreverse(s)` to return `s` reversed, using recursion. Don't use loops or a slice with a step.
 
-Example: `rreverse("abc")` returns `"cba"`.
+**Constraints**
+- `0 <= len(s) <= 100`
 """,
                   "def rreverse(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    return rreverse(s[1:]) + s[0]\n",
                   [(["abc"], "cba"), ([""], "")], [["a"], ["racecar"], ["hello world"]],
@@ -476,7 +525,9 @@ Example: `rreverse("abc")` returns `"cba"`.
                   """
 A JSON-like payload holds numbers and lists, nested to any depth. Write `count_items(nested)` to return how many numbers it contains in total.
 
-Example: `count_items([1, [2, [3, 4]], 5])` returns `5`.
+**Constraints**
+- `0 <= len(nested) <= 10^4`
+- `nested` holds whole numbers and lists
 """,
                   "def count_items(nested: list) -> int:\n    total = 0\n    for x in nested:\n        total += count_items(x) if isinstance(x, list) else 1\n    return total\n",
                   [([[1, [2, [3, 4]], 5]], 5), ([[]], 0)], [[[[[[]]]]], [[[1], [2], [3, [4]]]]],
@@ -519,7 +570,10 @@ add5(10)   # 15
                   """
 Write `make_adder(n)` to return a function. That function takes `x` and returns `x + n`.
 
-Example: `make_adder(5)(10)` returns `15`.
+The tests call `make_adder(n)(x)`.
+
+**Constraints**
+- `-10^16 <= n, x <= 10^16`
 """,
                   "def make_adder(n: int):\n    def add(x):\n        return x + n\n    return add\n",
                   [([5, 10], 15), ([0, 0], 0)], [[-3, 3], [100, 1]],
@@ -534,7 +588,10 @@ Example: `make_adder(5)(10)` returns `15`.
                   """
 An ID generator hands out 1, then 2, then 3, and so on. Write `make_counter()` to return a function that returns the next number each time it's called. Two counters must count independently.
 
-Example: one counter called three times gives `1, 2, 3`; a second counter's first call gives `1`.
+The tests make two counters, call the first one `calls` times, then call the second one once.
+
+**Constraints**
+- `0 <= calls <= 100`
 """,
                   "def make_counter():\n    count = 0\n\n    def counter():\n        nonlocal count\n        count += 1\n        return count\n\n    return counter\n",
                   [([3], [[1, 2, 3], [1]])], [[1], [5]],
@@ -552,9 +609,10 @@ Example: one counter called three times gives `1, 2, 3`; a second counter's firs
                   """
 A settings system lets each value be either a plain value or a function that computes it. Write `resolve_value(x, arg)` to return `x(arg)` if `x` can be called, and `x` itself otherwise.
 
-Example: `resolve_value(len, "abc")` returns `3`, and `resolve_value(5, "abc")` returns `5`.
-
 In the test inputs, a string like `"fn:len"` stands for the function `len` itself.
+
+**Constraints**
+- `x` is a function or a plain value of any type
 """,
                   "def resolve_value(x, arg):\n    return x(arg) if callable(x) else x\n",
                   [(["fn:len", "abc"], 3), ([5, "abc"], 5)], [["fn:upper", "hi"], ["text", "ignored"]],
@@ -605,7 +663,9 @@ Generators are lazy, so they can describe huge or even infinite sequences. `aite
                   """
 Write `first(items, default)` to return the first item, or `default` if the list is empty, using `iter` and `next`.
 
-Example: `first([5, 6], 0)` returns `5`, and `first([], -1)` returns `-1`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- `items` and `default` can hold values of any type
 """,
                   "def first(items: List[int], default: int) -> int:\n    return next(iter(items), default)\n",
                   [([[5, 6], 0], 5), ([[], -1], -1)], [[[0], 9]],
@@ -619,7 +679,9 @@ Example: `first([5, 6], 0)` returns `5`, and `first([], -1)` returns `-1`.
                   """
 An autocomplete feature shows the first suggestion longer than the text typed so far. Write `first_long(words, n)` to return the first word longer than `n` characters, or `None`, using `next` with a generator expression.
 
-Example: `first_long(["a", "abcd", "abcdef"], 3)` returns `"abcd"`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
+- `0 <= n <= 10^16`
 """,
                   "def first_long(words: List[str], n: int) -> Optional[str]:\n    return next((w for w in words if len(w) > n), None)\n",
                   [([["a", "abcd", "abcdef"], 3], "abcd"), ([["a"], 3], None)], [[[], 0], [["xy", "xyz"], 2]],
@@ -633,7 +695,8 @@ Example: `first_long(["a", "abcd", "abcdef"], 3)` returns `"abcd"`.
                   """
 Write a generator `countdown(n)` that yields `n`, `n - 1`, …, `1`.
 
-Example: `countdown(3)` yields `3, 2, 1`, and `countdown(0)` yields nothing.
+**Constraints**
+- `0 <= n <= 10^16`
 """,
                   "def countdown(n: int):\n    while n > 0:\n        yield n\n        n -= 1\n",
                   [([3], Gen([3, 2, 1])), ([0], Gen([]))], [[1], [10]],
@@ -647,7 +710,9 @@ Example: `countdown(3)` yields `3, 2, 1`, and `countdown(0)` yields nothing.
                   """
 An upload job sends records in batches of a fixed size, and the last batch may be smaller. Write a generator `chunks(items, size)` that yields each batch as a list.
 
-Example: `chunks([1, 2, 3, 4, 5], 2)` yields `[1, 2]`, `[3, 4]`, then `[5]`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- `1 <= size <= 10^16`
 """,
                   "def chunks(items: List[int], size: int):\n    for i in range(0, len(items), size):\n        yield items[i:i + size]\n",
                   [([[1, 2, 3, 4, 5], 2], Gen([[1, 2], [3, 4], [5]])), ([[], 3], Gen([]))], [[[1, 2, 3], 3], [list(range(10)), 4]],
@@ -697,7 +762,10 @@ greet("ada")      # 'HI ADA'
                   """
 Write a decorator `double_result` that makes the decorated function return twice its normal result.
 
-Example: on a function that adds two numbers, `add(1, 2)` returns `6`.
+The tests decorate a function that returns `a + b`, then call it with `a` and `b`.
+
+**Constraints**
+- `a` and `b` are two numbers or two strings
 """,
                   "def double_result(func):\n    def wrapper(*args, **kwargs):\n        return 2 * func(*args, **kwargs)\n    return wrapper\n",
                   [([1, 2], 6), ([0, 0], 0)], [[-5, 2], [10, 10]],
@@ -712,7 +780,10 @@ Example: on a function that adds two numbers, `add(1, 2)` returns `6`.
                   """
 A metrics helper counts how often a function runs. Write a decorator `count_calls` so the decorated function has an attribute `calls` that starts at 0 and goes up by one on every call.
 
-Example: after three calls, `f.calls` is `3`.
+The tests decorate a function, call it `calls` times, then read its `calls` attribute.
+
+**Constraints**
+- `0 <= calls <= 100`
 """,
                   "def count_calls(func):\n    def wrapper(*args, **kwargs):\n        wrapper.calls += 1\n        return func(*args, **kwargs)\n    wrapper.calls = 0\n    return wrapper\n",
                   [([3], 3), ([0], 0)], [[1], [10]],

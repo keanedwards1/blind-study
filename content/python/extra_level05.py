@@ -8,7 +8,10 @@ EXTRA = {
               """
 An API client builds the query for paged results, and most callers want the default page size of 10. Write `fetch(limit=10)` to return `"limit=N"`.
 
-Example: `fetch()` returns `"limit=10"`, and `fetch(25)` returns `"limit=25"`.
+The tests call `fetch()`, then `fetch(n)`.
+
+**Constraints**
+- `limit` is a whole number
 """,
               "def fetch(limit: int = 10) -> str:\n    return f\"limit={limit}\"\n",
               [([None], ["limit=10", "limit=10"]), ([25], ["limit=10", "limit=25"])], [[0], [100]],
@@ -28,7 +31,8 @@ Example: `fetch()` returns `"limit=10"`, and `fetch(25)` returns `"limit=25"`.
               """
 A command-line tool prints each section heading between two border characters. The options must be passed **by name** (keyword-only). Write `heading(title, *, upper=False, border="*")` to return border + title + border, with the title in capitals when `upper` is true.
 
-Example: `heading("setup")` returns `"*setup*"`, and `heading("setup", upper=True, border="=")` returns `"=SETUP="`.
+**Constraints**
+- `0 <= len(title), len(border) <= 10^4`
 """,
               "def heading(title: str, *, upper: bool = False, border: str = \"*\") -> str:\n    text = title.upper() if upper else title\n    return border + text + border\n",
               [(["setup", False, "*"], "*setup*"), (["setup", True, "="], "=SETUP=")], [["a", False, "#"], ["", True, "!"]],
@@ -60,7 +64,10 @@ Example: `heading("setup")` returns `"*setup*"`, and `heading("setup", upper=Tru
               """
 A logging helper accepts any number of tags on each call. Write `count_tags(*tags)` to return how many tags were passed.
 
-Example: `count_tags("db", "slow")` returns `2`, and `count_tags()` returns `0`.
+The tests pass each item of `tags` as a separate argument.
+
+**Constraints**
+- `0 <= len(tags) <= 10^4`
 """,
               "def count_tags(*tags: str) -> int:\n    return len(tags)\n",
               [([["db", "slow"]], 2), ([[]], 0)], [[["a"]], [["x", "y", "z"]]],
@@ -80,7 +87,12 @@ Example: `count_tags("db", "slow")` returns `2`, and `count_tags()` returns `0`.
               """
 A logger writes one line per event: the level, then the message words joined with spaces, then any extra fields as `key=value` separated by `", "`. The sections are separated by `" | "`, and an empty section is left out entirely. Write `log_line(level, *words, **fields)`.
 
-Example: `log_line("INFO", "user", "login", user="ada")` returns `"INFO | user login | user=ada"`, and `log_line("WARN")` returns `"WARN"`.
+The tests call `log_line(level, *words, **fields)`.
+
+**Constraints**
+- `0 <= len(level) <= 10^4`
+- Up to `10^4` words and `10^4` fields
+- Every word and field value is a non-empty string
 """,
               "def log_line(level: str, *words: str, **fields: str) -> str:\n    parts = [level]\n    if words:\n        parts.append(\" \".join(words))\n    if fields:\n        parts.append(\", \".join(f\"{k}={v}\" for k, v in fields.items()))\n    return \" | \".join(parts)\n",
               [(["INFO", ["user", "login"], {"user": "ada"}], "INFO | user login | user=ada"), (["WARN", [], {}], "WARN")],
@@ -112,7 +124,8 @@ Example: `log_line("INFO", "user", "login", user="ada")` returns `"INFO | user l
               """
 An autocomplete box shows shorter suggestions first. Write `by_length(words)` to return a new list sorted from shortest to longest with `key=len`. Words of the same length keep their order.
 
-Example: `by_length(["search", "go", "save"])` returns `["go", "save", "search"]`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
 """,
               "def by_length(words: List[str]) -> List[str]:\n    return sorted(words, key=len)\n",
               [([["search", "go", "save"]], ["go", "save", "search"]), ([[]], [])], [[["bb", "a", "cc"]]],
@@ -127,9 +140,12 @@ Example: `by_length(["search", "go", "save"])` returns `["go", "save", "search"]
         practice=[
             P("py-best-average", "Best Average Score", "def best(players: Dict[str, List[int]]) -> str:",
               """
-A leaderboard keeps a list of scores for each player. Write `best(players)` to return the player with the highest **average** score. If players tie, return the one that comes first in the dict. Every player has at least one score.
+A leaderboard keeps a list of scores for each player. Write `best(players)` to return the player with the highest **average** score. If players tie, return the one that comes first in the dict.
 
-Example: `best({"ada": [3, 5], "bo": [6], "cy": [1, 9]})` returns `"bo"`, since the averages are 4, 6 and 5.
+**Constraints**
+- `1 <= len(players) <= 10^4`
+- `1 <= len(players[name]) <= 10^4`
+- `-10^16 <= players[name][j] <= 10^16`
 """,
               "def best(players: Dict[str, List[int]]) -> str:\n    return max(players, key=lambda name: sum(players[name]) / len(players[name]))\n",
               [([{"ada": [3, 5], "bo": [6], "cy": [1, 9]}], "bo"), ([{"x": [1]}], "x")], [[{"a": [2, 2], "b": [1, 3]}]],
@@ -158,7 +174,8 @@ Example: `best({"ada": [3, 5], "bo": [6], "cy": [1, 9]})` returns `"bo"`, since 
               """
 A signup form sends country codes in whatever case people typed. Write `upper_all(codes)` to return them all in capitals, using `map`.
 
-Example: `upper_all(["us", "Fr"])` returns `["US", "FR"]`.
+**Constraints**
+- `0 <= len(codes) <= 10^4`
 """,
               "def upper_all(codes: List[str]) -> List[str]:\n    return list(map(str.upper, codes))\n",
               [([["us", "Fr"]], ["US", "FR"]), ([[]], [])], [[["a"]]],
@@ -178,7 +195,9 @@ Example: `upper_all(["us", "Fr"])` returns `["US", "FR"]`.
               """
 A CSV import gives test scores as strings. Write `passing(scores)` to convert them to ints and keep only the ones of 50 or more, in their original order, using `map` and `filter`.
 
-Example: `passing(["20", "75", "50"])` returns `[75, 50]`.
+**Constraints**
+- `0 <= len(scores) <= 10^4`
+- Each score is 1 to 3 digits
 """,
               "def passing(scores: List[str]) -> List[int]:\n    return list(filter(lambda n: n >= 50, map(int, scores)))\n",
               [([["20", "75", "50"]], [75, 50]), ([[]], [])], [[["1"]], [["99", "100"]]],
@@ -207,7 +226,9 @@ Example: `passing(["20", "75", "50"])` returns `[75, 50]`.
               """
 A release script raises every package's build number by one. Write `bump(builds)` to return the new numbers, using a list comprehension.
 
-Example: `bump([1, 4])` returns `[2, 5]`.
+**Constraints**
+- `0 <= len(builds) <= 10^4`
+- `-10^16 <= builds[i] <= 10^16`
 """,
               "def bump(builds: List[int]) -> List[int]:\n    return [b + 1 for b in builds]\n",
               [([[1, 4]], [2, 5]), ([[]], [])], [[[0, 0]]],
@@ -225,7 +246,8 @@ Example: `bump([1, 4])` returns `[2, 5]`.
               """
 A user directory shows initials next to each person. Write `initials(names)`, where each name looks like `"ada lovelace"`, to return a dict from every non-blank name to its initials in capitals. Use a dict comprehension and skip blank names.
 
-Example: `initials(["ada lovelace", "", "bo"])` returns `{"ada lovelace": "AL", "bo": "B"}`.
+**Constraints**
+- `0 <= len(names) <= 10^4`
 """,
               "def initials(names: List[str]) -> Dict[str, str]:\n    return {n: \"\".join(w[0].upper() for w in n.split()) for n in names if n}\n",
               [([["ada lovelace", "", "bo"]], {"ada lovelace": "AL", "bo": "B"}), ([[]], {})], [[["x y z"]]],
@@ -252,9 +274,10 @@ Example: `initials(["ada lovelace", "", "bo"])` returns `{"ada lovelace": "AL", 
         warmup=[
             P("py-countdown", "Count Down Recursively", "def countdown(n: int) -> List[int]:",
               """
-A launch screen counts down from `n` to 1. Write `countdown(n)` to return `[n, n-1, ..., 1]` using recursion and no loops. `n` is 0 or more.
+A launch screen counts down from `n` to 1. Write `countdown(n)` to return `[n, n-1, ..., 1]` using recursion and no loops.
 
-Example: `countdown(3)` returns `[3, 2, 1]`, and `countdown(0)` returns `[]`.
+**Constraints**
+- `0 <= n <= 100`
 """,
               "def countdown(n: int) -> List[int]:\n    if n == 0:\n        return []\n    return [n] + countdown(n - 1)\n",
               [([3], [3, 2, 1]), ([0], [])], [[1], [6]],
@@ -272,9 +295,11 @@ Example: `countdown(3)` returns `[3, 2, 1]`, and `countdown(0)` returns `[]`.
         practice=[
             P("py-power-tower", 'Fast Power', "def power(base: int, exp: int) -> int:",
               """
-Write `power(base, exp)` to return `base ** exp` without using `**` or `pow`. Do it recursively with the halving trick: x to the power 2k is (x to the power k) squared, so each call halves the exponent. `exp` is 0 or more.
+Write `power(base, exp)` to return `base ** exp` without using `**` or `pow`. Do it recursively with the halving trick: x to the power 2k is (x to the power k) squared, so each call halves the exponent.
 
-Example: `power(2, 10)` returns `1024`, and `power(5, 0)` returns `1`.
+**Constraints**
+- `-100 <= base <= 100`
+- `0 <= exp <= 100`
 """,
               "def power(base: int, exp: int) -> int:\n    if exp == 0:\n        return 1\n    half = power(base, exp // 2)\n    if exp % 2 == 0:\n        return half * half\n    return half * half * base\n",
               [([2, 10], 1024), ([5, 0], 1)], [[3, 5], [2, 1], [7, 12]],
@@ -305,7 +330,10 @@ Example: `power(2, 10)` returns `1024`, and `power(5, 0)` returns `1`.
               """
 An email template system needs greeting functions that each remember their own greeting word. Write `make_greeter(word)` to return a function that takes `name` and returns `"<word> <name>"`.
 
-Example: `make_greeter("Hi")("Ada")` returns `"Hi Ada"`.
+The tests call `make_greeter(word)(name)`.
+
+**Constraints**
+- `0 <= len(word), len(name) <= 10^4`
 """,
               "def make_greeter(word: str):\n    def greet(name):\n        return f\"{word} {name}\"\n    return greet\n",
               [(["Hi", "Ada"], "Hi Ada"), (["Yo", "Bo"], "Yo Bo")], [["", "x"]],
@@ -325,7 +353,11 @@ Example: `make_greeter("Hi")("Ada")` returns `"Hi Ada"`.
               """
 An API gives each client a fixed number of requests. Write `make_limiter(limit)` to return a function with no parameters. Each call uses up one request and returns `"ok"`; once none are left, it returns `"blocked"`.
 
-Example: with a limit of 2, three calls return `"ok"`, `"ok"`, `"blocked"`.
+The tests call the limiter `calls` times.
+
+**Constraints**
+- `0 <= limit <= 100`
+- `0 <= calls <= 100`
 """,
               "def make_limiter(limit: int):\n    left = limit\n\n    def request():\n        nonlocal left\n        if left == 0:\n            return \"blocked\"\n        left -= 1\n        return \"ok\"\n\n    return request\n",
               [([2, 3], ["ok", "ok", "blocked"]), ([0, 1], ["blocked"])], [[1, 2], [3, 3]],
@@ -359,7 +391,8 @@ Example: with a limit of 2, three calls return `"ok"`, `"ok"`, `"blocked"`.
               """
 A test-data helper hands out even ids one at a time instead of building a big list. Write a generator `evens(n)` that yields the even numbers from 0 up to, but not including, `n`.
 
-Example: `list(evens(7))` is `[0, 2, 4, 6]`.
+**Constraints**
+- `0 <= n <= 1000`
 """,
               "def evens(n: int):\n    for i in range(0, n, 2):\n        yield i\n",
               [([7], [0, 2, 4, 6]), ([0], [])], [[1], [10]],
@@ -379,7 +412,9 @@ Example: `list(evens(7))` is `[0, 2, 4, 6]`.
               """
 A sensor sends a stream of readings and marks the end with a 0. Write `until_zero(readings)` to return the readings before the first 0, using `iter` and `next` and no `for` loop. If there's no 0, return them all.
 
-Example: `until_zero([3, 5, 0, 4])` returns `[3, 5]`.
+**Constraints**
+- `0 <= len(readings) <= 10^4`
+- `-10^16 <= readings[i] <= 10^16`
 """,
               "def until_zero(readings: List[int]) -> List[int]:\n    it = iter(readings)\n    out = []\n    while (r := next(it, 0)) != 0:\n        out.append(r)\n    return out\n",
               [([[3, 5, 0, 4]], [3, 5]), ([[]], [])], [[[0, 1]], [[1, 2, 3]]],
@@ -409,7 +444,10 @@ Example: `until_zero([3, 5, 0, 4])` returns `[3, 5]`.
               """
 A command-line tool wants some commands to print their output in capitals. Write a decorator `uppercase` whose wrapper calls the original function and returns its text result upper-cased.
 
-Example: a function returning `"hi " + name`, decorated with `@uppercase` and called with `"bo"`, returns `"HI BO"`.
+The tests decorate a function that returns `"hi " + name`, then call it with `name`.
+
+**Constraints**
+- `0 <= len(name) <= 10^4`
 """,
               "def uppercase(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs).upper()\n    return wrapper\n",
               [(["bo"], "HI BO"), ([""], "HI ")], [["x"]],
@@ -430,7 +468,10 @@ Example: a function returning `"hi " + name`, decorated with `@uppercase` and ca
               """
 Network calls sometimes fail once and then work. Write a decorator `retry_once` that catches a `ValueError`, calls the function one more time, and lets the error through if the second call fails too.
 
-Example: a function that fails on its first call and then succeeds returns its result (`"ok"`). One that fails twice still raises `ValueError`, which the tests report as `"ValueError escaped"`.
+The tests decorate a function that raises `ValueError` on its first `fails` calls and returns `"ok"` after that. If the error gets out of your decorator, they report `"ValueError escaped"`.
+
+**Constraints**
+- `0 <= fails <= 10^16`
 """,
               "def retry_once(func):\n    def wrapper(*args, **kwargs):\n        try:\n            return func(*args, **kwargs)\n        except ValueError:\n            return func(*args, **kwargs)\n    return wrapper\n",
               [([1], "ok"), ([2], "ValueError escaped")], [[0]],
@@ -464,7 +505,9 @@ This review mixes everything in this world: defaults, `*args`/`**kwargs`, `lambd
           """
 A search page ranks results by relevance score, highest first. Results missing from `score` count as 0, and ties go alphabetically. Write `rank(results, score)` using `sorted` with a `lambda` key.
 
-Example: `rank(["faq", "docs", "blog"], {"docs": 9, "faq": 9})` returns `["docs", "faq", "blog"]`.
+**Constraints**
+- `0 <= len(results), len(score) <= 10^4`
+- `-10^16 <= score[name] <= 10^16`
 """,
           "def rank(results: List[str], score: Dict[str, int]) -> List[str]:\n    return sorted(results, key=lambda r: (-score.get(r, 0), r))\n",
           [([["faq", "docs", "blog"], {"docs": 9, "faq": 9}], ["docs", "faq", "blog"]), ([[], {}], [])], [[["b", "a"], {}], [["x", "y"], {"y": 1}]],
@@ -481,7 +524,9 @@ Example: `rank(["faq", "docs", "blog"], {"docs": 9, "faq": 9})` returns `["docs"
           """
 A site's navigation config holds labels and nested submenus (lists), to any depth. Write `flatten(menu)` to return every non-empty label in reading order.
 
-Example: `flatten(["Home", ["Docs", ["", "API"]], "Blog"])` returns `["Home", "Docs", "API", "Blog"]`.
+**Constraints**
+- `0 <= len(menu) <= 10^4`
+- `menu` holds strings and lists
 """,
           "def flatten(menu: list) -> List[str]:\n    out = []\n    for item in menu:\n        if isinstance(item, list):\n            out += flatten(item)\n        elif item:\n            out.append(item)\n    return out\n",
           [([["Home", ["Docs", ["", "API"]], "Blog"]], ["Home", "Docs", "API", "Blog"]), ([[]], [])], [[[[[["x"]]]]], [["", ""]]],
@@ -499,7 +544,13 @@ Example: `flatten(["Home", ["Docs", ["", "API"]], "Blog"])` returns `["Home", "D
           """
 A button handler ignores clicks that come too soon after the last accepted one. Write `make_throttle(cooldown)` to return a function `allow(tick)`. It returns `True` and starts a new cooldown when the click is accepted, or `False` while it's still cooling down.
 
-Example: with a cooldown of `3`, clicks at ticks `0, 1, 3, 4, 6` give `True, False, True, False, True`.
+The first click is always accepted. After that, a click is accepted once at least `cooldown` ticks have passed since the last accepted one.
+
+**Constraints**
+- `0 <= cooldown <= 10^16`
+- `0 <= len(ticks) <= 10^4`
+- `0 <= ticks[i] <= 10^16`
+- `ticks` never goes down
 """,
           "def make_throttle(cooldown: int):\n    ready_at = 0\n\n    def allow(tick):\n        nonlocal ready_at\n        if tick < ready_at:\n            return False\n        ready_at = tick + cooldown\n        return True\n\n    return allow\n",
           [([3, [0, 1, 3, 4, 6]], [True, False, True, False, True]), ([1, [0, 0, 1]], [True, False, True])], [[5, [0, 4, 5, 9, 10]], [2, []]],

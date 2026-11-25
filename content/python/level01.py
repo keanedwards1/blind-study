@@ -31,7 +31,11 @@ def add_two(n):
 """,
             problems=[
                 P("py-one-less", "One Less", "def one_less(n: int) -> int:",
-                  "Given a whole number `n`, return the number that comes **just before** it.\n\nFor example, the number just before `5` is `4`.",
+                  """Given a whole number `n`, return the number that comes **just before** it.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   "def one_less(n: int) -> int:\n    return n - 1\n",
                   [([5], 4), ([1], 0), ([0], -1)], [[100], [-7], [2]],
                   hints=["Subtract 1 from `n` and return the result."],
@@ -42,7 +46,11 @@ def add_two(n):
 - **Indentation:** the `return` line sits 4 spaces in from `def`.
 """),
                 P("py-double-it", "Double It", "def double(n: int) -> int:",
-                  "Return twice the value of `n`.",
+                  """Return twice the value of `n`.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   "def double(n: int) -> int:\n    return n * 2\n",
                   [([3], 6), ([0], 0), ([-4], -8)], [[50], [1], [-1]],
                   hints=["Multiplication in Python is `*`."],
@@ -52,7 +60,11 @@ def add_two(n):
 - **Return it:** `return num * 2`
 """),
                 P("py-rectangle-area", "Rectangle Area", "def area(width: int, height: int) -> int:",
-                  "Return the area of a rectangle that is `width` wide and `height` tall (width × height).",
+                  """Return the area of a rectangle that is `width` wide and `height` tall (width × height).
+
+**Constraints**
+- `0 <= width, height <= 10^16`
+""",
                   "def area(width: int, height: int) -> int:\n    return width * height\n",
                   [([3, 4], 12), ([5, 5], 25), ([1, 9], 9)], [[0, 7], [10, 10], [12, 3]],
                   grammar="""
@@ -61,7 +73,15 @@ def add_two(n):
 - **Multiply:** `width * height`
 """),
                 P("py-change-due", "Change Due", "def change_due(price: int, paid: int, items: int) -> int:",
-                  "You buy `items` things that each cost `price`, and hand over `paid`. Return the change you get back.\n\nYou always pay enough.",
+                  """You buy `items` things that each cost `price`, and hand over `paid`. Return the change you get back.
+
+You always pay enough.
+
+**Constraints**
+- `0 <= price, items <= 1000`
+- `0 <= paid <= 10^5`
+- `paid >= price * items`
+""",
                   "def change_due(price: int, paid: int, items: int) -> int:\n    return paid - price * items\n",
                   [([3, 10, 2], 4), ([5, 5, 1], 0)], [[2, 20, 7], [1, 100, 99], [10, 50, 5]],
                   hints=["Work out the total cost first. `*` happens before `-`, just like in maths."],
@@ -101,7 +121,11 @@ Python has three kinds of division, and they're used constantly:
 """,
             problems=[
                 P("py-average-of-two", "Average of Two", "def average(a: int, b: int) -> float:",
-                  "Return the average of `a` and `b` as a **float** (a number with a decimal point). For example, the average of `2` and `4` is `3.0`.",
+                  """Return the average of `a` and `b` as a **float** (a number with a decimal point).
+
+**Constraints**
+- `-1000 <= a, b <= 1000`
+""",
                   "def average(a: int, b: int) -> float:\n    return (a + b) / 2\n",
                   [([2, 4], 3.0), ([1, 2], 1.5), ([5, 5], 5.0)], [[0, 0], [-3, 3], [7, 10], [100, 1]],
                   compare="strict",
@@ -113,7 +137,12 @@ Python has three kinds of division, and they're used constantly:
 - **This task checks the type:** returning `3` instead of `3.0` counts as wrong.
 """),
                 P("py-share-sweets", "Share the Sweets", "def share(sweets: int, kids: int) -> List[int]:",
-                  "Share `sweets` equally between `kids`, giving each child as many **whole** sweets as possible. Return a list `[each, left_over]`: how many each child gets, and how many are left.",
+                  """Share `sweets` equally between `kids`, giving each child as many **whole** sweets as possible. Return a list `[each, left_over]`: how many each child gets, and how many are left.
+
+**Constraints**
+- `0 <= sweets <= 10^16`
+- `1 <= kids <= 10^16`
+""",
                   "def share(sweets: int, kids: int) -> List[int]:\n    return [sweets // kids, sweets % kids]\n",
                   [([7, 2], [3, 1]), ([10, 5], [2, 0]), ([3, 4], [0, 3])], [[100, 7], [0, 3], [1, 1], [29, 10]],
                   require=["op://", "op:%"],
@@ -125,7 +154,11 @@ Python has three kinds of division, and they're used constantly:
 - **Return a list of two values:** `return [first, second]`
 """),
                 P("py-is-even", "Is It Even?", "def is_even(n: int) -> bool:",
-                  "Return `True` if `n` is even, otherwise `False`.",
+                  """Return `True` if `n` is even, otherwise `False`.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   "def is_even(n: int) -> bool:\n    return n % 2 == 0\n",
                   [([4], True), ([7], False), ([0], True)], [[-2], [-3], [1], [1000001]],
                   require=["op:%"],
@@ -136,7 +169,12 @@ Python has three kinds of division, and they're used constantly:
 - **Compare:** `==` gives `True` or `False`, so you can return a comparison directly.
 """),
                 P("py-power-of", "Power Of", "def power(base: int, exp: int) -> int:",
-                  "Return `base` raised to the power `exp`. `exp` is never negative.",
+                  """Return `base` raised to the power `exp`.
+
+**Constraints**
+- `-100 <= base <= 100`
+- `0 <= exp <= 100`
+""",
                   "def power(base: int, exp: int) -> int:\n    return base ** exp\n",
                   [([2, 3], 8), ([5, 0], 1), ([10, 2], 100)], [[3, 4], [1, 50], [-2, 3], [7, 1]],
                   require=["op:**"],
@@ -169,7 +207,11 @@ Comparisons give back `True` or `False` (a **bool**):
 """,
             problems=[
                 P("py-can-vote", "Can Vote", "def can_vote(age: int) -> bool:",
-                  "People can vote from age 18. Return `True` if someone aged `age` can vote.",
+                  """People can vote from age 18. Return `True` if someone aged `age` can vote.
+
+**Constraints**
+- `0 <= age <= 150`
+""",
                   "def can_vote(age: int) -> bool:\n    return age >= 18\n",
                   [([18], True), ([17], False), ([40], True)], [[0], [19], [100], [5]],
                   grammar="""
@@ -178,7 +220,11 @@ Comparisons give back `True` or `False` (a **bool**):
 - **Return the comparison itself:** `return years >= 18` already is `True` or `False`.
 """),
                 P("py-not-equal", "Different Values", "def different(a: int, b: int) -> bool:",
-                  "Return `True` if `a` and `b` are different numbers.",
+                  """Return `True` if `a` and `b` are different numbers.
+
+**Constraints**
+- `-10^16 <= a, b <= 10^16`
+""",
                   "def different(a: int, b: int) -> bool:\n    return a != b\n",
                   [([1, 2], True), ([3, 3], False)], [[0, 0], [-1, 1], [5, 6]],
                   require=["op:!="],
@@ -187,7 +233,11 @@ Comparisons give back `True` or `False` (a **bool**):
 - **Not equal:** `a != b`
 """),
                 P("py-is-nonzero", "Truthy or Falsy", "def is_truthy(n: int) -> bool:",
-                  "Return what `bool` says about `n`: `False` for `0`, `True` for any other number.",
+                  """Return what `bool` says about `n`: `False` for `0`, `True` for any other number.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   "def is_truthy(n: int) -> bool:\n    return bool(n)\n",
                   [([0], False), ([3], True), ([-1], True)], [[100], [1], [-50]],
                   require=["bool"],
@@ -229,7 +279,11 @@ def describe(n):
 """,
             problems=[
                 P("py-sign", "Sign of a Number", "def sign(n: int) -> int:",
-                  "Return `1` if `n` is positive, `-1` if it's negative, and `0` if it's zero.",
+                  """Return `1` if `n` is positive, `-1` if it's negative, and `0` if it's zero.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   "def sign(n: int) -> int:\n    if n > 0:\n        return 1\n    elif n < 0:\n        return -1\n    else:\n        return 0\n",
                   [([5], 1), ([-3], -1), ([0], 0)], [[1], [-1], [999], [-999]],
                   require=["if"],
@@ -240,7 +294,11 @@ def describe(n):
 - **Return inside a branch:** `return 1` ends the function right there.
 """),
                 P("py-grade", "Letter Grade", "def grade(score: int) -> str:",
-                  'Turn a test `score` (0–100) into a letter: 90 and above is `"A"`, 80–89 `"B"`, 70–79 `"C"`, and anything lower `"F"`.',
+                  """Turn a test `score` into a letter: 90 and above is `"A"`, 80–89 `"B"`, 70–79 `"C"`, and anything lower `"F"`.
+
+**Constraints**
+- `0 <= score <= 100`
+""",
                   'def grade(score: int) -> str:\n    if score >= 90:\n        return "A"\n    elif score >= 80:\n        return "B"\n    elif score >= 70:\n        return "C"\n    return "F"\n',
                   [([95], "A"), ([85], "B"), ([70], "C"), ([12], "F")], [[90], [89], [80], [79], [69], [100], [0]],
                   hints=["Check from the highest grade down, so `>= 80` only runs for scores that weren't already an A."],
@@ -252,7 +310,11 @@ def describe(n):
 - **Fallback:** a final `return "F"` (or an `else:`) catches everything else.
 """),
                 P("py-fizzbuzz-one", "FizzBuzz (One Number)", "def fizzbuzz(n: int) -> str:",
-                  'Return `"FizzBuzz"` if `n` is divisible by both 3 and 5, `"Fizz"` if only by 3, `"Buzz"` if only by 5, and otherwise `n` as text (for example `"7"`).',
+                  """Return `"FizzBuzz"` if `n` is divisible by both 3 and 5, `"Fizz"` if only by 3, `"Buzz"` if only by 5, and otherwise `n` as text.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   'def fizzbuzz(n: int) -> str:\n    if n % 15 == 0:\n        return "FizzBuzz"\n    if n % 3 == 0:\n        return "Fizz"\n    if n % 5 == 0:\n        return "Buzz"\n    return str(n)\n',
                   [([15], "FizzBuzz"), ([9], "Fizz"), ([10], "Buzz"), ([7], "7")], [[1], [3], [5], [30], [98], [45]],
                   difficulty="Medium",
@@ -289,7 +351,12 @@ Python also lets you chain comparisons: `lo <= x <= hi` means `lo <= x and x <= 
 """,
             problems=[
                 P("py-in-range", "In Range", "def in_range(x: int, lo: int, hi: int) -> bool:",
-                  "Return `True` if `x` is between `lo` and `hi`, **including** both ends.",
+                  """Return `True` if `x` is between `lo` and `hi`, **including** both ends.
+
+**Constraints**
+- `-10^16 <= x, lo, hi <= 10^16`
+- `lo <= hi`
+""",
                   "def in_range(x: int, lo: int, hi: int) -> bool:\n    return lo <= x <= hi\n",
                   [([5, 1, 10], True), ([1, 1, 10], True), ([11, 1, 10], False)], [[0, 1, 10], [10, 1, 10], [-5, -10, -1], [3, 3, 3]],
                   grammar="""
@@ -298,7 +365,11 @@ Python also lets you chain comparisons: `lo <= x <= hi` means `lo <= x and x <= 
 - **Chained shortcut:** `lo <= x <= hi` means the same thing.
 """),
                 P("py-is-weekend", "Is It the Weekend?", "def is_weekend(day: int) -> bool:",
-                  "Days are numbered 1 (Monday) to 7 (Sunday). Return `True` for Saturday (6) or Sunday (7).",
+                  """Days are numbered 1 (Monday) to 7 (Sunday). Return `True` for Saturday (6) or Sunday (7).
+
+**Constraints**
+- `1 <= day <= 7`
+""",
                   "def is_weekend(day: int) -> bool:\n    return day == 6 or day == 7\n",
                   [([6], True), ([7], True), ([1], False)], [[2], [3], [4], [5]],
                   require=["op:or"],
@@ -307,7 +378,11 @@ Python also lets you chain comparisons: `lo <= x <= hi` means `lo <= x and x <= 
 - **Either one:** `or`. Each side needs its own full comparison: `x == 1 or x == 2`, never `x == 1 or 2`.
 """),
                 P("py-exactly-one", "Exactly One", "def exactly_one(a: bool, b: bool) -> bool:",
-                  "Return `True` if exactly one of `a` and `b` is `True` (not both, not neither).",
+                  """Return `True` if exactly one of `a` and `b` is `True` (not both, not neither).
+
+**Constraints**
+- `a` and `b` are each `True` or `False`
+""",
                   "def exactly_one(a: bool, b: bool) -> bool:\n    return (a or b) and not (a and b)\n",
                   [([True, False], True), ([True, True], False), ([False, False], False)], [[False, True]],
                   require=["op:not"],
@@ -344,7 +419,12 @@ Numbers and text are different types. `"5" + 1` is an error, because Python won'
 """,
             problems=[
                 P("py-add-one-text", "Add One to Text", "def add_one(text: str) -> int:",
-                  'You get a number written as text, like `"41"`. Return that number plus one, as an **int** (`42`).',
+                  """You get a whole number written as text. Return that number plus one, as an **int**.
+
+**Constraints**
+- `1 <= len(text) <= 20`
+- `text` is digits, with an optional `-` in front
+""",
                   "def add_one(text: str) -> int:\n    return int(text) + 1\n",
                   [(["41"], 42), (["0"], 1), (["-5"], -4)], [["999"], ["7"], ["-1"]],
                   require=["int"],
@@ -354,7 +434,11 @@ Numbers and text are different types. `"5" + 1` is an error, because Python won'
 - **Then add:** `int(text) + 1`. Adding `1` to the text itself is an error.
 """),
                 P("py-number-to-text", "Number to Text", "def to_text(n: int) -> str:",
-                  "Return the number `n` written as text. For example `12` becomes `\"12\"`.",
+                  """Return the number `n` written as text.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
+""",
                   "def to_text(n: int) -> str:\n    return str(n)\n",
                   [([12], "12"), ([0], "0"), ([-3], "-3")], [[1000], [7]],
                   require=["str"],
@@ -363,7 +447,11 @@ Numbers and text are different types. `"5" + 1` is an error, because Python won'
 - **Anything to text:** `str(n)`
 """),
                 P("py-chop-decimals", "Chop the Decimals", "def chop(x: float) -> int:",
-                  "Return `x` with everything after the decimal point removed, as an int. `3.9` becomes `3` and `-2.7` becomes `-2`.",
+                  """Return `x` with everything after the decimal point removed, as an int.
+
+**Constraints**
+- `-10^10 <= x <= 10^10`
+""",
                   "def chop(x: float) -> int:\n    return int(x)\n",
                   [([3.9], 3), ([-2.7], -2), ([5.0], 5)], [[0.5], [-0.5], [100.99]],
                   compare="strict",
@@ -373,7 +461,12 @@ Numbers and text are different types. `"5" + 1` is an error, because Python won'
 - **Not the same as `//`:** `-2.7 // 1` is `-3.0`, which rounds down instead.
 """),
                 P("py-text-times-two", "Decimal Text Doubled", "def doubled(text: str) -> float:",
-                  'You get a decimal number as text, like `"2.5"`. Return twice its value as a float (`5.0`).',
+                  """You get a decimal number written as text. Return twice its value as a float.
+
+**Constraints**
+- `1 <= len(text) <= 20`
+- `text` is digits with an optional `-` in front and an optional decimal point
+""",
                   "def doubled(text: str) -> float:\n    return float(text) * 2\n",
                   [(["2.5"], 5.0), (["1"], 2.0), (["-0.25"], -0.5)], [["0"], ["10.1"], ["3"]],
                   compare="strict", require=["float"],
@@ -405,7 +498,11 @@ Handy built-in functions for numbers:
 """,
             problems=[
                 P("py-distance", "Distance Apart", "def distance(a: int, b: int) -> int:",
-                  "Return how far apart `a` and `b` are on the number line (always zero or positive).",
+                  """Return how far apart `a` and `b` are on the number line (always zero or positive).
+
+**Constraints**
+- `-10^16 <= a, b <= 10^16`
+""",
                   "def distance(a: int, b: int) -> int:\n    return abs(a - b)\n",
                   [([2, 7], 5), ([7, 2], 5), ([-3, 3], 6)], [[0, 0], [-10, -2], [100, -100]],
                   require=["abs"],
@@ -415,7 +512,11 @@ Handy built-in functions for numbers:
 - **Make it positive:** `abs(a - b)`
 """),
                 P("py-round-price", "Round the Price", "def round_price(x: float) -> float:",
-                  "Return `x` rounded to 2 decimal places.",
+                  """Return `x` rounded to 2 decimal places.
+
+**Constraints**
+- `-10^10 <= x <= 10^10`
+""",
                   "def round_price(x: float) -> float:\n    return round(x, 2)\n",
                   [([2.567], 2.57), ([10.0], 10.0), ([0.123], 0.12)], [[3.14159], [99.999], [1.005]],
                   require=["round"],
@@ -424,7 +525,11 @@ Handy built-in functions for numbers:
 - **Round to places:** `round(x, 2)`. The second argument is the number of decimal places.
 """),
                 P("py-largest-of-three", "Largest of Three", "def largest(a: int, b: int, c: int) -> int:",
-                  "Return the largest of the three numbers.",
+                  """Return the largest of the three numbers.
+
+**Constraints**
+- `-10^16 <= a, b, c <= 10^16`
+""",
                   "def largest(a: int, b: int, c: int) -> int:\n    return max(a, b, c)\n",
                   [([1, 5, 3], 5), ([-1, -5, -3], -1), ([4, 4, 4], 4)], [[9, 2, 9], [0, -1, 1], [100, 50, 75]],
                   require=["max"],
@@ -433,7 +538,12 @@ Handy built-in functions for numbers:
 - **Biggest of several values:** `max(a, b, c)`
 """),
                 P("py-clamp", "Clamp", "def clamp(x: int, lo: int, hi: int) -> int:",
-                  "Return `x`, but forced into the range `lo`…`hi`: if it's below `lo` return `lo`, if it's above `hi` return `hi`.",
+                  """Return `x`, but forced into the range `lo`…`hi`: if it's below `lo` return `lo`, if it's above `hi` return `hi`.
+
+**Constraints**
+- `-10^16 <= x, lo, hi <= 10^16`
+- `lo <= hi`
+""",
                   "def clamp(x: int, lo: int, hi: int) -> int:\n    return max(lo, min(x, hi))\n",
                   [([5, 0, 10], 5), ([-3, 0, 10], 0), ([42, 0, 10], 10)], [[0, 0, 10], [10, 0, 10], [-50, -10, -5], [7, 7, 7]],
                   require=["min", "max"], difficulty="Medium",
@@ -467,7 +577,13 @@ Handy built-in functions for numbers:
 """,
             problems=[
                 P("py-say-hello", "Say Hello", "def greet(name: str) -> None:",
-                  'Print `Hello, NAME!` using the given `name`. For `"Ada"` that is `Hello, Ada!`.\n\n_This task checks what you **print**, not what you return._',
+                  """Print `Hello, NAME!` using the given `name`.
+
+_This task checks what you **print**, not what you return._
+
+**Constraints**
+- `0 <= len(name) <= 10^4`
+""",
                   'def greet(name: str) -> None:\n    print("Hello, " + name + "!")\n',
                   [(["Ada"], "Hello, Ada!\n"), (["Bob"], "Hello, Bob!\n")], [["Z"], ["Grace Hopper"]],
                   out="stdout", require=["print"],
@@ -478,7 +594,13 @@ Handy built-in functions for numbers:
 - **Why not `print("Hello,", name, "!")`?** Commas add spaces, giving `Hello, Ada !`.
 """),
                 P("py-two-lines", "Two Lines", "def two_lines(a: str, b: str) -> None:",
-                  "Print `a` on one line and `b` on the next line.\n\n_This task checks what you print._",
+                  """Print `a` on one line and `b` on the next line.
+
+_This task checks what you print._
+
+**Constraints**
+- `0 <= len(a), len(b) <= 10^4`
+""",
                   "def two_lines(a: str, b: str) -> None:\n    print(a)\n    print(b)\n",
                   [(["top", "bottom"], "top\nbottom\n")], [["1", "2"], ["x", ""]],
                   out="stdout",
@@ -487,7 +609,13 @@ Handy built-in functions for numbers:
 - **One `print` per line:** each `print` ends with a new line.
 """),
                 P("py-dashed", "Dashed Numbers", "def dashed(a: int, b: int, c: int) -> None:",
-                  "Print the three numbers on one line with dashes between them. For `1, 2, 3` print `1-2-3`.\n\n_This task checks what you print._",
+                  """Print the three numbers on one line with dashes between them.
+
+_This task checks what you print._
+
+**Constraints**
+- `-10^16 <= a, b, c <= 10^16`
+""",
                   'def dashed(a: int, b: int, c: int) -> None:\n    print(a, b, c, sep="-")\n',
                   [([1, 2, 3], "1-2-3\n"), ([10, 0, -5], "10-0--5\n")], [[7, 7, 7], [100, 200, 300]],
                   out="stdout",
@@ -497,7 +625,11 @@ Handy built-in functions for numbers:
 - **Change the separator:** `between="-"`
 """),
                 P("py-same-line", "Same Line", "def same_line(a: str, b: str) -> None:",
-                  "Print `a` and then `b` using **two** `print` calls, so they appear together on one line with nothing between them, followed by a single new line.\n\nFor `\"ab\"` and `\"cd\"` the output is `abcd`.",
+                  """Print `a` and then `b` using **two** `print` calls, so they appear together on one line with nothing between them, followed by a single new line.
+
+**Constraints**
+- `0 <= len(a), len(b) <= 10^4`
+""",
                   'def same_line(a: str, b: str) -> None:\n    print(a, end="")\n    print(b)\n',
                   [(["ab", "cd"], "abcd\n")], [["x", "y"], ["", "solo"]],
                   out="stdout", require=["print"], difficulty="Medium",
@@ -533,7 +665,11 @@ age = int(input())   # convert, because input() is always text
 """,
             problems=[
                 P("py-echo-name", "Echo the Name", "def main() -> None:",
-                  "Read one line (a name) with `input()`, then print `Hello NAME`.\n\nFor the input `Ada`, print `Hello Ada`.",
+                  """Read one line (a name) with `input()`, then print `Hello NAME`.
+
+**Constraints**
+- The input is one line of 1 to 100 characters
+""",
                   'def main() -> None:\n    name = input()\n    print("Hello", name)\n',
                   [([["Ada"]], "Hello Ada\n"), ([["Bob"]], "Hello Bob\n")], [[["Grace"]], [["x"]]],
                   out="stdout", stdin=True, require=["input"],
@@ -543,7 +679,11 @@ age = int(input())   # convert, because input() is always text
 - **Print two values with a space:** `print("Hello", person)`
 """),
                 P("py-add-inputs", "Add Two Inputs", "def main() -> None:",
-                  "Read two whole numbers, one per line, and print their sum.",
+                  """Read two whole numbers, one per line, and print their sum.
+
+**Constraints**
+- The input is two lines, each a whole number from `-10^7` to `10^7`
+""",
                   "def main() -> None:\n    a = int(input())\n    b = int(input())\n    print(a + b)\n",
                   [([["3", "4"]], "7\n"), ([["-1", "1"]], "0\n")], [[["100", "250"]], [["0", "0"]], [["-5", "-6"]]],
                   out="stdout", stdin=True, require=["input", "int"],

@@ -6,9 +6,11 @@ EXTRA = {
         warmup=[
             P("py-service-owner", "Who Owns This Service?", "def owner(teams: Dict[str, str], service: str) -> str:",
               """
-An on-call tool keeps a dict from each service name to the team that owns it. Write `owner(teams, service)` to return the team for `service`. Every service you're asked about is in the dict.
+An on-call tool keeps a dict from each service name to the team that owns it. Write `owner(teams, service)` to return the team for `service`.
 
-Example: `owner({"billing": "Ada", "search": "Bo"}, "search")` returns `"Bo"`.
+**Constraints**
+- `1 <= len(teams) <= 1000`
+- `service` is a key in `teams`
 """,
               "def owner(teams: Dict[str, str], service: str) -> str:\n    return teams[service]\n",
               [([{"billing": "Ada", "search": "Bo"}, "search"], "Bo")], [[{"x": "y"}, "x"]],
@@ -59,7 +61,9 @@ A warehouse runs a script every time it receives an order. The script checks eac
               """
 A plugin registry maps each plugin's name to its load order. Write `names(registry)` to return the plugin names as a list, in the order they were registered.
 
-Example: `names({"auth": 3, "cache": 1})` returns `["auth", "cache"]`.
+**Constraints**
+- `0 <= len(registry) <= 10^4`
+- `0 <= registry[name] <= 10^16`
 """,
               "def names(registry: Dict[str, int]) -> List[str]:\n    return list(registry.keys())\n",
               [([{"auth": 3, "cache": 1}], ["auth", "cache"]), ([{}], [])], [[{"a": 1}]],
@@ -75,9 +79,11 @@ Example: `names({"auth": 3, "cache": 1})` returns `["auth", "cache"]`.
         practice=[
             P("py-cheapest-supplier", 'Cheapest Supplier', "def cheapest(prices: Dict[str, int]) -> str:",
               """
-A purchasing tool compares quotes from several suppliers. Write `cheapest(prices)`, where `prices` maps supplier names to their price, to return the cheapest supplier. If several tie, return the one that comes first alphabetically. There's at least one supplier.
+A purchasing tool compares quotes from several suppliers. Write `cheapest(prices)`, where `prices` maps supplier names to their price, to return the cheapest supplier. If several tie, return the one that comes first alphabetically.
 
-Example: `cheapest({"tea": 3, "jam": 2, "bun": 2})` returns `"bun"`.
+**Constraints**
+- `1 <= len(prices) <= 10^4`
+- `-10^16 <= prices[name] <= 10^16`
 """,
               "def cheapest(prices: Dict[str, int]) -> str:\n    best = None\n    for name, cost in sorted(prices.items()):\n        if best is None or cost < prices[best]:\n            best = name\n    return best\n",
               [([{"tea": 3, "jam": 2, "bun": 2}], "bun"), ([{"x": 1}], "x")], [[{"b": 1, "a": 1}], [{"z": 5, "y": 9}]],
@@ -108,7 +114,8 @@ Example: `cheapest({"tea": 3, "jam": 2, "bun": 2})` returns `"bun"`.
               """
 An analytics report flags whether anyone visited the site more than once today. Write `any_repeat(visitors)`, where `visitors` lists user names in the order they arrived, to return `True` if any name appears more than once.
 
-Example: `any_repeat(["ada", "bo", "ada"])` returns `True`, and `any_repeat(["ada", "bo"])` returns `False`.
+**Constraints**
+- `0 <= len(visitors) <= 10^4`
 """,
               "def any_repeat(visitors: List[str]) -> bool:\n    return len(set(visitors)) < len(visitors)\n",
               [([["ada", "bo", "ada"]], True), ([["ada", "bo"]], False)], [[[]], [["x", "x"]]],
@@ -126,7 +133,8 @@ Example: `any_repeat(["ada", "bo", "ada"])` returns `True`, and `any_repeat(["ad
               """
 A growth report counts how many different people used the app today who aren't regular users. Write `new_today(regulars, today)`, where `today` can contain the same person more than once, to return that count.
 
-Example: `new_today(["ada"], ["ada", "cy", "cy", "di"])` returns `2`.
+**Constraints**
+- `0 <= len(regulars), len(today) <= 10^4`
 """,
               "def new_today(regulars: List[str], today: List[str]) -> int:\n    known = set(regulars)\n    fresh = set()\n    for name in today:\n        if name not in known:\n            fresh.add(name)\n    return len(fresh)\n",
               [([["ada"], ["ada", "cy", "cy", "di"]], 2), ([[], []], 0)], [[["a"], ["a"]], [[], ["x", "y", "x"]]],
@@ -153,7 +161,8 @@ Example: `new_today(["ada"], ["ada", "cy", "cy", "di"])` returns `2`.
               """
 Two services each have a set of the libraries they depend on. Write `shared(a, b)` to return the libraries both services use, with the `&` operator.
 
-Example: `shared({"x", "y"}, {"y", "z"})` returns `{"y"}`.
+**Constraints**
+- `0 <= len(a), len(b) <= 1000`
 """,
               "def shared(a: Set[str], b: Set[str]) -> Set[str]:\n    return a & b\n",
               [([["x", "y"], ["y", "z"]], ["y"]), ([[], ["a"]], [])], [[["a"], ["a"]]],
@@ -171,7 +180,8 @@ Example: `shared({"x", "y"}, {"y", "z"})` returns `{"y"}`.
               """
 A site audit compares every page with the pages that got traffic. Both lists can contain repeats. Write `unvisited(pages, visited)` to return how many different pages got no visits at all.
 
-Example: `unvisited(["home", "about", "blog", "about"], ["about"])` returns `2`.
+**Constraints**
+- `0 <= len(pages), len(visited) <= 10^4`
 """,
               "def unvisited(pages: List[str], visited: List[str]) -> int:\n    return len(set(pages) - set(visited))\n",
               [([["home", "about", "blog", "about"], ["about"]], 2), ([[], []], 0)], [[["a"], ["a"]], [["a", "b"], []]],
@@ -196,7 +206,9 @@ Example: `unvisited(["home", "about", "blog", "about"], ["about"])` returns `2`.
               """
 An order system records each sale as an `(item, price)` tuple. Write `bundle(item, price)` to return that tuple.
 
-Example: `bundle("jam", 3)` returns `("jam", 3)`.
+**Constraints**
+- `0 <= len(item) <= 10^4`
+- `price` is a number or `None`
 """,
               "def bundle(item: str, price: int) -> Tuple[str, int]:\n    return (item, price)\n",
               [(["jam", 3], ["jam", 3])], [["tea", 0]],
@@ -211,9 +223,11 @@ Example: `bundle("jam", 3)` returns `("jam", 3)`.
         practice=[
             P("py-best-sale", 'Biggest Single Sale', "def best_sale(sales: List[Tuple[str, int]]) -> str:",
               """
-A sales report highlights the item behind the largest single sale. Each sale is an `(item, price)` tuple. Write `best_sale(sales)` to return the item from the sale with the highest price, or the first one if several tie. There's at least one sale.
+A sales report highlights the item behind the largest single sale. Each sale is an `(item, price)` tuple. Write `best_sale(sales)` to return the item from the sale with the highest price, or the first one if several tie.
 
-Example: `best_sale([("jam", 3), ("tea", 7), ("bun", 7)])` returns `"tea"`.
+**Constraints**
+- `1 <= len(sales) <= 10^4`
+- `-10^16 <= sales[i][1] <= 10^16`
 """,
               "def best_sale(sales: List[Tuple[str, int]]) -> str:\n    best_item, best_price = sales[0]\n    for item, price in sales:\n        if price > best_price:\n            best_item, best_price = item, price\n    return best_item\n",
               [([[("jam", 3), ("tea", 7), ("bun", 7)]], "tea"), ([[("x", 1)]], "x")], [[[("a", 2), ("b", 1)]]],
@@ -241,7 +255,9 @@ Example: `best_sale([("jam", 3), ("tea", 7), ("bun", 7)])` returns `"tea"`.
               """
 A floor-plan tool receives what's placed where as `[x, y, thing]` entries. Write `at(spots, x, y)` to turn the entries into a dict keyed by `(x, y)` tuples and return what's at the requested position, or `"empty"` if nothing is recorded there.
 
-Example: `at([[0, 0, "desk"]], 0, 0)` returns `"desk"`, and `at([[0, 0, "desk"]], 1, 0)` returns `"empty"`.
+**Constraints**
+- `0 <= len(spots) <= 10^4`
+- `-10^16 <= x, y <= 10^16`
 """,
               "def at(spots: List[List], x: int, y: int) -> str:\n    where = {}\n    for a, b, thing in spots:\n        where[(a, b)] = thing\n    return where.get((x, y), \"empty\")\n",
               [([[[0, 0, "desk"]], 0, 0], "desk"), ([[[0, 0, "desk"]], 1, 0], "empty")], [[[], 3, 4], [[[1, 2, "lamp"], [3, 4, "chair"]], 3, 4]],
@@ -260,7 +276,9 @@ Example: `at([[0, 0, "desk"]], 0, 0)` returns `"desk"`, and `at([[0, 0, "desk"]]
               """
 A warehouse robot starts at `(0, 0)` and moves one cell per command: `N`, `S`, `E` or `W`. Write `squares_walked(steps)` to return how many different cells it stood on, counting the start.
 
-Example: `squares_walked("NESW")` returns `4`, because the robot walks a small square and ends where it started.
+**Constraints**
+- `0 <= len(steps) <= 10^4`
+- `steps` is made of the letters `N`, `S`, `E` and `W`
 """,
               "def squares_walked(steps: str) -> int:\n    x = y = 0\n    seen = {(x, y)}\n    moves = {\"N\": (0, 1), \"S\": (0, -1), \"E\": (1, 0), \"W\": (-1, 0)}\n    for s in steps:\n        dx, dy = moves[s]\n        x, y = x + dx, y + dy\n        seen.add((x, y))\n    return len(seen)\n",
               [(["NESW"], 4), ([""], 1)], [["NNNN"], ["NSNS"], ["EEWW"]],
@@ -315,7 +333,8 @@ You now know four ways to keep a group of values together. Each one is good at d
               """
 A door scanner checks every arriving badge against a very long guest list. Checking a list one item at a time is slow, so pick a better structure. Write `arrived(guest_list, arrivals)` to return, for each arrival in order, `True` if they're on the guest list.
 
-Example: `arrived(["ada", "bo"], ["bo", "cy"])` returns `[True, False]`.
+**Constraints**
+- `0 <= len(guest_list), len(arrivals) <= 10^4`
 """,
               "def arrived(guest_list: List[str], arrivals: List[str]) -> List[bool]:\n    guests = set(guest_list)\n    return [name in guests for name in arrivals]\n",
               [([["ada", "bo"], ["bo", "cy"]], [True, False]), ([[], []], [])],
@@ -333,7 +352,8 @@ Example: `arrived(["ada", "bo"], ["bo", "cy"])` returns `[True, False]`.
               """
 A kitchen display counts how many times each dish has been ordered and lists the dishes in the order they were first ordered. Write `tally(orders)` to return a list of `(dish, count)` tuples in that order.
 
-Example: `tally(["tea", "jam", "tea"])` returns `[("tea", 2), ("jam", 1)]`.
+**Constraints**
+- `0 <= len(orders) <= 10^4`
 """,
               "def tally(orders: List[str]) -> List[Tuple[str, int]]:\n    counts = {}\n    for item in orders:\n        counts[item] = counts.get(item, 0) + 1\n    return list(counts.items())\n",
               [([["tea", "jam", "tea"]], [["tea", 2], ["jam", 1]]), ([[]], [])], [[["x"]], [["a", "b", "a", "c", "b", "a"]]],
@@ -350,7 +370,8 @@ Example: `tally(["tea", "jam", "tea"])` returns `[("tea", 2), ("jam", 1)]`.
               """
 Write `pick(task)` to name the best structure for each job: `"list"`, `"tuple"`, `"set"` or `"dict"`. The `task` is one of `"queue"` (customers in arrival order), `"point"` (a fixed `(x, y)` position), `"dedupe"` (remove repeated names) or `"phonebook"` (look up a number by name).
 
-Example: `pick("queue")` returns `"list"`, and `pick("phonebook")` returns `"dict"`.
+**Constraints**
+- `task` is `"queue"`, `"point"`, `"dedupe"` or `"phonebook"`
 """,
               "def pick(task: str) -> str:\n    best = {\"queue\": \"list\", \"point\": \"tuple\", \"dedupe\": \"set\", \"phonebook\": \"dict\"}\n    return best[task]\n",
               [(["queue"], "list"), (["phonebook"], "dict")], [["point"], ["dedupe"]],
@@ -388,9 +409,11 @@ A mix of everything from this world: dicts for looking up and counting, sets for
     problems=[
         P("py-review-loyal-customers", 'Users Active Every Day', "def loyal(days: List[List[str]]) -> List[str]:",
           """
-A retention report wants the users who were active on **every** day in the period. Write `loyal(days)`, where each inner list holds one day's active users, to return those users in alphabetical order. There's at least one day.
+A retention report wants the users who were active on **every** day in the period. Write `loyal(days)`, where each inner list holds one day's active users, to return those users in alphabetical order.
 
-Example: `loyal([["ada", "bo"], ["bo", "ada", "cy"], ["bo", "ada"]])` returns `["ada", "bo"]`.
+**Constraints**
+- `1 <= len(days) <= 10^4`
+- `0 <= len(days[i]) <= 10^4`
 """,
           "def loyal(days: List[List[str]]) -> List[str]:\n    common = set(days[0])\n    for day in days[1:]:\n        common &= set(day)\n    return sorted(common)\n",
           [([[["ada", "bo"], ["bo", "ada", "cy"], ["bo", "ada"]]], ["ada", "bo"]), ([[["x"]]], ["x"])],
@@ -408,7 +431,9 @@ Example: `loyal([["ada", "bo"], ["bo", "ada", "cy"], ["bo", "ada"]])` returns `[
           """
 A pricing job compares yesterday's and today's price lists. For every product on **both** lists whose price changed, report `(product, change)`, where change is new minus old. Write `changes(old, new)` to return those pairs sorted by product name.
 
-Example: `changes({"jam": 3, "tea": 2}, {"jam": 4, "tea": 2, "bun": 1})` returns `[("jam", 1)]`.
+**Constraints**
+- `0 <= len(old), len(new) <= 10^4`
+- `0 <= old[name], new[name] <= 10^16`
 """,
           "def changes(old: Dict[str, int], new: Dict[str, int]) -> List[Tuple[str, int]]:\n    out = []\n    for item in sorted(old.keys() & new.keys()):\n        if old[item] != new[item]:\n            out.append((item, new[item] - old[item]))\n    return out\n",
           [([{"jam": 3, "tea": 2}, {"jam": 4, "tea": 2, "bun": 1}], [["jam", 1]]), ([{}, {}], [])],
@@ -425,9 +450,10 @@ Example: `changes({"jam": 3, "tea": 2}, {"jam": 4, "tea": 2, "bun": 1})` returns
 """),
         P("py-review-busiest-page", "Most Popular Page", "def busiest(visits: List[Tuple[str, str]]) -> str:",
               """
-An analytics job finds the page with the most **different** visitors. Each visit is a `(user, page)` tuple, and a user who visits a page twice only counts once. Write `busiest(visits)` to return that page; if pages tie, return the one that comes first alphabetically. There's at least one visit.
+An analytics job finds the page with the most **different** visitors. Each visit is a `(user, page)` tuple, and a user who visits a page twice only counts once. Write `busiest(visits)` to return that page; if pages tie, return the one that comes first alphabetically.
 
-Example: `busiest([("ada", "home"), ("ada", "home"), ("bo", "blog"), ("cy", "blog")])` returns `"blog"`.
+**Constraints**
+- `1 <= len(visits) <= 10^4`
 """,
               "def busiest(visits: List[Tuple[str, str]]) -> str:\n    people = {}\n    for who, page in visits:\n        people.setdefault(page, set()).add(who)\n    return min(people, key=lambda p: (-len(people[p]), p))\n",
               [([[("ada", "home"), ("ada", "home"), ("bo", "blog"), ("cy", "blog")]], "blog"), ([[("x", "a")]], "a")],

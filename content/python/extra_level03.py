@@ -14,9 +14,13 @@ EXTRA = {
               """
 A command-line tool lists every user on its own line. Write `roll_call(names)` to print each name in order.
 
-Example: `roll_call(["Ada", "Bo"])` prints `Ada` and then `Bo`. An empty list prints nothing.
+An empty list prints nothing.
 
 _This task checks what you print._
+
+**Constraints**
+- `0 <= len(names) <= 10^4`
+- `0 <= len(names[i]) <= 100`
 """,
               "def roll_call(names: List[str]) -> None:\n    for name in names:\n        print(name)\n",
               [([["Ada", "Bo"]], "Ada\nBo\n"), ([[]], "")], [[["x"]], [["a", "b", "c"]]],
@@ -33,9 +37,11 @@ _This task checks what you print._
         practice=[
             P("py-loop-longest-name", 'Longest Name Without max', "def longest_name(names: List[str]) -> str:",
               """
-A table needs to be as wide as its longest name. Write `longest_name(names)` to return the longest name, or the first one if several tie, without using `max`. The list has at least one name.
+A table needs to be as wide as its longest name. Write `longest_name(names)` to return the longest name, or the first one if several tie, without using `max`.
 
-Example: `longest_name(["Bo", "Ada", "Cy"])` returns `"Ada"`.
+**Constraints**
+- `1 <= len(names) <= 10^4`
+- `0 <= len(names[i]) <= 100`
 """,
               "def longest_name(names: List[str]) -> str:\n    best = names[0]\n    for name in names:\n        if len(name) > len(best):\n            best = name\n    return best\n",
               [([["Bo", "Ada", "Cy"]], "Ada"), ([["Al", "Bo"]], "Al")], [[["x"]], [["aa", "b", "ccc", "ddd"]]],
@@ -65,9 +71,12 @@ Example: `longest_name(["Bo", "Ada", "Cy"])` returns `"Ada"`.
               """
 A progress log prints each step number as it runs. Write `rows(n)` to print the numbers from 1 to `n`, one per line.
 
-Example: `rows(3)` prints `1`, `2` and `3`. `rows(0)` prints nothing.
+If `n` is 0, nothing is printed.
 
 _This task checks what you print._
+
+**Constraints**
+- `0 <= n <= 1000`
 """,
               "def rows(n: int) -> None:\n    for i in range(1, n + 1):\n        print(i)\n",
               [([3], "1\n2\n3\n"), ([0], "")], [[1], [5]],
@@ -86,7 +95,9 @@ _This task checks what you print._
               """
 A sampling script keeps every third record from a log, starting with the first. Write `every_third(items)` to return the items at positions 0, 3, 6 and so on, using `range` with a step (no slicing).
 
-Example: `every_third(["a", "b", "c", "d", "e"])` returns `["a", "d"]`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Items can be values of any type
 """,
               "def every_third(items: List[str]) -> List[str]:\n    out = []\n    for i in range(0, len(items), 3):\n        out.append(items[i])\n    return out\n",
               [([["a", "b", "c", "d", "e"]], ["a", "d"]), ([[]], [])], [[["x"]], [list("abcdefghij")]],
@@ -116,7 +127,8 @@ Example: `every_third(["a", "b", "c", "d", "e"])` returns `["a", "d"]`.
               """
 A cache doubles its capacity every time it fills up, starting from 1 slot. Write `days_to_reach(target)` to return how many doublings it takes to have at least `target` slots.
 
-Example: `days_to_reach(8)` returns `3` (1, 2, 4, 8). `days_to_reach(1)` returns `0`.
+**Constraints**
+- `1 <= target <= 10^16`
 """,
               "def days_to_reach(target: int) -> int:\n    seeds, days = 1, 0\n    while seeds < target:\n        seeds *= 2\n        days += 1\n    return days\n",
               [([8], 3), ([1], 0)], [[2], [9], [1000]],
@@ -135,7 +147,9 @@ Example: `days_to_reach(8)` returns `3` (1, 2, 4, 8). `days_to_reach(1)` returns
               """
 A CI script runs its checks in order and reports the first one that failed. Write `first_failure(results)` to return the index of the first `"fail"`, or `-1` if every check passed. Use `break` to stop looking once you find it.
 
-Example: `first_failure(["pass", "fail", "fail"])` returns `1`, and `first_failure(["pass"])` returns `-1`.
+**Constraints**
+- `0 <= len(results) <= 10^4`
+- Each `results[i]` is `"pass"` or `"fail"`
 """,
               "def first_failure(results: List[str]) -> int:\n    found = -1\n    for i, r in enumerate(results):\n        if r == \"fail\":\n            found = i\n            break\n    return found\n",
               [([["pass", "fail", "fail"]], 1), ([["pass"]], -1)], [[[]], [["fail"]], [["pass"] * 5 + ["fail"]]],
@@ -165,7 +179,8 @@ Example: `first_failure(["pass", "fail", "fail"])` returns `1`, and `first_failu
               """
 A task tracker creates `n` empty slots marked `"pending"` before any work starts. Write `pending(n)` to build that list by appending one `"pending"` at a time in a loop.
 
-Example: `pending(2)` returns `["pending", "pending"]`, and `pending(0)` returns `[]`.
+**Constraints**
+- `0 <= n <= 1000`
 """,
               "def pending(n: int) -> List[str]:\n    out = []\n    for _ in range(n):\n        out.append(\"pending\")\n    return out\n",
               [([2], ["pending", "pending"]), ([0], [])], [[1], [5]],
@@ -185,7 +200,11 @@ Example: `pending(2)` returns `["pending", "pending"]`, and `pending(0)` returns
               """
 A leaderboard shows the three best scores, largest first, but the original list is shared with other code and must not change. Write `best_three(scores)` to return a new list of the three largest values (fewer if there aren't three).
 
-Example: `best_three([5, 1, 9, 7])` returns `[9, 7, 5]`. `.sort()` would change the list you were given, so copy it first.
+`.sort()` would change the list you were given, so copy it first.
+
+**Constraints**
+- `0 <= len(scores) <= 10^4`
+- `-10^16 <= scores[i] <= 10^16`
 """,
               "def best_three(scores: List[int]) -> List[int]:\n    copy = scores[:]\n    copy.sort(reverse=True)\n    return copy[:3]\n",
               [([[5, 1, 9, 7]], [9, 7, 5]), ([[2]], [2])], [[[]], [[3, 3, 3, 3]], [[1, 2, 3, 4, 5, 6]]],
@@ -215,7 +234,9 @@ Example: `best_three([5, 1, 9, 7])` returns `[9, 7, 5]`. `.sort()` would change 
               """
 A preview card shows only the first two tags of a post. Write `first_two(rows)` to return the first two items (or fewer, if there aren't two), using a slice.
 
-Example: `first_two(["oak", "ash", "elm"])` returns `["oak", "ash"]`.
+**Constraints**
+- `0 <= len(rows) <= 10^4`
+- Items can be values of any type
 """,
               "def first_two(rows: List[str]) -> List[str]:\n    return rows[:2]\n",
               [([["oak", "ash", "elm"]], ["oak", "ash"]), ([["fir"]], ["fir"])], [[[]], [["a", "b"]]],
@@ -233,7 +254,9 @@ Example: `first_two(["oak", "ash", "elm"])` returns `["oak", "ash"]`.
               """
 A CSV export wraps its data with a header row and a footer row. Write `middle(rows)` to return `[the rows without the first and last, how many that is]`.
 
-Example: `middle([0, 5, 6, 7, 0])` returns `[[5, 6, 7], 3]`, and `middle([0, 0])` returns `[[], 0]`.
+**Constraints**
+- `0 <= len(rows) <= 10^4`
+- Items can be values of any type
 """,
               "def middle(rows: List[int]) -> List:\n    inner = rows[1:-1]\n    return [inner, len(inner)]\n",
               [([[0, 5, 6, 7, 0]], [[5, 6, 7], 3]), ([[0, 0]], [[], 0])], [[[]], [[1]], [[1, 2, 3]]],
@@ -265,9 +288,11 @@ Example: `middle([0, 5, 6, 7, 0])` returns `[[5, 6, 7], 3]`, and `middle([0, 0])
               """
 A debugging helper prints each item with its index. Write `labels(rows)` to print one line per item: the position (starting at 0), a space, then the item.
 
-Example: `labels(["oak", "ash"])` prints `0 oak` and then `1 ash`.
-
 _This task checks what you print._
+
+**Constraints**
+- `0 <= len(rows) <= 10^4`
+- Items can be values of any type
 """,
               "def labels(rows: List[str]) -> None:\n    for i, name in enumerate(rows):\n        print(i, name)\n",
               [([["oak", "ash"]], "0 oak\n1 ash\n"), ([[]], "")], [[["x"]], [["a", "b", "c"]]],
@@ -284,9 +309,12 @@ _This task checks what you print._
         practice=[
             P("py-busiest-day", "Busiest Day", "def busiest_day(days: List[str], visits: List[int]) -> str:",
               """
-A traffic report has the days of the week in one list and the number of site visits on each day in another, in the same order. Write `busiest_day(days, visits)` to return the day with the most visits (the first one if there's a tie). Both lists have at least one item.
+A traffic report has the days of the week in one list and the number of site visits on each day in another, in the same order. Write `busiest_day(days, visits)` to return the day with the most visits (the first one if there's a tie).
 
-Example: `busiest_day(["mon", "tue"], [3, 5])` returns `"tue"`.
+**Constraints**
+- `1 <= len(days) <= 10^4`
+- `len(visits) == len(days)`
+- `-10^16 <= visits[i] <= 10^16`
 """,
               "def busiest_day(days: List[str], visits: List[int]) -> str:\n    best_day, best = days[0], visits[0]\n    for d, v in zip(days, visits):\n        if v > best:\n            best_day, best = d, v\n    return best_day\n",
               [([["mon", "tue"], [3, 5]], "tue"), ([["sun"], [1]], "sun")], [[["a", "b", "c"], [5, 5, 1]], [["a", "b"], [1, 9]]],
@@ -314,7 +342,9 @@ Example: `busiest_day(["mon", "tue"], [3, 5])` returns `"tue"`.
               """
 An invoice totals its line amounts. Write `total(amounts)` to return the sum of the list, using `sum`.
 
-Example: `total([3, 4, 5])` returns `12`, and `total([])` returns `0`.
+**Constraints**
+- `0 <= len(amounts) <= 10^4`
+- `-10^16 <= amounts[i] <= 10^16`
 """,
               "def total(amounts: List[int]) -> int:\n    return sum(amounts)\n",
               [([[3, 4, 5]], 12), ([[]], 0)], [[[1]], [[10, -2]]],
@@ -332,7 +362,9 @@ Example: `total([3, 4, 5])` returns `12`, and `total([])` returns `0`.
               """
 A report shows scores from highest to lowest, and the original list must stay as it is. Write `ranked(scores)` to return a new list sorted largest first, using `sorted`.
 
-Example: `ranked([3, 9, 1])` returns `[9, 3, 1]`.
+**Constraints**
+- `0 <= len(scores) <= 10^4`
+- `-10^16 <= scores[i] <= 10^16`
 """,
               "def ranked(scores: List[int]) -> List[int]:\n    return sorted(scores, reverse=True)\n",
               [([[3, 9, 1]], [9, 3, 1]), ([[]], [])], [[[1, 1, 2]], [[5]]],
@@ -360,7 +392,9 @@ Example: `ranked([3, 9, 1])` returns `[9, 3, 1]`.
               """
 A dashboard lights up as soon as at least one background job has finished. Each job is `True` when it's done. Write `any_done(jobs)` using `any`.
 
-Example: `any_done([False, True])` returns `True`, and `any_done([])` returns `False`.
+**Constraints**
+- `0 <= len(jobs) <= 10^4`
+- Each `jobs[i]` is `True` or `False`
 """,
               "def any_done(jobs: List[bool]) -> bool:\n    return any(jobs)\n",
               [([[False, True]], True), ([[]], False)], [[[False]], [[True, True]]],
@@ -378,7 +412,11 @@ Example: `any_done([False, True])` returns `True`, and `any_done([])` returns `F
               """
 Before saving, a form checks that every label is filled in and starts with a capital letter. Write `all_labelled(labels)` to return `True` only if every label is non-empty and its first character is upper case.
 
-Example: `all_labelled(["Apples", "Pears"])` returns `True`; `all_labelled(["Apples", ""])` and `all_labelled(["apples"])` both return `False`. An empty list counts as `True`.
+An empty list counts as `True`.
+
+**Constraints**
+- `0 <= len(labels) <= 10^4`
+- `0 <= len(labels[i]) <= 100`
 """,
               "def all_labelled(labels: List[str]) -> bool:\n    return all(lab != \"\" and lab[0].isupper() for lab in labels)\n",
               [([["Apples", "Pears"]], True), ([["Apples", ""]], False), ([["apples"]], False)], [[[]], [["A"]], [["Ab", "b"]]],
@@ -407,9 +445,12 @@ Example: `all_labelled(["Apples", "Pears"])` returns `True`; `all_labelled(["App
               """
 A terminal game draws its map from a grid of single characters. Write `show(grid)` to print each row as one line, with the characters joined together and no spaces.
 
-Example: `show([["a", "b"], ["c", "d"]])` prints `ab` and then `cd`.
-
 _This task checks what you print._
+
+**Constraints**
+- `0 <= len(grid) <= 10^4`
+- `0 <= len(grid[i]) <= 100`
+- `len(grid[i][j]) == 1`
 """,
               "def show(grid: List[List[str]]) -> None:\n    for row in grid:\n        print(\"\".join(row))\n",
               [([[["a", "b"], ["c", "d"]]], "ab\ncd\n"), ([[]], "")], [[[["x"]]], [[["a", "b", "c"]]]],
@@ -428,7 +469,10 @@ _This task checks what you print._
               """
 A maze is stored as a grid where `"#"` is a wall and `"."` is open floor. Write `count_walls(grid)` to return how many wall cells there are.
 
-Example: `count_walls([["#", "."], [".", "#"]])` returns `2`, and an empty grid returns `0`.
+**Constraints**
+- `0 <= len(grid) <= 10^4`
+- `0 <= len(grid[i]) <= 100`
+- Each `grid[i][j]` is `"#"` or `"."`
 """,
               "def count_walls(grid: List[List[str]]) -> int:\n    n = 0\n    for row in grid:\n        for cell in row:\n            if cell == \"#\":\n                n += 1\n    return n\n",
               [([[["#", "."], [".", "#"]]], 2), ([[]], 0)], [[[["."]]], [[["#", "#", "#"]]]],
@@ -464,7 +508,10 @@ Time to mix it all together. These stages combine loops, `range`, list methods, 
               """
 A weekly email lists every salesperson who closed **more than 5** sales, numbered from 1, best seller first. Write `report(names, sales)`, where the two lists line up by position, to return lines like `"1. Ada (9)"`. People with equal sales keep their original order.
 
-Example: `report(["Bo", "Ada", "Cy"], [6, 9, 2])` returns `["1. Ada (9)", "2. Bo (6)"]`.
+**Constraints**
+- `0 <= len(names) <= 10^4`
+- `len(sales) == len(names)`
+- `0 <= sales[i] <= 10^16`
 """,
               "def report(names: List[str], sales: List[int]) -> List[str]:\n    pairs = [(s, n) for n, s in zip(names, sales) if s > 5]\n    pairs = sorted(pairs, key=lambda p: -p[0])\n    return [f\"{i}. {n} ({s})\" for i, (s, n) in enumerate(pairs, start=1)]\n",
               [([["Bo", "Ada", "Cy"], [6, 9, 2]], ["1. Ada (9)", "2. Bo (6)"]), ([[], []], [])],
@@ -486,7 +533,9 @@ Example: `report(["Bo", "Ada", "Cy"], [6, 9, 2])` returns `["1. Ada (9)", "2. Bo
               """
 A monitoring script flags sensor readings that are lower than **both** of their neighbours. The first and last readings only have one neighbour, so they're never flagged. Write `dips(readings)` to return the positions of the flagged readings, in order.
 
-Example: `dips([5, 2, 6, 6, 1, 3])` returns `[1, 4]`.
+**Constraints**
+- `0 <= len(readings) <= 10^4`
+- `-10^16 <= readings[i] <= 10^16`
 """,
               "def dips(readings: List[int]) -> List[int]:\n    out = []\n    for i in range(1, len(readings) - 1):\n        if readings[i] < readings[i - 1] and readings[i] < readings[i + 1]:\n            out.append(i)\n    return out\n",
               [([[5, 2, 6, 6, 1, 3]], [1, 4]), ([[1, 2]], [])], [[[]], [[3, 1, 3, 1, 3]], [[2, 2, 2]]],
@@ -502,9 +551,12 @@ Example: `dips([5, 2, 6, 6, 1, 3])` returns `[1, 4]`.
 """),
         P("py-review-batches-needed", "How Many Batches?", "def batches_needed(queues: List[int], per_batch: int) -> int:",
               """
-Several work queues are drained in batches, and each batch can take at most `per_batch` items from one queue. Write `batches_needed(queues, per_batch)` to return how many batches the longest queue needs (0 if there are no queues). `per_batch` is at least 1.
+Several work queues are drained in batches, and each batch can take at most `per_batch` items from one queue. Write `batches_needed(queues, per_batch)` to return how many batches the longest queue needs (0 if there are no queues).
 
-Example: `batches_needed([5, 9, 2], 4)` returns `3`, because the queue of 9 needs three batches of up to 4.
+**Constraints**
+- `0 <= len(queues) <= 10^4`
+- `0 <= queues[i] <= 10^16`
+- `1 <= per_batch <= 10^16`
 """,
               "def batches_needed(queues: List[int], per_batch: int) -> int:\n    most = 0\n    for items in queues:\n        needed = (items + per_batch - 1) // per_batch\n        most = max(most, needed)\n    return most\n",
               [([[5, 9, 2], 4], 3), ([[], 3], 0)], [[[0], 2], [[8], 4], [[1, 1, 1], 1], [[10, 3], 3]],

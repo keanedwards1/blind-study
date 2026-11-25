@@ -6,9 +6,10 @@ EXTRA = {
         warmup=[
             P("py-split-hours", 'Hours and Minutes', "def hours_minutes(minutes: int) -> List[int]:",
               """
-A video player shows a video's length as hours and minutes. Write `hours_minutes(minutes)` to return `[hours, minutes left over]`, using `divmod`. `minutes` is 0 or more.
+A video player shows a video's length as hours and minutes. Write `hours_minutes(minutes)` to return `[hours, minutes left over]`, using `divmod`.
 
-Example: `hours_minutes(135)` returns `[2, 15]`.
+**Constraints**
+- `0 <= minutes <= 10^16`
 """,
               "def hours_minutes(minutes: int) -> List[int]:\n    h, m = divmod(minutes, 60)\n    return [h, m]\n",
               [([135], [2, 15]), ([59], [0, 59])], [[0], [60], [1000]],
@@ -25,9 +26,11 @@ Example: `hours_minutes(135)` returns `[2, 15]`.
         practice=[
             P("py-average-pace", 'Average Pace', "def pace(seconds: int, km: float) -> str:",
               """
-A running app shows the average pace of a run as `"M:SS /km"`. Write `pace(seconds, km)` to work out the seconds per kilometre, rounded to the nearest whole second, and format it that way. `km` is more than 0.
+A running app shows the average pace of a run as `"M:SS /km"`. Write `pace(seconds, km)` to work out the seconds per kilometre, rounded to the nearest whole second, and format it that way.
 
-Example: `pace(1500, 5.0)` returns `"5:00 /km"`, and `pace(1000, 3.0)` returns `"5:33 /km"`.
+**Constraints**
+- `0 <= seconds <= 10^6`
+- `0 < km <= 1000`
 """,
               "def pace(seconds: int, km: float) -> str:\n    per_km = round(seconds / km)\n    m, s = divmod(per_km, 60)\n    return f\"{m}:{s:02d} /km\"\n",
               [([1500, 5.0], "5:00 /km"), ([1000, 3.0], "5:33 /km")], [[59, 1.0], [3600, 10.0], [400, 1.5]],
@@ -52,9 +55,10 @@ Example: `pace(1500, 5.0)` returns `"5:00 /km"`, and `pace(1000, 3.0)` returns `
         warmup=[
             P("py-to-binary", 'Number to Binary', "def to_binary(n: int) -> str:",
               """
-A debugging tool prints numbers in binary. Write `to_binary(n)` to return `n` in binary without the `0b` prefix, using `bin`. `n` is 0 or more.
+A debugging tool prints numbers in binary. Write `to_binary(n)` to return `n` in binary without the `0b` prefix, using `bin`.
 
-Example: `to_binary(5)` returns `"101"`, and `to_binary(0)` returns `"0"`.
+**Constraints**
+- `0 <= n <= 10^16`
 """,
               "def to_binary(n: int) -> str:\n    return bin(n)[2:]\n",
               [([5], "101"), ([0], "0")], [[1], [255]],
@@ -71,9 +75,10 @@ Example: `to_binary(5)` returns `"101"`, and `to_binary(0)` returns `"0"`.
         practice=[
             P("py-colour-code", 'RGB to Hex', "def colour(r: int, g: int, b: int) -> str:",
               """
-A design tool stores colours as hex codes like `"#ff8000"`, with two hex digits each for red, green and blue. Write `colour(r, g, b)`, where each value is from 0 to 255, to return `"#"` followed by each value as two lower-case hex digits.
+A design tool stores colours as hex codes like `"#ff8000"`, with two hex digits each for red, green and blue. Write `colour(r, g, b)` to return `"#"` followed by each value as two lower-case hex digits.
 
-Example: `colour(255, 128, 0)` returns `"#ff8000"`.
+**Constraints**
+- `0 <= r, g, b <= 255`
 """,
               "def colour(r: int, g: int, b: int) -> str:\n    return \"#\" + \"\".join(format(v, \"02x\") for v in (r, g, b))\n",
               [([255, 128, 0], "#ff8000"), ([0, 0, 0], "#000000")], [[1, 2, 3], [16, 255, 10]],
@@ -96,9 +101,10 @@ Example: `colour(255, 128, 0)` returns `"#ff8000"`.
         warmup=[
             P("py-is-odd-bit", 'Odd Check with a Bit', "def is_odd(n: int) -> bool:",
               """
-Odd numbers always have their last binary digit set. Write `is_odd(n)` to return `True` if `n` is odd, checking that bit with `&` instead of using `%`. `n` is 0 or more.
+Odd numbers always have their last binary digit set. Write `is_odd(n)` to return `True` if `n` is odd, checking that bit with `&` instead of using `%`.
 
-Example: `is_odd(7)` returns `True`, and `is_odd(10)` returns `False`.
+**Constraints**
+- `0 <= n <= 10^16`
 """,
               "def is_odd(n: int) -> bool:\n    return n & 1 == 1\n",
               [([7], True), ([10], False)], [[0], [1], [1001]],
@@ -115,9 +121,11 @@ Example: `is_odd(7)` returns `True`, and `is_odd(10)` returns `False`.
         practice=[
             P("py-permission-flags", 'Permission Flags', "def can(flags: int, action: str) -> bool:",
               """
-An app stores each user's permissions as bits in one number: `read` is bit 0, `write` is bit 1 and `admin` is bit 2. Write `can(flags, action)`, where `action` is `"read"`, `"write"` or `"admin"`, to return `True` if that action's bit is set.
+An app stores each user's permissions as bits in one number: `read` is bit 0, `write` is bit 1 and `admin` is bit 2. Write `can(flags, action)` to return `True` if that action's bit is set.
 
-Example: `5` is `101` in binary, so `can(5, "read")` and `can(5, "admin")` return `True` and `can(5, "write")` returns `False`.
+**Constraints**
+- `0 <= flags <= 10^16`
+- `action` is `"read"`, `"write"` or `"admin"`
 """,
               "def can(flags: int, action: str) -> bool:\n    bit = {\"read\": 0, \"write\": 1, \"admin\": 2}[action]\n    return flags & (1 << bit) != 0\n",
               [([5, "read"], True), ([5, "write"], False), ([5, "admin"], True)], [[0, "read"], [7, "write"], [2, "admin"]],
@@ -144,7 +152,8 @@ Example: `5` is `101` in binary, so `can(5, "read")` and `can(5, "admin")` retur
               """
 A plotting helper stores 2D points as complex numbers. Write `as_complex(x, y)` to build `complex(x, y)` and return `[real part, imaginary part]`.
 
-Example: `as_complex(3, 4)` returns `[3.0, 4.0]`.
+**Constraints**
+- `-10^16 <= x, y <= 10^16`
 """,
               "def as_complex(x: int, y: int) -> List[float]:\n    z = complex(x, y)\n    return [z.real, z.imag]\n",
               [([3, 4], [3.0, 4.0]), ([0, -1], [0.0, -1.0])], [[1, 1]],
@@ -160,9 +169,11 @@ Example: `as_complex(3, 4)` returns `[3.0, 4.0]`.
         practice=[
             P("py-walk-complex", 'Track a Position with Complex Numbers', "def end_point(steps: str) -> List[int]:",
               """
-A grid game stores a character's position as a complex number: east is `1`, west is `-1`, north is `1j` and south is `-1j`. Write `end_point(steps)`, where `steps` is a string of `N`, `S`, `E` and `W`, to return the final `[x, y]` as ints, starting from `(0, 0)`.
+A grid game stores a character's position as a complex number: east is `1`, west is `-1`, north is `1j` and south is `-1j`. Write `end_point(steps)` to return the final `[x, y]` as ints, starting from `(0, 0)`.
 
-Example: `end_point("NNE")` returns `[1, 2]`.
+**Constraints**
+- `0 <= len(steps) <= 10^4`
+- `steps` is made of the letters `N`, `S`, `E` and `W`
 """,
               "def end_point(steps: str) -> List[int]:\n    move = {\"N\": 1j, \"S\": -1j, \"E\": 1, \"W\": -1}\n    pos = 0\n    for s in steps:\n        pos += move[s]\n    return [int(pos.real), int(pos.imag)]\n",
               [(["NNE"], [1, 2]), ([""], [0, 0])], [["WWS"], ["NESW"]],
@@ -187,7 +198,9 @@ Example: `end_point("NNE")` returns `[1, 2]`.
               """
 An SMS gateway charges by the byte, not the character. Write `size(message)` to return how many bytes the message takes in UTF-8.
 
-Example: `size("hi")` returns `2`, and `size("é")` also returns `2`.
+**Constraints**
+- `0 <= len(message) <= 10^4`
+- `message` can contain any characters, including emoji
 """,
               "def size(message: str) -> int:\n    return len(message.encode(\"utf-8\"))\n",
               [(["hi"], 2), (["é"], 2)], [[""], ["naïve"]],
@@ -205,7 +218,9 @@ Example: `size("hi")` returns `2`, and `size("é")` also returns `2`.
               """
 A serial protocol adds a simple checksum to every message: the sum of its UTF-8 byte values, kept between 0 and 255. Write `checksum(message)` to return the sum of the byte values modulo 256.
 
-Example: `checksum("hi")` returns `209`, which is 104 + 105.
+**Constraints**
+- `0 <= len(message) <= 10^4`
+- `message` can contain any characters, including emoji
 """,
               "def checksum(message: str) -> int:\n    return sum(message.encode(\"utf-8\")) % 256\n",
               [(["hi"], 209), ([""], 0)], [["hello world"], ["é"]],
@@ -232,7 +247,8 @@ Example: `checksum("hi")` returns `209`, which is 104 + 105.
               """
 A form validator only accepts text in its name field. Write `is_text(x)` to return `True` if `x` is a `str`, using `isinstance`.
 
-Example: `is_text("abc")` returns `True`, and `is_text(3)` returns `False`.
+**Constraints**
+- `x` can be a value of any type
 """,
               "def is_text(x) -> bool:\n    return isinstance(x, str)\n",
               [(["abc"], True), ([3], False)], [[None], [[1]]],
@@ -250,7 +266,9 @@ Example: `is_text("abc")` returns `True`, and `is_text(3)` returns `False`.
               """
 A debugging tool reports what types a list holds. Write `by_type(items)` to return a dict from each type name to how many values have that type, in the order each type first appears.
 
-Example: `by_type([1, "a", 2, None])` returns `{"int": 2, "str": 1, "NoneType": 1}`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Items can be values of any type
 """,
               "def by_type(items: list) -> Dict[str, int]:\n    counts = {}\n    for x in items:\n        name = type(x).__name__\n        counts[name] = counts.get(name, 0) + 1\n    return counts\n",
               [([[1, "a", 2, None]], {"int": 2, "str": 1, "NoneType": 1}), ([[]], {})], [[[True, 1, 1.5]], [[[], {}]]],
@@ -277,7 +295,9 @@ Example: `by_type([1, "a", 2, None])` returns `{"int": 2, "str": 1, "NoneType": 
               """
 A monitoring page shows the first reading from a sensor, and sometimes the sensor hasn't sent any. Write `first_reading(readings)` to return the first reading, or `None` if the list is empty. Reading `readings[0]` on an empty list raises an `IndexError`, so catch it with `try`/`except`.
 
-Example: `first_reading([7, 3])` returns `7`, and `first_reading([])` returns `None`.
+**Constraints**
+- `0 <= len(readings) <= 10^4`
+- Items can be values of any type
 """,
               "def first_reading(readings: List[int]) -> Optional[int]:\n    try:\n        return readings[0]\n    except IndexError:\n        return None\n",
               [([[7, 3]], 7), ([[]], None)], [[[0]]],
@@ -296,7 +316,8 @@ Example: `first_reading([7, 3])` returns `7`, and `first_reading([])` returns `N
               """
 A CSV export of sensor readings has some bad values in it. Write `clean(raw)` to convert the readings that are valid whole numbers and skip the rest, in order. A blank reading means the export itself is broken, so raise `ValueError("blank reading")` as soon as you see one.
 
-Example: `clean(["12", "x", "7"])` returns `[12, 7]`, and `clean(["5", ""])` raises `ValueError`.
+**Constraints**
+- `0 <= len(raw) <= 10^4`
 """,
               "def clean(raw: List[str]) -> List[int]:\n    out = []\n    for r in raw:\n        if r == \"\":\n            raise ValueError(\"blank reading\")\n        try:\n            out.append(int(r))\n        except ValueError:\n            pass\n    return out\n",
               [([["12", "x", "7"]], [12, 7]), ([["5", ""]], {"raises": "ValueError"})], [[[]], [["a", "b"]], [["-3", "4.5"]]],
@@ -324,9 +345,10 @@ Example: `clean(["12", "x", "7"])` returns `[12, 7]`, and `clean(["5", ""])` rai
         warmup=[
             P("py-ternary-label", 'Day or Night', "def label(hour: int) -> str:",
               """
-A weather app labels each hour `"day"` from 6 up to, but not including, 18, and `"night"` otherwise. Write `label(hour)`, where `hour` is from 0 to 23, using one conditional expression.
+A weather app labels each hour `"day"` from 6 up to, but not including, 18, and `"night"` otherwise. Write `label(hour)` using one conditional expression.
 
-Example: `label(12)` returns `"day"`, and `label(20)` returns `"night"`.
+**Constraints**
+- `0 <= hour <= 23`
 """,
               "def label(hour: int) -> str:\n    return \"day\" if 6 <= hour < 18 else \"night\"\n",
               [([12], "day"), ([20], "night")], [[6], [18], [0]],
@@ -350,7 +372,9 @@ A chat bot receives each command as a list of words. Write `command(cmd)` to han
 - `["report", *items]` returns `"reporting N items"`, for any number of items
 - anything else returns `"unknown"`
 
-Example: `command(["go", "lake"])` returns `"heading to lake"`, and `command(["report", "a", "b"])` returns `"reporting 2 items"`.
+**Constraints**
+- `0 <= len(cmd) <= 10^4`
+- Each word is a non-empty lowercase string
 """,
               "def command(cmd: List[str]) -> str:\n    match cmd:\n        case [\"go\", place]:\n            return f\"heading to {place}\"\n        case [\"stop\"]:\n            return \"stopping\"\n        case [\"report\", *items]:\n            return f\"reporting {len(items)} items\"\n        case _:\n            return \"unknown\"\n",
               [([["go", "lake"]], "heading to lake"), ([["report", "a", "b"]], "reporting 2 items")], [[["stop"]], [["report"]], [["fly"]], [[]]],
@@ -380,7 +404,9 @@ Example: `command(["go", "lake"])` returns `"heading to lake"`, and `command(["r
               """
 A calculator widget receives each sum as text, like `"3 + 4"`. Write `calc(expr)` to return its value, using `eval`.
 
-Example: `calc("3 + 4")` returns `7`.
+**Constraints**
+- `1 <= len(expr) <= 10^4`
+- `expr` is valid arithmetic using whole numbers, `+`, `-`, `*`, `/` and brackets
 """,
               "def calc(expr: str) -> int:\n    return eval(expr)\n",
               [(["3 + 4"], 7), (["10 - 2 * 3"], 4)], [["0"], ["2 ** 5"]],
@@ -398,7 +424,9 @@ Example: `calc("3 + 4")` returns `7`.
               """
 A spreadsheet feature lets users write formulas in `x`, like `"x * 2 + 1"`. Write `apply(formula, x)` to evaluate one safely: give `eval` **only** the variable `x` and an empty `__builtins__`, so the formula can't call anything else.
 
-Example: `apply("x * 2 + 1", 5)` returns `11`.
+**Constraints**
+- `formula` is a valid arithmetic formula in `x`
+- `-10^16 <= x <= 10^16`
 """,
               "def apply(formula: str, x: int) -> int:\n    return eval(formula, {\"__builtins__\": {}}, {\"x\": x})\n",
               [(["x * 2 + 1", 5], 11), (["x", 0], 0)], [["x ** 2", 7], ["(x + 1) * (x - 1)", 3]],
@@ -437,7 +465,8 @@ A config file has one setting per line, written as `"KIND VALUE"`. Write `parse(
 
 A line that can't be read, because the kind is unknown or the value is bad, becomes `None`.
 
-Example: `parse(["int 42", "hex ff", "bin 2", "flag yes"])` returns `[42, 255, None, True]`.
+**Constraints**
+- `0 <= len(lines) <= 10^4`
 """,
           "def parse(lines: List[str]) -> List:\n    out = []\n    for line in lines:\n        kind, _, value = line.partition(\" \")\n        try:\n            match kind:\n                case \"int\":\n                    out.append(int(value))\n                case \"hex\":\n                    out.append(int(value, 16))\n                case \"bin\":\n                    out.append(int(value, 2))\n                case \"flag\" if value in (\"yes\", \"no\"):\n                    out.append(value == \"yes\")\n                case _:\n                    out.append(None)\n        except ValueError:\n            out.append(None)\n    return out\n",
           [([["int 42", "hex ff", "bin 2", "flag yes"]], [42, 255, None, True]), ([[]], [])], [[["flag no", "zip 1", "int x"]], [["hex 10", "bin 0"]]],
@@ -454,7 +483,9 @@ Example: `parse(["int 42", "hex ff", "bin 2", "flag yes"])` returns `[42, 255, N
           """
 An admin page stores each account's enabled features as bits: bit 0 is `beta`, bit 1 is `dark` and bit 2 is `export`. Write `features(flags)`, with one number per account, to return each account's features joined with `"+"`, or `"none"` if it has none.
 
-Example: `features([5, 0, 2])` returns `["beta+export", "none", "dark"]`.
+**Constraints**
+- `0 <= len(flags) <= 10^4`
+- `0 <= flags[i] <= 10^16`
 """,
           "def features(flags: List[int]) -> List[str]:\n    names = [\"beta\", \"dark\", \"export\"]\n    out = []\n    for f in flags:\n        on = [name for bit, name in enumerate(names) if f >> bit & 1]\n        out.append(\"+\".join(on) if on else \"none\")\n    return out\n",
           [([[5, 0, 2]], ["beta+export", "none", "dark"]), ([[]], [])], [[[7]], [[1, 4]]],
@@ -471,7 +502,9 @@ Example: `features([5, 0, 2])` returns `["beta+export", "none", "dark"]`.
           """
 A metrics export mixes numbers with junk values. Write `safe_average(values)` to average only the real numbers (ints and floats, **not** bools), rounded to 2 decimal places. If there are none, return `None`.
 
-Example: `safe_average([1, "x", 2.5, True])` returns `1.75`.
+**Constraints**
+- `0 <= len(values) <= 10^4`
+- Items can be values of any type
 """,
           "def safe_average(values: list) -> Optional[float]:\n    nums = [v for v in values if isinstance(v, (int, float)) and not isinstance(v, bool)]\n    if not nums:\n        return None\n    return round(sum(nums) / len(nums), 2)\n",
           [([[1, "x", 2.5, True]], 1.75), ([["a"]], None)], [[[]], [[3]], [[1, 2, 2]]],

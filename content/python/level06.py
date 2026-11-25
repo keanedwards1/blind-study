@@ -24,7 +24,8 @@ LEVEL = dict(
                   """
 A video player shows a track's length as minutes and seconds. Write `mm_ss(total)` to turn a number of seconds into `"M:SS"`, with the seconds always two digits. Use `divmod`.
 
-Example: `mm_ss(125)` returns `"2:05"`, and `mm_ss(59)` returns `"0:59"`.
+**Constraints**
+- `0 <= total <= 10^16`
 """,
                   'def mm_ss(total: int) -> str:\n    m, s = divmod(total, 60)\n    return f"{m}:{s:02d}"\n',
                   [([125], "2:05"), ([59], "0:59"), ([3600], "60:00")], [[0], [61], [599]],
@@ -38,7 +39,9 @@ Example: `mm_ss(125)` returns `"2:05"`, and `mm_ss(59)` returns `"0:59"`.
                   """
 A hashing routine needs `(base ** exp) % mod`, where `exp` can be as large as 10¹⁵. Write `power_mod(base, exp, mod)`. Working out `base ** exp` first is far too slow.
 
-Example: `power_mod(2, 10, 1000)` returns `24`, because 1024 leaves 24.
+**Constraints**
+- `0 <= base, exp <= 10^16`
+- `1 <= mod <= 10^16`
 """,
                   "def power_mod(base: int, exp: int, mod: int) -> int:\n    return pow(base, exp, mod)\n",
                   [([2, 10, 1000], 24), ([3, 0, 7], 1)], [[7, 10 ** 15, 1_000_000_007], [10, 10 ** 12, 9], [5, 3, 1]],
@@ -49,9 +52,11 @@ Example: `power_mod(2, 10, 1000)` returns `24`, because 1024 leaves 24.
 """),
                 P("py-toward-zero", 'Divide Toward Zero', "def divide(a: int, b: int) -> int:",
                   """
-You're porting code from a language whose integer division rounds toward zero. Python's `//` rounds down instead, which gives different answers for negative numbers. Write `divide(a, b)` to divide and drop the fraction, rounding toward zero. `b` is never 0.
+You're porting code from a language whose integer division rounds toward zero. Python's `//` rounds down instead, which gives different answers for negative numbers. Write `divide(a, b)` to divide and drop the fraction, rounding toward zero.
 
-Example: `divide(7, 2)` returns `3`, and `divide(-7, 2)` returns `-3` (not `-4`).
+**Constraints**
+- `-10^16 <= a, b <= 10^16`
+- `b != 0`
 """,
                   "def divide(a: int, b: int) -> int:\n    q = abs(a) // abs(b)\n    return q if (a < 0) == (b < 0) else -q\n",
                   [([7, 2], 3), ([-7, 2], -3), ([7, -2], -3)], [[-7, -2], [0, 5], [6, 3], [-1, 1000]],
@@ -69,7 +74,8 @@ Example: `divide(7, 2)` returns `3`, and `divide(-7, 2)` returns `-3` (not `-4`)
                   """
 Floats carry tiny rounding errors, so `0.1 + 0.2` is `0.30000000000000004`. Write `close(a, b)` to return `True` when two floats are equal apart from those errors. Use `math.isclose`.
 
-Example: `close(0.30000000000000004, 0.3)` returns `True`, and `close(0.3, 0.31)` returns `False`.
+**Constraints**
+- `-10^16 <= a, b <= 10^16`
 """,
                   "def close(a: float, b: float) -> bool:\n    return math.isclose(a, b)\n",
                   [([0.30000000000000004, 0.3], True), ([0.3, 0.31], False)], [[1e10, 1e10 + 1], [0.0, 0.0], [1.0, 1.0001]],
@@ -106,9 +112,10 @@ Strip the two-character prefix with `[2:]`. Going the other way, `int("1010", 2)
             problems=[
                 P("py-to-hex", 'Convert to Hexadecimal', "def to_hex(n: int) -> str:",
                   """
-A colour picker shows values in hexadecimal. Write `to_hex(n)` to return `n` (0 or more) in lower-case hex without the `0x` prefix.
+A colour picker shows values in hexadecimal. Write `to_hex(n)` to return `n` in lower-case hex without the `0x` prefix.
 
-Example: `to_hex(255)` returns `"ff"`, and `to_hex(0)` returns `"0"`.
+**Constraints**
+- `0 <= n <= 10^16`
 """,
                   "def to_hex(n: int) -> str:\n    return hex(n)[2:]\n",
                   [([255], "ff"), ([0], "0"), ([16], "10")], [[4096], [3735928559]],
@@ -120,9 +127,10 @@ Example: `to_hex(255)` returns `"ff"`, and `to_hex(0)` returns `"0"`.
 """),
                 P("py-to-octal", 'Convert to Octal', "def to_octal(n: int) -> str:",
                   """
-Unix file permissions are written in octal. Write `to_octal(n)` to return `n` (0 or more) in octal without the `0o` prefix.
+Unix file permissions are written in octal. Write `to_octal(n)` to return `n` in octal without the `0o` prefix.
 
-Example: `to_octal(8)` returns `"10"`.
+**Constraints**
+- `0 <= n <= 10^16`
 """,
                   "def to_octal(n: int) -> str:\n    return oct(n)[2:]\n",
                   [([8], "10"), ([0], "0"), ([64], "100")], [[7], [511]],
@@ -133,9 +141,10 @@ Example: `to_octal(8)` returns `"10"`.
 """),
                 P("py-count-one-bits", 'Count the 1 Bits', "def ones(n: int) -> int:",
                   """
-Write `ones(n)` to return how many 1s there are in the binary form of `n` (0 or more). Use `bin`.
+Write `ones(n)` to return how many 1s there are in the binary form of `n`. Use `bin`.
 
-Example: `ones(11)` returns `3`, because 11 is `1011` in binary.
+**Constraints**
+- `0 <= n <= 10^16`
 """,
                   'def ones(n: int) -> int:\n    return bin(n).count("1")\n',
                   [([11], 3), ([0], 0), ([255], 8)], [[1024], [2 ** 40 - 1]],
@@ -149,7 +158,10 @@ Example: `ones(11)` returns `3`, because 11 is `1011` in binary.
                   """
 A data import receives numbers written in bases from 2 to 36. Write `from_base(digits, base)` to return the number as a normal int.
 
-Example: `from_base("ff", 16)` returns `255`, and `from_base("1010", 2)` returns `10`.
+**Constraints**
+- `2 <= base <= 36`
+- `1 <= len(digits) <= 100`
+- `digits` is a valid number in `base`, possibly with a `-` in front
 """,
                   "def from_base(digits: str, base: int) -> int:\n    return int(digits, base)\n",
                   [(["ff", 16], 255), (["1010", 2], 10), (["z", 36], 35)], [["0", 8], ["777", 8], ["11111111", 2]],
@@ -187,7 +199,8 @@ Useful tricks: `(n >> k) & 1` reads bit `k`; `n & (n - 1)` clears the lowest 1 b
                   """
 A device reports its status as a number where each bit is a flag. Write `bit(n, k)` to return bit `k` of `n` (0 or 1), where bit 0 is the rightmost.
 
-Example: `bit(5, 0)` returns `1`, and `bit(5, 1)` returns `0`, because 5 is `101` in binary.
+**Constraints**
+- `0 <= n, k <= 10^16`
 """,
                   "def bit(n: int, k: int) -> int:\n    return (n >> k) & 1\n",
                   [([5, 0], 1), ([5, 1], 0), ([5, 2], 1)], [[0, 10], [1024, 10], [255, 7]],
@@ -201,7 +214,9 @@ Example: `bit(5, 0)` returns `1`, and `bit(5, 1)` returns `0`, because 5 is `101
                   """
 Write `flip(n, k)` to return `n` with bit `k` flipped, so a 0 becomes 1 and a 1 becomes 0.
 
-Example: `flip(5, 1)` returns `7`, because `101` becomes `111`.
+**Constraints**
+- `0 <= n <= 10^4`
+- `0 <= k <= 30`
 """,
                   "def flip(n: int, k: int) -> int:\n    return n ^ (1 << k)\n",
                   [([5, 1], 7), ([5, 0], 4), ([0, 3], 8)], [[255, 7], [1, 0]],
@@ -215,7 +230,10 @@ Example: `flip(5, 1)` returns `7`, because `101` becomes `111`.
                   """
 A memory allocator only accepts sizes that are powers of two (1, 2, 4, 8, …). Write `is_power_of_two(n)` using a bit trick.
 
-Example: `is_power_of_two(8)` returns `True`, and `is_power_of_two(6)` returns `False`. Zero and negative numbers are never powers of two.
+Zero and negative numbers are never powers of two.
+
+**Constraints**
+- `-10^16 <= n <= 10^16`
 """,
                   "def is_power_of_two(n: int) -> bool:\n    return n > 0 and n & (n - 1) == 0\n",
                   [([8], True), ([6], False), ([1], True)], [[0], [-8], [1024], [1023]],
@@ -252,7 +270,8 @@ They're handy for 2-D geometry: a point `(x, y)` is `complex(x, y)`, and multipl
                   """
 Write `length(x, y)` to return the distance from `(0, 0)` to `(x, y)`, using a complex number.
 
-Example: `length(3, 4)` returns `5.0`.
+**Constraints**
+- `-10^16 <= x, y <= 10^16`
 """,
                   "def length(x: int, y: int) -> float:\n    return abs(complex(x, y))\n",
                   [([3, 4], 5.0), ([0, 0], 0.0)], [[-5, 12], [1, 1]],
@@ -266,7 +285,8 @@ Example: `length(3, 4)` returns `5.0`.
                   """
 A game rotates sprites a quarter turn anticlockwise around the origin. Write `rotate(x, y)` to return the rotated point as `[new_x, new_y]` ints. Multiplying a complex number by `1j` does exactly this rotation.
 
-Example: `rotate(1, 0)` returns `[0, 1]`, and `rotate(0, 1)` returns `[-1, 0]`.
+**Constraints**
+- `-10^16 <= x, y <= 10^16`
 """,
                   "def rotate(x: int, y: int) -> List[int]:\n    z = complex(x, y) * 1j\n    return [int(z.real), int(z.imag)]\n",
                   [([1, 0], [0, 1]), ([0, 1], [-1, 0]), ([2, 3], [-3, 2])], [[0, 0], [-4, -5]],
@@ -299,7 +319,9 @@ Text is made of characters; **bytes** are raw numbers from 0 to 255 (what files 
                   """
 A network client sends text as UTF-8 bytes. Write `to_bytes(s)` to return the UTF-8 bytes of `s` as a list of numbers.
 
-Example: `to_bytes("hi")` returns `[104, 105]`, and `to_bytes("é")` returns `[195, 169]` (one character, two bytes).
+**Constraints**
+- `0 <= len(s) <= 10^4`
+- `s` can contain any characters, including emoji
 """,
                   'def to_bytes(s: str) -> List[int]:\n    return list(s.encode("utf-8"))\n',
                   [(["hi"], [104, 105]), (["é"], [195, 169]), ([""], [])], [["A1 "], ["€"]],
@@ -313,7 +335,10 @@ Example: `to_bytes("hi")` returns `[104, 105]`, and `to_bytes("é")` returns `[1
                   """
 A network client receives raw byte values. Write `to_text(nums)` to turn them back into text using UTF-8.
 
-Example: `to_text([104, 105])` returns `"hi"`.
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `0 <= nums[i] <= 255`
+- `nums` is valid UTF-8
 """,
                   "def to_text(nums: List[int]) -> str:\n    return bytes(nums).decode()\n",
                   [([[104, 105]], "hi"), ([[195, 169]], "é"), ([[]], "")], [[[80, 121, 116, 104, 111, 110]]],
@@ -327,7 +352,11 @@ Example: `to_text([104, 105])` returns `"hi"`.
                   """
 A file repair tool fixes a single corrupted byte. Write `patch(nums, i, value)` to build a `bytearray` from `nums`, set position `i` to `value`, and return the result as a list.
 
-Example: `patch([1, 2, 3], 0, 9)` returns `[9, 2, 3]`.
+**Constraints**
+- `1 <= len(nums) <= 10^4`
+- `0 <= nums[i] <= 255`
+- `0 <= i < len(nums)`
+- `0 <= value <= 255`
 """,
                   "def patch(nums: List[int], i: int, value: int) -> List[int]:\n    data = bytearray(nums)\n    data[i] = value\n    return list(data)\n",
                   [([[1, 2, 3], 0, 9], [9, 2, 3]), ([[0], 0, 255], [255])], [[[5, 5], 1, 0]],
@@ -341,7 +370,10 @@ Example: `patch([1, 2, 3], 0, 9)` returns `[9, 2, 3]`.
                   """
 Large binary buffers are expensive to copy. Write `window(nums, start, stop)` to make `bytes` from `nums`, read positions `start` to `stop` through a `memoryview`, and return them as a list.
 
-Example: `window([10, 20, 30, 40], 1, 3)` returns `[20, 30]`.
+**Constraints**
+- `1 <= len(nums) <= 10^4`
+- `0 <= nums[i] <= 255`
+- `0 <= start, stop <= 10^4`
 """,
                   "def window(nums: List[int], start: int, stop: int) -> List[int]:\n    view = memoryview(bytes(nums))\n    return view[start:stop].tolist()\n",
                   [([[10, 20, 30, 40], 1, 3], [20, 30]), ([[1], 0, 0], [])], [[list(range(100)), 50, 55]],
@@ -374,9 +406,10 @@ Example: `window([10, 20, 30, 40], 1, 3)` returns `[20, 30]`.
             problems=[
                 P("py-type-name", "Name a Value's Type", "def type_name(x) -> str:",
                   """
-A logging helper records the type of each value it sees. Write `type_name(x)` to return the name of `x`'s type.
+A logging helper records the type of each value it sees. Write `type_name(x)` to return the name of `x`'s type, as Python spells it (`None` has the type `NoneType`).
 
-Example: `type_name(3)` returns `"int"`, `type_name("a")` returns `"str"`, and `type_name(None)` returns `"NoneType"`.
+**Constraints**
+- `x` can be a value of any type
 """,
                   "def type_name(x) -> str:\n    return type(x).__name__\n",
                   [([3], "int"), (["a"], "str"), ([None], "NoneType")], [[1.5], [[1, 2]], [{"a": 1}], [True]],
@@ -390,7 +423,9 @@ Example: `type_name(3)` returns `"int"`, `type_name("a")` returns `"str"`, and `
                   """
 A data validator counts the whole numbers in a mixed list. In Python, `True` and `False` are technically ints, but they shouldn't count. Write `count_ints(items)`.
 
-Example: `count_ints([1, "2", 3.0, True, 4])` returns `2`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Items can be values of any type
 """,
                   "def count_ints(items: list) -> int:\n    return sum(1 for x in items if isinstance(x, int) and not isinstance(x, bool))\n",
                   [([[1, "2", 3.0, True, 4]], 2), ([[]], 0)], [[[False, 0]], [[None, [], {}]]],
@@ -404,7 +439,10 @@ Example: `count_ints([1, "2", 3.0, True, 4])` returns `2`.
                   """
 An error handler decides how to react based on the kind of exception. Write `is_kind_of(child, parent)` to return `True` if the class `child` is `parent` or a subclass of it.
 
-Example: `is_kind_of(KeyError, LookupError)` returns `True`, and `is_kind_of(ValueError, TypeError)` returns `False`.
+The tests show each class by its name, but your function receives the class itself.
+
+**Constraints**
+- `child` and `parent` are built-in exception classes
 """,
                   "def is_kind_of(child, parent) -> bool:\n    return issubclass(child, parent)\n",
                   [(["KeyError", "LookupError"], True), (["ValueError", "TypeError"], False)], [["ZeroDivisionError", "ArithmeticError"], ["Exception", "Exception"], ["Exception", "ValueError"]],
@@ -449,7 +487,9 @@ In tasks marked **raises**, the tests check that you raise the right error for b
                   """
 A form field should hold a whole number, but users type anything. Write `parse(text)` to return the text as an int, or `None` if it isn't a valid whole number.
 
-Example: `parse("42")` returns `42`, and `parse("4.2")` returns `None`.
+**Constraints**
+- `0 <= len(text) <= 100`
+- `text` can contain any characters
 """,
                   "def parse(text: str) -> Optional[int]:\n    try:\n        return int(text)\n    except ValueError:\n        return None\n",
                   [(["42"], 42), (["4.2"], None), (["abc"], None)], [[" 7 "], ["-0"], [""]],
@@ -463,7 +503,8 @@ Example: `parse("42")` returns `42`, and `parse("4.2")` returns `None`.
                   """
 A stats page divides totals by counts, and some counts are zero. Write `safe_divide(a, b)` to return `a / b`, or `None` when `b` is 0. Use `try`/`except`, not an `if`.
 
-Example: `safe_divide(6, 3)` returns `2.0`, and `safe_divide(1, 0)` returns `None`.
+**Constraints**
+- `-10^16 <= a, b <= 10^16`
 """,
                   "def safe_divide(a: int, b: int) -> Optional[float]:\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return None\n",
                   [([6, 3], 2.0), ([1, 0], None)], [[0, 0], [-9, 2]],
@@ -476,7 +517,8 @@ Example: `safe_divide(6, 3)` returns `2.0`, and `safe_divide(1, 0)` returns `Non
                   """
 A sign-up form rejects impossible ages. Write `check_age(age)` to return `age` unchanged if it's from 0 to 150, and to raise a `ValueError` otherwise.
 
-Example: `check_age(30)` returns `30`, and `check_age(-1)` raises `ValueError`.
+**Constraints**
+- `-10^16 <= age <= 10^16`
 """,
                   'def check_age(age: int) -> int:\n    if not 0 <= age <= 150:\n        raise ValueError(f"invalid age: {age}")\n    return age\n',
                   [([30], 30), ([-1], {"raises": "ValueError"}), ([200], {"raises": "ValueError"})], [[0], [150], [151], [-100]],
@@ -490,7 +532,8 @@ Example: `check_age(30)` returns `30`, and `check_age(-1)` raises `ValueError`.
                   """
 A banking module needs its own error for overdrafts. Define an exception class `InsufficientFunds` that subclasses `Exception`, then write `withdraw(balance, amount)` to return the new balance, or raise `InsufficientFunds` when `amount` is more than `balance`.
 
-Example: `withdraw(100, 30)` returns `70`, and `withdraw(10, 50)` raises `InsufficientFunds`.
+**Constraints**
+- `0 <= balance, amount <= 10^16`
 """,
                   "class InsufficientFunds(Exception):\n    pass\n\n\ndef withdraw(balance: int, amount: int) -> int:\n    if amount > balance:\n        raise InsufficientFunds(f\"need {amount - balance} more\")\n    return balance - amount\n",
                   [([100, 30], 70), ([10, 50], {"raises": "InsufficientFunds"})], [[5, 5], [0, 1]],
@@ -504,7 +547,8 @@ Example: `withdraw(100, 30)` returns `70`, and `withdraw(10, 50)` raises `Insuff
                   """
 A batch job runs numbered steps written as text. Write `run_steps(steps)` to return a log with `"ok N"` for each valid step, stopping at the first invalid one with `"bad X"`. Whatever happens, the log must end with `"done"`, so use `finally` for that line.
 
-Example: `run_steps(["1", "x", "3"])` returns `["ok 1", "bad x", "done"]`, and `run_steps([])` returns `["done"]`.
+**Constraints**
+- `0 <= len(steps) <= 10^4`
 """,
                   'def run_steps(steps: List[str]) -> List[str]:\n    log = []\n    try:\n        for s in steps:\n            try:\n                log.append(f"ok {int(s)}")\n            except ValueError:\n                log.append(f"bad {s}")\n                break\n    finally:\n        log.append("done")\n    return log\n',
                   [([["1", "x", "3"]], ["ok 1", "bad x", "done"]), ([[]], ["done"])], [[["5", "6"]], [["?"]]],
@@ -550,7 +594,8 @@ match status:
                   """
 Write `is_prime(n)` to return `True` if `n` is prime. Use a `for` loop that `break`s when it finds a divisor, with an `else` block for the case where it finds none.
 
-Example: `is_prime(7)` returns `True`, and `is_prime(9)` returns `False`.
+**Constraints**
+- `-10^16 <= n <= 10^16`
 """,
                   "def is_prime(n: int) -> bool:\n    if n < 2:\n        return False\n    for d in range(2, int(n ** 0.5) + 1):\n        if n % d == 0:\n            break\n    else:\n        return True\n    return False\n",
                   [([7], True), ([9], False), ([1], False)], [[2], [97], [100], [7919]],
@@ -564,7 +609,8 @@ Example: `is_prime(7)` returns `True`, and `is_prime(9)` returns `False`.
                   """
 Write `absolute(n)` to return the absolute value of `n` with a single conditional expression. Don't use `abs` or an `if` statement.
 
-Example: `absolute(-5)` returns `5`, and `absolute(3)` returns `3`.
+**Constraints**
+- `-10^16 <= n <= 10^16`
 """,
                   "def absolute(n: int) -> int:\n    return -n if n < 0 else n\n",
                   [([-5], 5), ([3], 3), ([0], 0)], [[-1000]],
@@ -577,7 +623,9 @@ Example: `absolute(-5)` returns `5`, and `absolute(3)` returns `3`.
                   """
 A data pipeline computes `n * n - 10` for each input and keeps only the positive results. Write `positive_results(nums)` so each result is computed only once, using the walrus operator inside a comprehension.
 
-Example: `positive_results([1, 4, -5])` returns `[6, 15]`.
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def positive_results(nums: List[int]) -> List[int]:\n    return [r for n in nums if (r := n * n - 10) > 0]\n",
                   [([[1, 4, -5]], [6, 15]), ([[3]], [])], [[[]], [[10, 0]]],
@@ -591,7 +639,8 @@ Example: `positive_results([1, 4, -5])` returns `[6, 15]`.
                   """
 A monitoring dashboard shows a short label for each HTTP status code. Write `status_text(code)` to return `"OK"` for 200, `"Not Found"` for 404, `"Server Error"` for anything from 500 to 599, and `"Unknown"` otherwise. Use `match`.
 
-Example: `status_text(200)` returns `"OK"`, and `status_text(503)` returns `"Server Error"`.
+**Constraints**
+- `-10^16 <= code <= 10^16`
 """,
                   'def status_text(code: int) -> str:\n    match code:\n        case 200:\n            return "OK"\n        case 404:\n            return "Not Found"\n        case n if 500 <= n < 600:\n            return "Server Error"\n        case _:\n            return "Unknown"\n',
                   [([200], "OK"), ([404], "Not Found"), ([503], "Server Error"), ([418], "Unknown")], [[500], [599], [600], [0]],
@@ -628,7 +677,9 @@ Python can run code that's stored as text:
                   """
 A calculator widget receives arithmetic as text. Write `calculate(expr)` to return its value, using `eval`.
 
-Example: `calculate("2 + 3 * 4")` returns `14`, and `calculate("(1 + 1) ** 10")` returns `1024`.
+**Constraints**
+- `1 <= len(expr) <= 10^4`
+- `expr` is valid arithmetic using whole numbers, `+`, `-`, `*`, `/`, `%`, `**` and brackets
 """,
                   "def calculate(expr: str) -> float:\n    return eval(expr)\n",
                   [(["2 + 3 * 4"], 14), (["(1 + 1) ** 10"], 1024), (["7 / 2"], 3.5)], [["0"], ["-3 * -3"], ["10 // 3 + 10 % 3"]],
@@ -641,7 +692,9 @@ Example: `calculate("2 + 3 * 4")` returns `14`, and `calculate("(1 + 1) ** 10")`
                   """
 A teaching tool runs small Python snippets that set a variable called `result`. Write `run(code)` to run the snippet with `exec` in a fresh dict and return `result`.
 
-Example: `run("result = 6 * 7")` returns `42`.
+**Constraints**
+- `1 <= len(code) <= 1000`
+- `code` is valid Python that sets `result`
 """,
                   "def run(code: str) -> int:\n    env = {}\n    exec(code, env)\n    return env[\"result\"]\n",
                   [(["result = 6 * 7"], 42), (["a = 2\nb = 3\nresult = a ** b"], 8)], [["result = sum(range(5))"], ["result = 0\nfor i in range(4):\n    result += i"]],
@@ -656,7 +709,10 @@ Example: `run("result = 6 * 7")` returns `42`.
                   """
 A plotting tool evaluates a formula in `x` for a whole column of values. Write `table(expr, xs)` to compile the formula once with `compile`, then `eval` the compiled code with `{"x": value}` for each value.
 
-Example: `table("x * x + 1", [0, 1, 2])` returns `[1, 2, 5]`.
+**Constraints**
+- `expr` is a valid arithmetic formula in `x`
+- `0 <= len(xs) <= 10^4`
+- `-10^16 <= xs[i] <= 10^16`
 """,
                   'def table(expr: str, xs: List[int]) -> List[int]:\n    code = compile(expr, "<expr>", "eval")\n    return [eval(code, {"x": x}) for x in xs]\n',
                   [(["x * x + 1", [0, 1, 2]], [1, 2, 5]), (["2 ** x", []], [])], [["x % 3", list(range(7))], ["-x", [5, -5]]],

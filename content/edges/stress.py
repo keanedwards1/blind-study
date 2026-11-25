@@ -39,7 +39,7 @@ STRESS_SKIP = {
     "py-chunks": {"negative"},  # batch size
     "py-review-throttle": {"negative"},  # cooldown
     "py-minutes-seconds": {"negative"},
-    "py-average-pace": {"negative"},
+    "py-average-pace": {"big", "negative"},
     "py-to-binary": {"negative"},  # n is 0 or more
     "py-to-hex": {"negative"},
     "py-to-octal": {"negative"},
@@ -77,4 +77,29 @@ STRESS_SKIP = {
     "reverse-bits": {"big", "negative"},  # 32-bit
     "sum-of-two-integers": {"big", "negative"},  # the bit trick works on 32-bit values
     "missing-number": "all",  # the values are 0..n with exactly one missing
+    # ---- Learn Python: values outside the limits in the task's Constraints
+    "py-can-vote": {"big", "negative"},
+    "py-count-to-n": {"negative"},
+    "py-countdown-generator": {"negative"},
+    "py-countdown-list": {"negative"},
+    "py-custom-exception": {"negative"},
+    "py-evens-up-to": {"negative"},
+    "py-first-match": {"negative"},
+    "py-grade-bisect": {"big", "negative"},
+    "py-introduce": {"big", "negative"},
+    "py-invert-dict": {"long"},
+    "py-make-grid": {"negative"},
+    "py-one-to-n": {"negative"},
+    "py-pending-list": {"negative"},
+    "py-rectangle-area": {"negative"},
+    "py-registry-names": {"negative"},
+    "py-repeat-text": {"negative"},
+    "py-retry-decorator": {"negative"},
+    "py-review-price-changes": {"negative"},
+    "py-review-sales-report": {"negative"},
+    "py-split-hours": {"negative"},
+    "py-square-super": {"negative"},
+    "py-sum-of-squares": {"negative"},
+    "py-temperature-property": {"negative"},
+    "py-yield-evens": {"negative"},
 }

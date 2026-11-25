@@ -33,7 +33,16 @@ c.increment()   # 1
 """,
             problems=[
                 P("py-class-counter", "Counter Class", None,
-                  "Write a class `Counter` with:\n\n- `Counter(start)`: begins at `start`;\n- `increment()`: adds 1 and returns the new value;\n- `reset()`: goes back to the starting value (returns nothing).",
+                  """Write a class `Counter` with:
+
+- `Counter(start)`: begins at `start`;
+- `increment()`: adds 1 and returns the new value;
+- `reset()`: goes back to the starting value (returns nothing).
+
+**Constraints**
+- `start` is a whole number from `-10^9` to `10^9`
+- Up to 100 method calls
+""",
                   "class Counter:\n    def __init__(self, start: int):\n        self.start = start\n        self.value = start\n\n    def increment(self) -> int:\n        self.value += 1\n        return self.value\n\n    def reset(self) -> None:\n        self.value = self.start\n",
                   [([["Counter", "increment", "increment", "reset", "increment"], [[5], [], [], [], []]], [None, 6, 7, None, 6])],
                   [[["Counter", "increment"], [[0], []]], [["Counter", "reset", "increment", "increment", "increment"], [[-2], [], [], [], []]]],
@@ -46,7 +55,12 @@ c.increment()   # 1
 - **Methods change `self`:** `self.value += 1`
 """),
                 P("py-class-bank-account", "Bank Account", None,
-                  "Write a class `Account` with `deposit(amount)`, `withdraw(amount)` and `balance()`. A withdrawal larger than the balance is refused: it changes nothing and returns `False`; a successful one returns `True`. Accounts start at 0.",
+                  """Write a class `Account` with `deposit(amount)`, `withdraw(amount)` and `balance()`. A withdrawal larger than the balance is refused: it changes nothing and returns `False`; a successful one returns `True`. Accounts start at 0.
+
+**Constraints**
+- Every `amount` is a whole number from `0` to `10^4`
+- Up to 100 method calls
+""",
                   "class Account:\n    def __init__(self):\n        self._balance = 0\n\n    def deposit(self, amount: int) -> None:\n        self._balance += amount\n\n    def withdraw(self, amount: int) -> bool:\n        if amount > self._balance:\n            return False\n        self._balance -= amount\n        return True\n\n    def balance(self) -> int:\n        return self._balance\n",
                   [([["Account", "deposit", "withdraw", "withdraw", "balance"], [[], [100], [30], [500], []]], [None, None, True, False, 70])],
                   [[["Account", "balance", "withdraw"], [[], [], [1]]], [["Account", "deposit", "deposit", "withdraw", "balance"], [[], [5], [5], [10], []]]],
@@ -58,7 +72,12 @@ c.increment()   # 1
 - **Refuse early:** `if target_amt > self._balance: return False`
 """),
                 P("py-class-stack", "Stack with Peek", None,
-                  "Write a class `Stack` with `push(x)`, `pop()` (remove and return the top, or `None` if empty), `peek()` (return the top without removing it, or `None`) and `is_empty()`.",
+                  """Write a class `Stack` with `push(x)`, `pop()` (remove and return the top, or `None` if empty), `peek()` (return the top without removing it, or `None`) and `is_empty()`.
+
+**Constraints**
+- `x` can be a value of any type
+- Up to 100 method calls
+""",
                   "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, x: int) -> None:\n        self.items.append(x)\n\n    def pop(self):\n        return self.items.pop() if self.items else None\n\n    def peek(self):\n        return self.items[-1] if self.items else None\n\n    def is_empty(self) -> bool:\n        return not self.items\n",
                   [([["Stack", "is_empty", "push", "push", "peek", "pop", "pop", "pop", "is_empty"], [[], [], [1], [2], [], [], [], [], []]], [None, True, None, None, 2, 2, 1, None, True])],
                   [[["Stack", "peek"], [[], []]], [["Stack", "push", "is_empty", "peek"], [[], [9], [], []]]],
@@ -98,7 +117,17 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
 """,
             problems=[
                 P("py-point-class", "Point with == and repr", None,
-                  "Write a class `Point(x, y)` where:\n\n- `repr(Point(1, 2))` is `\"Point(1, 2)\"`;\n- two points are `==` when their coordinates match.\n\nThe tests return `[repr of the first point, p == q, p == Point(0, 0)]`.",
+                  """Write a class `Point(x, y)` where:
+
+- `repr(Point(1, 2))` is `"Point(1, 2)"`;
+- two points are `==` when their coordinates match.
+
+The tests return `[repr of the first point, p == q, p == Point(0, 0)]`.
+
+**Constraints**
+- `len(p) == len(q) == 2`
+- `-10^16 <= p[i], q[i] <= 10^16`
+""",
                   "class Point:\n    def __init__(self, x: int, y: int):\n        self.x = x\n        self.y = y\n\n    def __repr__(self) -> str:\n        return f\"Point({self.x}, {self.y})\"\n\n    def __eq__(self, other) -> bool:\n        return isinstance(other, Point) and (self.x, self.y) == (other.x, other.y)\n",
                   [([[1, 2], [1, 2]], ["Point(1, 2)", True, False]), ([[0, 0], [5, 5]], ["Point(0, 0)", False, True])], [[[-1, 3], [-1, 4]]],
                   params=["p", "q"],
@@ -111,7 +140,12 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
 - **Comparing tuples** compares item by item.
 """),
                 P("py-sortable-money", "Sortable Money", None,
-                  "Write a class `Money(cents)` that can be **sorted** (by amount) and whose `repr` is like `\"$3.05\"` for 305 cents. The tests sort a list of `Money` objects and return their reprs.",
+                  """Write a class `Money(cents)` that can be **sorted** (by amount) and whose `repr` is like `"$3.05"` for 305 cents. The tests sort a list of `Money` objects and return their reprs.
+
+**Constraints**
+- `0 <= len(amounts_in_cents) <= 10^4`
+- `0 <= amounts_in_cents[i] <= 10^16`
+""",
                   "class Money:\n    def __init__(self, cents: int):\n        self.cents = cents\n\n    def __lt__(self, other) -> bool:\n        return self.cents < other.cents\n\n    def __repr__(self) -> str:\n        return f\"${self.cents // 100}.{self.cents % 100:02d}\"\n",
                   [([[305, 99, 1000]], ["$0.99", "$3.05", "$10.00"]), ([[]], [])], [[[1, 0, 100]]],
                   params=["amounts_in_cents"],
@@ -123,7 +157,13 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
 - **Dollars and cents:** `cents // 100` and `cents % 100`, padded with `:02d`.
 """),
                 P("py-vector-add", "Vector Addition", None,
-                  "Write a class `Vector(*components)` supporting `+` (adds matching components, giving a new `Vector`) and `len()` (number of components). It also needs a `components` attribute that is a list. The tests return `[(a + b).components, len(a)]`.",
+                  """Write a class `Vector(*components)` supporting `+` (adds matching components, giving a new `Vector`) and `len()` (number of components). It also needs a `components` attribute that is a list. The tests return `[(a + b).components, len(a)]`.
+
+**Constraints**
+- `1 <= len(a) <= 10^4`
+- `len(b) == len(a)`
+- `-10^16 <= a[i], b[i] <= 10^16`
+""",
                   "class Vector:\n    def __init__(self, *components: int):\n        self.components = list(components)\n\n    def __add__(self, other: \"Vector\") -> \"Vector\":\n        return Vector(*(x + y for x, y in zip(self.components, other.components)))\n\n    def __len__(self) -> int:\n        return len(self.components)\n",
                   [([[1, 2], [10, 20]], [[11, 22], 2]), ([[5], [-5]], [[0], 1])], [[[1, 1, 1], [2, 2, 2]]],
                   params=["a", "b"], difficulty="Medium",
@@ -154,7 +194,12 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
 """,
             problems=[
                 P("py-temperature-property", "Temperature Property", None,
-                  "Write a class `Temperature(celsius)` with a `fahrenheit` **property** (`celsius * 9 / 5 + 32`) that can also be **set** (which updates `celsius`). The tests read `fahrenheit`, set it, then read `celsius`.",
+                  """Write a class `Temperature(celsius)` with a `fahrenheit` **property** (`celsius * 9 / 5 + 32`) that can also be **set** (which updates `celsius`). The tests read `fahrenheit`, set it, then read `celsius`.
+
+**Constraints**
+- `-273.15 <= celsius <= 10^16`
+- `-459.67 <= new_fahrenheit <= 10^16`
+""",
                   "class Temperature:\n    def __init__(self, celsius: float):\n        self.celsius = celsius\n\n    @property\n    def fahrenheit(self) -> float:\n        return self.celsius * 9 / 5 + 32\n\n    @fahrenheit.setter\n    def fahrenheit(self, value: float) -> None:\n        self.celsius = (value - 32) * 5 / 9\n",
                   [([100, 32], [212.0, 0.0]), ([0, 212], [32.0, 100.0])], [[-40, -40], [37, 98.6]],
                   params=["celsius", "new_fahrenheit"], require=["property"],
@@ -166,7 +211,11 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
 - **Allow assignment:** `@kelvin.setter` above a second `def fahrenheit(self, value):`
 """),
                 P("py-date-from-string", "Alternative Constructor", None,
-                  'Write a class `Date(year, month, day)` with a **classmethod** `from_string("YYYY-MM-DD")` that builds a `Date`, and a **staticmethod** `is_leap(year)`. The tests return `[d.year, d.month, d.day, Date.is_leap(d.year)]`.',
+                  """Write a class `Date(year, month, day)` with a **classmethod** `from_string("YYYY-MM-DD")` that builds a `Date`, and a **staticmethod** `is_leap(year)`. The tests return `[d.year, d.month, d.day, Date.is_leap(d.year)]`.
+
+**Constraints**
+- `text` is a real date written as `YYYY-MM-DD`
+""",
                   "class Date:\n    def __init__(self, year: int, month: int, day: int):\n        self.year, self.month, self.day = year, month, day\n\n    @classmethod\n    def from_string(cls, text: str) -> \"Date\":\n        y, m, d = map(int, text.split(\"-\"))\n        return cls(y, m, d)\n\n    @staticmethod\n    def is_leap(year: int) -> bool:\n        return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\n",
                   [(["2024-02-29"], [2024, 2, 29, True]), (["1900-01-01"], [1900, 1, 1, False])], [["2000-12-31"], ["2023-07-04"]],
                   params=["text"], require=["classmethod", "staticmethod"],
@@ -210,7 +259,11 @@ class Dog(Animal):
 """,
             problems=[
                 P("py-animal-sounds", "Animal Sounds", None,
-                  'Write `Animal(name)` with `speak()` returning `"..."`, and subclasses `Dog` and `Cat` whose `speak()` returns `"NAME says woof"` / `"NAME says meow"`. The tests create one of each and return their `speak()` results.',
+                  """Write `Animal(name)` with `speak()` returning `"..."`, and subclasses `Dog` and `Cat` whose `speak()` returns `"NAME says woof"` / `"NAME says meow"`. The tests create one of each and return their `speak()` results.
+
+**Constraints**
+- `0 <= len(name) <= 10^4`
+""",
                   'class Animal:\n    def __init__(self, name: str):\n        self.name = name\n\n    def speak(self) -> str:\n        return "..."\n\n\nclass Dog(Animal):\n    def speak(self) -> str:\n        return f"{self.name} says woof"\n\n\nclass Cat(Animal):\n    def speak(self) -> str:\n        return f"{self.name} says meow"\n',
                   [(["Rex"], ["...", "Rex says woof", "Rex says meow"])], [["Tom"]],
                   params=["name"],
@@ -223,7 +276,11 @@ class Dog(Animal):
 - **No `__init__` needed in the subclass:** it inherits `Animal.__init__`.
 """),
                 P("py-square-super", "Square from Rectangle", None,
-                  "Write `Rectangle(width, height)` with `area()`, and `Square(side)` that inherits from `Rectangle` and calls `super().__init__` with the side used twice. The tests return `[Square(s).area(), isinstance(Square(s), Rectangle)]`.",
+                  """Write `Rectangle(width, height)` with `area()`, and `Square(side)` that inherits from `Rectangle` and calls `super().__init__` with the side used twice. The tests return `[Square(s).area(), isinstance(Square(s), Rectangle)]`.
+
+**Constraints**
+- `0 <= side <= 10^16`
+""",
                   "class Rectangle:\n    def __init__(self, width: int, height: int):\n        self.width = width\n        self.height = height\n\n    def area(self) -> int:\n        return self.width * self.height\n\n\nclass Square(Rectangle):\n    def __init__(self, side: int):\n        super().__init__(side, side)\n",
                   [([3], [9, True]), ([0], [0, True])], [[12]],
                   params=["side"], require=["super"],
@@ -235,7 +292,14 @@ class Dog(Animal):
 - **Reuse the parent's setup:** `super()` gives you the parent class, so `super().__init__(...)` runs the parent's `__init__` with the values you pass.
 """),
                 P("py-sentinel-default", "A Default That Isn't None", "def get_setting(settings: Dict, key: str, default=...):",
-                  'Write `get_setting(settings, key, default)` that returns `settings[key]` if present. If the key is missing it returns `default` when one was passed, and raises `KeyError` when no default was passed. **`None` is a valid default**, so you can\'t use `None` to mean "not passed". Use an `object()` sentinel.\n\nThe tests try a present key, a missing key with default `None`, and a missing key with no default.',
+                  """Write `get_setting(settings, key, default)` that returns `settings[key]` if present. If the key is missing it returns `default` when one was passed, and raises `KeyError` when no default was passed. **`None` is a valid default**, so you can't use `None` to mean "not passed". Use an `object()` sentinel.
+
+The tests try a present key, a missing key with default `None`, and a missing key with no default.
+
+**Constraints**
+- `1 <= len(settings) <= 10^4`
+- Values can be of any type
+""",
                   "_MISSING = object()\n\n\ndef get_setting(settings, key, default=_MISSING):\n    if key in settings:\n        return settings[key]\n    if default is _MISSING:\n        raise KeyError(key)\n    return default\n",
                   [([{"a": 1}], [1, None, "KeyError"])], [[{"a": 0}]],
                   params=["settings"], require=["object"],
@@ -274,7 +338,11 @@ Sometimes the attribute name is in a variable:
 """,
             problems=[
                 P("py-read-field", "Read a Field by Name", "def read(obj, name: str):",
-                  "Return attribute `name` of `obj`, or `None` if it has no such attribute. The tests build an object with `x = 1` and `y = 2`.",
+                  """Return attribute `name` of `obj`, or `None` if it has no such attribute. The tests build an object with `x = 1` and `y = 2`.
+
+**Constraints**
+- `0 <= len(name) <= 100`
+""",
                   "def read(obj, name: str):\n    return getattr(obj, name, None)\n",
                   [(["x"], 1), (["z"], None)], [["y"]],
                   params=["name"], require=["getattr"],
@@ -284,7 +352,12 @@ Sometimes the attribute name is in a variable:
 - **Attribute by name, with a default:** `getattr(obj, name, None)`
 """),
                 P("py-fill-fields", "Fill Fields from a Dict", "def fill(obj, values: Dict[str, int]) -> None:",
-                  "Set an attribute on `obj` for every key in `values`. The tests pass an empty object and then look at `vars(obj)`.",
+                  """Set an attribute on `obj` for every key in `values`. The tests pass an empty object and then look at `vars(obj)`.
+
+**Constraints**
+- `0 <= len(values) <= 10^4`
+- Every key is a valid attribute name
+""",
                   "def fill(obj, values: Dict[str, int]) -> None:\n    for k, v in values.items():\n        setattr(obj, k, v)\n",
                   [([{"a": 1, "b": 2}], {"a": 1, "b": 2}), ([{}], {})], [[{"x": 0}]],
                   params=["values"], require=["setattr"],
@@ -294,7 +367,11 @@ Sometimes the attribute name is in a variable:
 - **Set an attribute by name:** `setattr(obj, name, value)`
 """),
                 P("py-has-all-fields", "Has Every Field?", "def has_all(obj, names: List[str]) -> bool:",
-                  "Return `True` if `obj` has every attribute listed in `names`. The tests' object has `x` and `y`.",
+                  """Return `True` if `obj` has every attribute listed in `names`. The tests' object has `x` and `y`.
+
+**Constraints**
+- `0 <= len(names) <= 10^4`
+""",
                   "def has_all(obj, names: List[str]) -> bool:\n    return all(hasattr(obj, n) for n in names)\n",
                   [([["x", "y"]], True), ([["x", "z"]], False), ([[]], True)], [[["y"]]],
                   params=["names"], require=["hasattr"],
@@ -306,7 +383,12 @@ Sometimes the attribute name is in a variable:
 - **Every item passes:** `all(...)`
 """),
                 P("py-strip-private", "Remove Private Fields", "def strip_private(obj) -> Dict[str, int]:",
-                  "Delete every attribute of `obj` whose name starts with `_`, then return `vars(obj)`. The tests build `obj` with the attributes in `fields` (name to value), so `{\"a\": 1, \"_b\": 2}` means `obj.a = 1` and `obj._b = 2`.",
+                  """Delete every attribute of `obj` whose name starts with `_`, then return `vars(obj)`. The tests build `obj` with the attributes in `fields` (name to value), so `{"a": 1, "_b": 2}` means `obj.a = 1` and `obj._b = 2`.
+
+**Constraints**
+- `0 <= len(fields) <= 10^4`
+- Every key is a valid attribute name
+""",
                   "def strip_private(obj) -> Dict[str, int]:\n    for name in list(vars(obj)):\n        if name.startswith(\"_\"):\n            delattr(obj, name)\n    return vars(obj)\n",
                   [([{"a": 1, "_b": 2, "_c": 3}], {"a": 1})], [[{}]],
                   params=["fields"], require=["delattr", "vars"],
@@ -319,7 +401,12 @@ Sometimes the attribute name is in a variable:
 - **Delete by name:** `delattr(target, person)`
 """),
                 P("py-public-methods", "Public Names", "def public_names(obj) -> List[str]:",
-                  "Return every name in `dir(obj)` that doesn't start with `_`, in order. The tests build `obj` from a class with the methods named in `methods`, and give it the attributes named in `attrs`.",
+                  """Return every name in `dir(obj)` that doesn't start with `_`, in order. The tests build `obj` from a class with the methods named in `methods`, and give it the attributes named in `attrs`.
+
+**Constraints**
+- `0 <= len(methods), len(attrs) <= 10^4`
+- Every name is a valid attribute name
+""",
                   "def public_names(obj) -> List[str]:\n    return [n for n in dir(obj) if not n.startswith(\"_\")]\n",
                   [([["go", "stop"], ["speed"]], ["go", "speed", "stop"])], [[[], []]],
                   params=["methods", "attrs"], require=["dir"],
@@ -355,7 +442,11 @@ Sometimes the attribute name is in a variable:
 """,
             problems=[
                 P("py-most-common-letter", "Most Common Letter", "def most_common(s: str) -> str:",
-                  "Return the most common character in `s` (the first one to reach that count, if tied). `s` isn't empty.",
+                  """Return the most common character in `s` (the first one to reach that count, if tied).
+
+**Constraints**
+- `1 <= len(s) <= 10^4`
+""",
                   "def most_common(s: str) -> str:\n    return Counter(s).most_common(1)[0][0]\n",
                   [(["banana"], "a"), (["abc"], "a")], [["zzzy"], ["mississippi"]],
                   require=["Counter"],
@@ -365,7 +456,11 @@ Sometimes the attribute name is in a variable:
 - **Top one:** `.most_common(1)` gives `[(char, count)]`, so take `[0][0]`.
 """),
                 P("py-anagram-groups-dd", "Group Anagrams with defaultdict", "def group(words: List[str]) -> List[List[str]]:",
-                  "Group words that are anagrams of each other, in the order each group first appears. Use `defaultdict(list)` with the sorted letters as the key.",
+                  """Group words that are anagrams of each other, in the order each group first appears. Use `defaultdict(list)` with the sorted letters as the key.
+
+**Constraints**
+- `0 <= len(words) <= 10^4`
+""",
                   "def group(words: List[str]) -> List[List[str]]:\n    groups = defaultdict(list)\n    for w in words:\n        groups[\"\".join(sorted(w))].append(w)\n    return list(groups.values())\n",
                   [([["eat", "tea", "tan", "ate", "nat"]], [["eat", "tea", "ate"], ["tan", "nat"]]), ([[]], [])], [[["a"]], [["ab", "ba", "abc"]]],
                   require=["defaultdict"],
@@ -376,7 +471,12 @@ Sometimes the attribute name is in a variable:
 - **No setup needed:** `groups[key].append(w)`
 """),
                 P("py-recent-items", "Last K Items", "def recent(items: List[int], k: int) -> List[int]:",
-                  "Feed `items` one at a time into a `deque` that only keeps the last `k`, and return what's left as a list.",
+                  """Feed `items` one at a time into a `deque` that only keeps the last `k`, and return what's left as a list.
+
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- `1 <= k <= 10^16`
+""",
                   "def recent(items: List[int], k: int) -> List[int]:\n    window = deque(maxlen=k)\n    for x in items:\n        window.append(x)\n    return list(window)\n",
                   [([[1, 2, 3, 4, 5], 3], [3, 4, 5]), ([[1], 3], [1])], [[[], 2], [list(range(100)), 1]],
                   require=["deque"],
@@ -385,7 +485,12 @@ Sometimes the attribute name is in a variable:
 - **A bounded queue:** `deque(maxlen=k)` drops the oldest item automatically.
 """),
                 P("py-namedtuple-points", "Named Points", "def furthest(points: List[List[int]]) -> List[int]:",
-                  "Turn each `[x, y]` into a `namedtuple` `Point` with fields `x` and `y`, and return the coordinates `[x, y]` of the point furthest from the origin (the first one, if tied). `points` isn't empty.",
+                  """Turn each `[x, y]` into a `namedtuple` `Point` with fields `x` and `y`, and return the coordinates `[x, y]` of the point furthest from the origin (the first one, if tied).
+
+**Constraints**
+- `1 <= len(points) <= 10^4`
+- `-10^4 <= points[i][j] <= 10^4`
+""",
                   "from collections import namedtuple\n\nPoint = namedtuple(\"Point\", \"x y\")\n\n\ndef furthest(points: List[List[int]]) -> List[int]:\n    pts = [Point(*p) for p in points]\n    best = max(pts, key=lambda p: p.x ** 2 + p.y ** 2)\n    return [best.x, best.y]\n",
                   [([[[1, 1], [3, 4], [0, 5]]], [3, 4]), ([[[0, 0]]], [0, 0])], [[[[-6, 0], [5, 5]]]],
                   require=["namedtuple"],
@@ -423,7 +528,13 @@ Sometimes the attribute name is in a variable:
 """,
             problems=[
                 P("py-k-smallest", "K Smallest", "def k_smallest(nums: List[int], k: int) -> List[int]:",
-                  "Return the `k` smallest numbers in increasing order, using a heap (not by sorting the whole list).",
+                  """Return the `k` smallest numbers in increasing order, using a heap (not by sorting the whole list).
+
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
+- `0 <= k <= 10^16`
+""",
                   "def k_smallest(nums: List[int], k: int) -> List[int]:\n    heap = list(nums)\n    heapify(heap)\n    return [heappop(heap) for _ in range(min(k, len(heap)))]\n",
                   [([[5, 1, 4, 2], 2], [1, 2]), ([[3], 5], [3])], [[[], 1], [[9, 9, 1], 3]],
                   require=["heappop"], forbid=["sorted", ".sort"],
@@ -434,7 +545,13 @@ Sometimes the attribute name is in a variable:
 - **Or simply:** `nsmallest(k, nums)`
 """),
                 P("py-insert-sorted", "Keep It Sorted (in place)", "def add_sorted(items: List[int], x: int) -> None:",
-                  "`items` is sorted. Insert `x` so it stays sorted, in place, using `bisect`.",
+                  """Insert `x` into `items` so it stays sorted, in place, using `bisect`.
+
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- `items` is sorted from smallest to largest
+- `-10^16 <= items[i], x <= 10^16`
+""",
                   "def add_sorted(items: List[int], x: int) -> None:\n    insort(items, x)\n",
                   [([[1, 3, 5], 4], [1, 3, 4, 5]), ([[], 1], [1])], [[[1, 1], 1], [[2, 4], 0]],
                   mutate=0, require=["insort"],
@@ -443,7 +560,11 @@ Sometimes the attribute name is in a variable:
 - **Insert in order:** `insort(things, v)` (from `bisect`, pre-imported).
 """),
                 P("py-grade-bisect", "Grade with bisect", "def grade(score: int) -> str:",
-                  'Grades: below 60 `"F"`, 60–69 `"D"`, 70–79 `"C"`, 80–89 `"B"`, 90+ `"A"`. Use `bisect` on the cut-offs `[60, 70, 80, 90]` instead of an if-chain.',
+                  """Grades: below 60 `"F"`, 60–69 `"D"`, 70–79 `"C"`, 80–89 `"B"`, 90+ `"A"`. Use `bisect` on the cut-offs `[60, 70, 80, 90]` instead of an if-chain.
+
+**Constraints**
+- `0 <= score <= 100`
+""",
                   'def grade(score: int) -> str:\n    return "FDCBA"[bisect_right([60, 70, 80, 90], score)]\n',
                   [([95], "A"), ([60], "D"), ([59], "F")], [[90], [89], [0], [100], [70]],
                   require=["bisect_right"], forbid=["if"],
@@ -477,7 +598,12 @@ Sometimes the attribute name is in a variable:
 """,
             problems=[
                 P("py-all-pairs", "Every Pair", "def pairs(items: List[int]) -> List[List[int]]:",
-                  "Return every pair of items (order within a pair follows the list; each pair once), using `combinations`.",
+                  """Return every pair of items (order within a pair follows the list; each pair once), using `combinations`.
+
+**Constraints**
+- `0 <= len(items) <= 100`
+- Items can be values of any type
+""",
                   "def pairs(items: List[int]) -> List[List[int]]:\n    return [list(p) for p in combinations(items, 2)]\n",
                   [([[1, 2, 3]], [[1, 2], [1, 3], [2, 3]]), ([[1]], [])], [[[]], [[4, 5, 6, 7]]],
                   require=["combinations"],
@@ -487,7 +613,12 @@ Sometimes the attribute name is in a variable:
 - **As lists:** `[list(p) for p in ...]`
 """),
                 P("py-running-max", "Running Maximum", "def running_max(nums: List[int]) -> List[int]:",
-                  "Return the largest value seen so far at each position. `[1, 3, 2, 5]` → `[1, 3, 3, 5]`. Use `accumulate`.",
+                  """Return the largest value seen so far at each position. Use `accumulate`.
+
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
+""",
                   "def running_max(nums: List[int]) -> List[int]:\n    return list(accumulate(nums, max))\n",
                   [([[1, 3, 2, 5]], [1, 3, 3, 5]), ([[]], [])], [[[5, 4, 3]], [[-1, -2, 0]]],
                   require=["accumulate"],
@@ -496,7 +627,12 @@ Sometimes the attribute name is in a variable:
 - **Running anything:** `accumulate(nums, max)`. With no function it's running totals.
 """),
                 P("py-run-lengths", "Run-Length Encoding", "def encode(s: str) -> str:",
-                  'Compress runs of the same character: `"aaabcc"` → `"a3b1c2"`. Use `itertools.groupby`.',
+                  """Compress runs of the same character: write each character followed by how many times it repeats in a row. Use `itertools.groupby`.
+
+**Constraints**
+- `0 <= len(s) <= 10^4`
+- `s` is English letters
+""",
                   'def encode(s: str) -> str:\n    return "".join(f"{ch}{len(list(run))}" for ch, run in itertools.groupby(s))\n',
                   [(["aaabcc"], "a3b1c2"), ([""], ""), (["x"], "x1")], [["aabbaa"], ["zzzzzzzzzzzz"]],
                   require=["groupby"], difficulty="Medium",
@@ -506,7 +642,11 @@ Sometimes the attribute name is in a variable:
 - **Length of a run:** `len(list(run))`
 """),
                 P("py-every-outfit", "Every Outfit", "def outfits(tops: List[str], bottoms: List[str]) -> List[str]:",
-                  'Return every `"top + bottom"` combination, tops in the outer order. Use `product`.',
+                  """Return every `"top + bottom"` combination, tops in the outer order. Use `product`.
+
+**Constraints**
+- `0 <= len(tops), len(bottoms) <= 10^4`
+""",
                   'def outfits(tops: List[str], bottoms: List[str]) -> List[str]:\n    return [f"{t} + {b}" for t, b in product(tops, bottoms)]\n',
                   [([["tee", "shirt"], ["jeans"]], ["tee + jeans", "shirt + jeans"]), ([[], ["x"]], [])], [[["a", "b"], ["c", "d"]]],
                   require=["product"],
@@ -537,7 +677,11 @@ Sometimes the attribute name is in a variable:
 """,
             problems=[
                 P("py-memo-fib", "Fast Fibonacci", "def fib(n: int) -> int:",
-                  "Return the `n`th Fibonacci number (`fib(0) = 0`, `fib(1) = 1`) **recursively**, for `n` up to 300. Without caching it would take forever; add `@cache`.",
+                  """Return the `n`th Fibonacci number (`fib(0) = 0`, `fib(1) = 1`) **recursively**. Without caching it would take forever; add `@cache`.
+
+**Constraints**
+- `0 <= n <= 300`
+""",
                   "@cache\ndef fib(n: int) -> int:\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n",
                   [([10], 55), ([0], 0), ([1], 1)], [[50], [90], [300]],
                   require=["recursion", "cache"],
@@ -548,7 +692,12 @@ Sometimes the attribute name is in a variable:
 - **Recursive case:** the function calls itself on smaller inputs, e.g. `f(k - 1)`.
 """),
                 P("py-product-reduce", "Product with reduce", "def product_of(nums: List[int]) -> int:",
-                  "Return the product of all the numbers (1 for an empty list) using `reduce`.",
+                  """Return the product of all the numbers (1 for an empty list) using `reduce`.
+
+**Constraints**
+- `0 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
+""",
                   "def product_of(nums: List[int]) -> int:\n    return reduce(lambda a, b: a * b, nums, 1)\n",
                   [([[2, 3, 4]], 24), ([[]], 1)], [[[5]], [[-1, -1, -1]]],
                   require=["reduce"],
@@ -557,7 +706,12 @@ Sometimes the attribute name is in a variable:
 - **Fold a list:** `reduce(lambda acc, x: acc + x, xs, 0)` adds everything up; the last argument is the starting value.
 """),
                 P("py-largest-number", "Largest Number", "def largest_number(nums: List[int]) -> str:",
-                  'Arrange the non-negative numbers to form the largest possible number, as text. `[3, 30, 34, 5, 9]` → `"9534330"`. Sort with a compare function: `a` goes first if `a + b > b + a` (as strings).',
+                  """Arrange the non-negative numbers to form the largest possible number, as text. Sort with a compare function: `a` goes first if `a + b > b + a` (as strings).
+
+**Constraints**
+- `1 <= len(nums) <= 10^4`
+- `0 <= nums[i] <= 10^16`
+""",
                   'def largest_number(nums: List[int]) -> str:\n    def cmp(a, b):\n        return -1 if a + b > b + a else (1 if a + b < b + a else 0)\n    text = "".join(sorted(map(str, nums), key=functools.cmp_to_key(cmp)))\n    return "0" if text[0] == "0" else text\n',
                   [([[3, 30, 34, 5, 9]], "9534330"), ([[10, 2]], "210"), ([[0, 0]], "0")], [[[1]], [[121, 12]], [[0, 9]]],
                   require=["cmp_to_key"], difficulty="Hard",
@@ -568,7 +722,12 @@ Sometimes the attribute name is in a variable:
 - **Edge case:** all zeros should give `"0"`, not `"00"`.
 """),
                 P("py-gcd-of-list", "GCD of a List", "def gcd_all(nums: List[int]) -> int:",
-                  "Return the greatest common divisor of all the numbers (each at least 1).",
+                  """Return the greatest common divisor of all the numbers.
+
+**Constraints**
+- `1 <= len(nums) <= 10^4`
+- `1 <= nums[i] <= 10^16`
+""",
                   "def gcd_all(nums: List[int]) -> int:\n    return reduce(math.gcd, nums)\n",
                   [([[12, 18, 24]], 6), ([[7]], 7), ([[5, 7]], 1)], [[[100, 75, 50]], [[2] * 10]],
                   require=["gcd"],
@@ -578,7 +737,11 @@ Sometimes the attribute name is in a variable:
 - **Of many:** `reduce(math.gcd, nums)` (in Python 3.9+, `math.gcd(*nums)` also works).
 """),
                 P("py-perfect-square", "Perfect Square?", "def is_square(n: int) -> bool:",
-                  "Return `True` if `n` (0 or more, possibly huge) is a perfect square. Use `math.isqrt`, which is exact for big numbers where `n ** 0.5` isn't.",
+                  """Return `True` if `n` (which can be huge) is a perfect square. Use `math.isqrt`, which is exact for big numbers where `n ** 0.5` isn't.
+
+**Constraints**
+- `0 <= n <= 10^31`
+""",
                   "def is_square(n: int) -> bool:\n    r = math.isqrt(n)\n    return r * r == n\n",
                   [([16], True), ([15], False), ([0], True)], [[1], [10 ** 30], [10 ** 30 + 1]],
                   require=["isqrt"],
@@ -617,7 +780,11 @@ with open(path, "w") as f:     # "w" overwrites; "a" appends
 """,
             problems=[
                 P("py-count-lines", "Count Lines in a File", "def count_lines(path: str) -> int:",
-                  "Return how many lines the file at `path` has. The examples show the file's contents.",
+                  """Return how many lines the file at `path` has. The examples show the file's contents.
+
+**Constraints**
+- The file has up to `10^4` characters
+""",
                   "def count_lines(path: str) -> int:\n    with open(path) as f:\n        return sum(1 for _ in f)\n",
                   [(["one\ntwo\nthree\n"], 3), ([""], 0)], [["no newline at end"], ["a\n\nb\n"]],
                   params=["file_contents"], require=["open", "with"],
@@ -629,7 +796,11 @@ with open(path, "w") as f:     # "w" overwrites; "a" appends
 - **Count them:** a counter, or `sum(1 for _ in f)`.
 """),
                 P("py-word-count-file", "Words in a File", "def file_words(path: str) -> int:",
-                  "Return how many words (separated by whitespace) are in the file at `path`.",
+                  """Return how many words (separated by whitespace) are in the file at `path`.
+
+**Constraints**
+- The file has up to `10^4` characters
+""",
                   "def file_words(path: str) -> int:\n    with open(path) as f:\n        return len(f.read().split())\n",
                   [(["the cat\nsat on\n\nthe mat"], 6), ([""], 0)], [["  spaced   out  "], ["one"]],
                   params=["file_contents"], require=["open"],
@@ -640,7 +811,12 @@ with open(path, "w") as f:     # "w" overwrites; "a" appends
 - **Words:** `.split()`
 """),
                 P("py-write-lines", "Write Lines to a File", "def save_lines(path: str, lines: List[str]) -> None:",
-                  "Write each string in `lines` to the file at `path`, one per line (each followed by a new line). The tests read the file back.",
+                  """Write each string in `lines` to the file at `path`, one per line (each followed by a new line). The tests read the file back.
+
+**Constraints**
+- `0 <= len(lines) <= 10^4`
+- No string in `lines` contains a new line
+""",
                   "def save_lines(path: str, lines: List[str]) -> None:\n    with open(path, \"w\") as f:\n        for line in lines:\n            f.write(line + \"\\n\")\n",
                   [([["a", "b"]], "a\nb\n"), ([[]], "")], [[["only"]], [["", "x"]]],
                   params=["lines"], require=["open", "with"],

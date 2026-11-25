@@ -27,7 +27,9 @@ The **counting pattern**: `counts[x] = counts.get(x, 0) + 1`.
                   """
 A checkout service keeps its prices in a dict from product name to price. Write `price(prices, item)` to return the price of `item`, or `0` if the store doesn't sell it.
 
-Example: `price({"tea": 3, "jam": 5}, "jam")` returns `5`, and `price({"tea": 3}, "cake")` returns `0`.
+**Constraints**
+- `0 <= len(prices) <= 10^4`
+- `-10^16 <= prices[name] <= 10^16`
 """,
                   "def price(prices: Dict[str, int], item: str) -> int:\n    return prices.get(item, 0)\n",
                   [([{"tea": 3, "jam": 5}, "jam"], 5), ([{"tea": 3}, "cake"], 0)], [[{}, "x"], [{"a": 0}, "a"]],
@@ -41,7 +43,8 @@ Example: `price({"tea": 3, "jam": 5}, "jam")` returns `5`, and `price({"tea": 3}
                   """
 A search feature needs to know how often each word appears in a document. Write `frequencies(words)` to return a dict from each word to the number of times it appears. Count with a plain dict (don't use `Counter`).
 
-Example: `frequencies(["a", "b", "a"])` returns `{"a": 2, "b": 1}`. An empty list gives `{}`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
 """,
                   "def frequencies(words: List[str]) -> Dict[str, int]:\n    counts = {}\n    for w in words:\n        counts[w] = counts.get(w, 0) + 1\n    return counts\n",
                   [([["a", "b", "a"]], {"a": 2, "b": 1}), ([[]], {})], [[["x"] * 5], [["to", "be", "or", "not", "to", "be"]]],
@@ -54,9 +57,11 @@ Example: `frequencies(["a", "b", "a"])` returns `{"a": 2, "b": 1}`. An empty lis
 """),
                 P("py-invert-dict", 'Invert a Lookup Table', "def invert(d: Dict[str, str]) -> Dict[str, str]:",
                   """
-A config maps internal codes to display names, and you need the reverse mapping too. Write `invert(d)` to return a new dict where each value becomes a key and each key becomes its value. The values are all different.
+A config maps internal codes to display names, and you need the reverse mapping too. Write `invert(d)` to return a new dict where each value becomes a key and each key becomes its value.
 
-Example: `invert({"a": "x", "b": "y"})` returns `{"x": "a", "y": "b"}`.
+**Constraints**
+- `0 <= len(d) <= 10^4`
+- All the values in `d` are different
 """,
                   "def invert(d: Dict[str, str]) -> Dict[str, str]:\n    out = {}\n    for k, v in d.items():\n        out[v] = k\n    return out\n",
                   [([{"a": "x", "b": "y"}], {"x": "a", "y": "b"}), ([{}], {})], [[{"one": "1"}]],
@@ -69,7 +74,8 @@ Example: `invert({"a": "x", "b": "y"})` returns `{"x": "a", "y": "b"}`.
                   """
 A spell checker flags the first word that appears twice in a sentence. Write `first_repeat(words)` to return the first word that you see for a second time, reading left to right, or `""` if no word repeats.
 
-Example: `first_repeat(["a", "b", "c", "b", "a"])` returns `"b"`, because the second `b` comes before the second `a`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
 """,
                   'def first_repeat(words: List[str]) -> str:\n    seen = {}\n    for w in words:\n        if w in seen:\n            return w\n        seen[w] = True\n    return ""\n',
                   [([["a", "b", "c", "b", "a"]], "b"), ([["x", "y"]], "")], [[[]], [["z", "z"]]],
@@ -108,7 +114,9 @@ Dicts remember the order keys were added. Looping over a dict gives its keys.
                   """
 An inventory report needs the total number of units in stock across all products. Write `total_stock(stock)`, where `stock` maps product names to quantities, and return the total.
 
-Example: `total_stock({"apples": 3, "pears": 4})` returns `7`. An empty dict returns `0`.
+**Constraints**
+- `0 <= len(stock) <= 10^4`
+- `-10^16 <= stock[name] <= 10^16`
 """,
                   "def total_stock(stock: Dict[str, int]) -> int:\n    return sum(stock.values())\n",
                   [([{"apples": 3, "pears": 4}], 7), ([{}], 0)], [[{"x": -1, "y": 1}]],
@@ -122,7 +130,8 @@ Example: `total_stock({"apples": 3, "pears": 4})` returns `7`. An empty dict ret
                   """
 A settings page lists its options alphabetically. Write `sorted_keys(d)` to return the dict's keys as a list in alphabetical order.
 
-Example: `sorted_keys({"b": 1, "a": 2})` returns `["a", "b"]`.
+**Constraints**
+- `0 <= len(d) <= 10^4`
 """,
                   "def sorted_keys(d: Dict[str, int]) -> List[str]:\n    return sorted(d)\n",
                   [([{"b": 1, "a": 2}], ["a", "b"]), ([{}], [])], [[{"z": 0, "m": 0, "a": 0}]],
@@ -134,7 +143,8 @@ Example: `sorted_keys({"b": 1, "a": 2})` returns `["a", "b"]`.
                   """
 An app starts from default settings and lets each user override some of them. Write `merge(defaults, overrides)` to return a new dict with every default, replaced by the user's value wherever they set one. Keys that appear only in `overrides` are included too. Don't change either input dict.
 
-Example: `merge({"size": 10, "bold": 0}, {"bold": 1})` returns `{"size": 10, "bold": 1}`.
+**Constraints**
+- `0 <= len(defaults), len(overrides) <= 10^4`
 """,
                   "def merge(defaults: Dict[str, int], overrides: Dict[str, int]) -> Dict[str, int]:\n    out = dict(defaults)\n    out.update(overrides)\n    return out\n",
                   [([{"size": 10, "bold": 0}, {"bold": 1}], {"size": 10, "bold": 1}), ([{}, {"a": 1}], {"a": 1})], [[{"a": 1}, {}]],
@@ -149,7 +159,8 @@ Example: `merge({"size": 10, "bold": 0}, {"bold": 1})` returns `{"size": 10, "bo
                   """
 When a cart item is removed, the cart code needs the item's price for a refund. Write `take(d, key)` to remove `key` from `d` and return `[its value, the dict afterwards]`. If the key isn't there, return `[None, d]` with the dict unchanged.
 
-Example: `take({"a": 1, "b": 2}, "a")` returns `[1, {"b": 2}]`.
+**Constraints**
+- `0 <= len(d) <= 10^4`
 """,
                   "def take(d: Dict[str, int], key: str) -> List:\n    value = d.pop(key, None)\n    return [value, d]\n",
                   [([{"a": 1, "b": 2}, "a"], [1, {"b": 2}]), ([{"a": 1}, "z"], [None, {"a": 1}])], [[{}, "x"]],
@@ -160,9 +171,11 @@ Example: `take({"a": 1, "b": 2}, "a")` returns `[1, {"b": 2}]`.
 """),
                 P("py-group-by-initial", 'Group Names by First Letter', "def by_initial(words: List[str]) -> Dict[str, List[str]]:",
                   """
-A contacts screen shows names under a heading for each first letter. Write `by_initial(words)` to return a dict from each first letter to the list of words that start with it, keeping the words in their original order. No word is empty.
+A contacts screen shows names under a heading for each first letter. Write `by_initial(words)` to return a dict from each first letter to the list of words that start with it, keeping the words in their original order.
 
-Example: `by_initial(["apple", "bean", "avocado"])` returns `{"a": ["apple", "avocado"], "b": ["bean"]}`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
+- `1 <= len(words[i]) <= 100`
 """,
                   "def by_initial(words: List[str]) -> Dict[str, List[str]]:\n    groups = {}\n    for w in words:\n        groups.setdefault(w[0], []).append(w)\n    return groups\n",
                   [([["apple", "bean", "avocado"]], {"a": ["apple", "avocado"], "b": ["bean"]}), ([[]], {})], [[["x", "y", "x"]]],
@@ -174,9 +187,11 @@ Example: `by_initial(["apple", "bean", "avocado"])` returns `{"a": ["apple", "av
 """),
                 P("py-zip-to-dict", 'Build a Dict from Two Lists', "def to_dict(keys: List[str], values: List[int]) -> Dict[str, int]:",
                   """
-A CSV import gives you the column names in one list and a row's values in another, in the same order. Write `to_dict(keys, values)` to pair them up in a dict. The lists are the same length.
+A CSV import gives you the column names in one list and a row's values in another, in the same order. Write `to_dict(keys, values)` to pair them up in a dict.
 
-Example: `to_dict(["a", "b"], [1, 2])` returns `{"a": 1, "b": 2}`.
+**Constraints**
+- `0 <= len(keys) <= 10^4`
+- `len(values) == len(keys)`
 """,
                   "def to_dict(keys: List[str], values: List[int]) -> Dict[str, int]:\n    return dict(zip(keys, values))\n",
                   [([["a", "b"], [1, 2]], {"a": 1, "b": 2}), ([[], []], {})], [[["x", "x"], [1, 2]]],
@@ -211,7 +226,9 @@ A **set** holds unique values with no order: `{1, 2, 3}`.
                   """
 An analytics dashboard shows how many different user IDs appeared in a log. Write `distinct(items)` to return the number of different values in the list.
 
-Example: `distinct([1, 2, 2, 3, 3, 3])` returns `3`. An empty list returns `0`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Items are numbers or strings
 """,
                   "def distinct(items: List[int]) -> int:\n    return len(set(items))\n",
                   [([[1, 2, 2, 3, 3, 3]], 3), ([[]], 0)], [[[7] * 10], [list(range(50))]],
@@ -225,7 +242,11 @@ Example: `distinct([1, 2, 2, 3, 3, 3])` returns `3`. An empty list returns `0`.
                   """
 A mailing list has some addresses more than once. Write `dedupe(items)` to return the list with duplicates removed, keeping the first occurrence of each value in its original order.
 
-Example: `dedupe([3, 1, 3, 2, 1])` returns `[3, 1, 2]`. A plain set would lose the order.
+A plain set would lose the order.
+
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Items are numbers or strings
 """,
                   "def dedupe(items: List[int]) -> List[int]:\n    seen = set()\n    out = []\n    for x in items:\n        if x not in seen:\n            seen.add(x)\n            out.append(x)\n    return out\n",
                   [([[3, 1, 3, 2, 1]], [3, 1, 2]), ([[]], [])], [[[5, 5, 5]], [[1, 2, 3]]],
@@ -241,7 +262,8 @@ Example: `dedupe([3, 1, 3, 2, 1])` returns `[3, 1, 2]`. A plain set would lose t
                   """
 A word game needs the set of letters in the player's word. Write `letters(word)` to return the set of its letters.
 
-Example: `letters("hello")` returns `{"h", "e", "l", "o"}`, and `letters("")` returns `set()`.
+**Constraints**
+- `0 <= len(word) <= 10^4`
 """,
                   "def letters(word: str) -> Set[str]:\n    return set(word)\n",
                   [(["hello"], {"h", "e", "l", "o"}), ([""], set())], [["aaa"], ["abc"]],
@@ -277,7 +299,9 @@ Example: `letters("hello")` returns `{"h", "e", "l", "o"}`, and `letters("")` re
                   """
 Two teams each have a list of tags they use. Write `both(a, b)` to return the set of tags that appear in both lists.
 
-Example: `both([1, 2, 3], [2, 3, 4])` returns `{2, 3}`.
+**Constraints**
+- `0 <= len(a), len(b) <= 10^4`
+- Items are numbers or strings
 """,
                   "def both(a: List[int], b: List[int]) -> Set[int]:\n    return set(a) & set(b)\n",
                   [([[1, 2, 3], [2, 3, 4]], {2, 3}), ([[1], [2]], set())], [[[], []], [[5, 5], [5]]],
@@ -291,7 +315,9 @@ Example: `both([1, 2, 3], [2, 3, 4])` returns `{2, 3}`.
                   """
 Two data sources each list some product IDs, and the merged catalogue needs every ID once. Write `either(a, b)` to return the set of values that appear in at least one list.
 
-Example: `either([1, 2], [2, 3])` returns `{1, 2, 3}`.
+**Constraints**
+- `0 <= len(a), len(b) <= 10^4`
+- Items are numbers or strings
 """,
                   "def either(a: List[int], b: List[int]) -> Set[int]:\n    return set(a) | set(b)\n",
                   [([[1, 2], [2, 3]], {1, 2, 3}), ([[], []], set())], [[[1], []]],
@@ -304,7 +330,8 @@ Example: `either([1, 2], [2, 3])` returns `{1, 2, 3}`.
                   """
 An event app compares the guest list with the people who have checked in. Write `missing(invited, arrived)` to return the invited guests who haven't arrived, in alphabetical order.
 
-Example: `missing(["ada", "bo", "cy"], ["bo"])` returns `["ada", "cy"]`.
+**Constraints**
+- `0 <= len(invited), len(arrived) <= 10^4`
 """,
                   "def missing(invited: List[str], arrived: List[str]) -> List[str]:\n    return sorted(set(invited) - set(arrived))\n",
                   [([["ada", "bo", "cy"], ["bo"]], ["ada", "cy"]), ([["a"], ["a"]], [])], [[[], ["x"]], [["z", "y"], []]],
@@ -318,7 +345,9 @@ Example: `missing(["ada", "bo", "cy"], ["bo"])` returns `["ada", "cy"]`.
                   """
 A sync tool compares the file IDs on two machines and needs the ones that exist on only one of them. Write `exactly_one(a, b)` to return those values in increasing order.
 
-Example: `exactly_one([1, 2, 3], [3, 4])` returns `[1, 2, 4]`.
+**Constraints**
+- `0 <= len(a), len(b) <= 10^4`
+- `-10^16 <= a[i], b[i] <= 10^16`
 """,
                   "def exactly_one(a: List[int], b: List[int]) -> List[int]:\n    return sorted(set(a) ^ set(b))\n",
                   [([[1, 2, 3], [3, 4]], [1, 2, 4]), ([[1], [1]], [])], [[[], [1, 1]], [[5, 6], [7, 8]]],
@@ -331,7 +360,8 @@ Example: `exactly_one([1, 2, 3], [3, 4])` returns `[1, 2, 4]`.
                   """
 A recipe app checks whether you can cook a dish with what's in your pantry. Write `can_make(needed, have)` to return `True` if every ingredient in `needed` appears somewhere in `have`. Quantities don't matter.
 
-Example: `can_make(["egg", "milk"], ["milk", "egg", "flour"])` returns `True`, and `can_make(["egg"], [])` returns `False`.
+**Constraints**
+- `0 <= len(needed), len(have) <= 10^4`
 """,
                   "def can_make(needed: List[str], have: List[str]) -> bool:\n    return set(needed) <= set(have)\n",
                   [([["egg", "milk"], ["milk", "egg", "flour"]], True), ([["egg"], []], False), ([[], []], True)], [[["a", "a"], ["a"]]],
@@ -366,7 +396,8 @@ A **tuple** is like a list that can't change: `point = (3, 4)`.
                   """
 A sorting routine needs a helper that swaps a pair. Write `swap(a, b)` to return the tuple `(b, a)`.
 
-Example: `swap(1, 2)` returns `(2, 1)`.
+**Constraints**
+- `a` and `b` can be values of any type
 """,
                   "def swap(a: int, b: int) -> Tuple[int, int]:\n    return b, a\n",
                   [([1, 2], (2, 1)), ([0, 0], (0, 0))], [[-1, 5]],
@@ -378,9 +409,11 @@ Example: `swap(1, 2)` returns `(2, 1)`.
 """),
                 P("py-min-max-tuple", 'Smallest and Largest', "def low_high(nums: List[int]) -> Tuple[int, int]:",
                   """
-A chart needs the lowest and highest values to set its axis. Write `low_high(nums)` to return `(smallest, largest)` as a tuple. The list has at least one number.
+A chart needs the lowest and highest values to set its axis. Write `low_high(nums)` to return `(smallest, largest)` as a tuple.
 
-Example: `low_high([3, 1, 2])` returns `(1, 3)`, and `low_high([5])` returns `(5, 5)`.
+**Constraints**
+- `1 <= len(nums) <= 10^4`
+- `-10^16 <= nums[i] <= 10^16`
 """,
                   "def low_high(nums: List[int]) -> Tuple[int, int]:\n    return min(nums), max(nums)\n",
                   [([[3, 1, 2]], (1, 3)), ([[5]], (5, 5))], [[[-1, -9, 4]]],
@@ -391,9 +424,11 @@ Example: `low_high([3, 1, 2])` returns `(1, 3)`, and `low_high([5])` returns `(5
 """),
                 P("py-head-tail", 'First Item and the Rest', "def head_tail(items: List[int]) -> Tuple:",
                   """
-A job queue processes the first job and keeps the rest waiting. Write `head_tail(items)` to return a tuple `(first item, list of the rest)`, using star unpacking. The list has at least one item.
+A job queue processes the first job and keeps the rest waiting. Write `head_tail(items)` to return a tuple `(first item, list of the rest)`, using star unpacking.
 
-Example: `head_tail([1, 2, 3])` returns `(1, [2, 3])`, and `head_tail([9])` returns `(9, [])`.
+**Constraints**
+- `1 <= len(items) <= 10^4`
+- Items can be values of any type
 """,
                   "def head_tail(items: List[int]) -> Tuple:\n    first, *rest = items\n    return first, rest\n",
                   [([[1, 2, 3]], (1, [2, 3])), ([[9]], (9, []))], [[[0, 0]]],
@@ -407,7 +442,9 @@ Example: `head_tail([1, 2, 3])` returns `(1, [2, 3])`, and `head_tail([9])` retu
                   """
 A map feature stores locations as `(x, y)` tuples. Write `distance(p, q)` to return the straight-line distance between two of them: √((x₁−x₂)² + (y₁−y₂)²).
 
-Example: `distance((0, 0), (3, 4))` returns `5.0`.
+**Constraints**
+- `len(p) == len(q) == 2`
+- `-10^16 <= p[i], q[i] <= 10^16`
 """,
                   "def distance(p: Tuple[int, int], q: Tuple[int, int]) -> float:\n    (x1, y1), (x2, y2) = p, q\n    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5\n",
                   [([(0, 0), (3, 4)], 5.0), ([(1, 1), (1, 1)], 0.0)], [[(-1, -1), (2, 3)], [(0, 0), (1, 1)]],
@@ -421,7 +458,9 @@ Example: `distance((0, 0), (3, 4))` returns `5.0`.
                   """
 Once an order is confirmed it shouldn't change, so it's stored as a tuple. Write `freeze(items)` to return the items as a tuple.
 
-Example: `freeze([1, 2])` returns `(1, 2)`, and `freeze([])` returns `()`.
+**Constraints**
+- `0 <= len(items) <= 10^4`
+- Items can be values of any type
 """,
                   "def freeze(items: List[int]) -> Tuple[int, ...]:\n    return tuple(items)\n",
                   [([[1, 2]], (1, 2)), ([[]], ()), ([[7]], (7,))], [[[3, 3, 3]]],
@@ -456,7 +495,11 @@ Dict keys and set items must be **hashable**: Python computes `hash(x)` to find 
                   """
 A drawing app records every click as an `[x, y]` pair, and some clicks land on the same spot. Write `distinct_points(points)` to return how many different spots were clicked.
 
-Example: `distinct_points([[1, 2], [3, 4], [1, 2]])` returns `2`. Lists can't go in a set, but tuples can.
+Lists can't go in a set, but tuples can.
+
+**Constraints**
+- `0 <= len(points) <= 10^4`
+- `-10^16 <= points[i][j] <= 10^16`
 """,
                   "def distinct_points(points: List[List[int]]) -> int:\n    return len({tuple(p) for p in points})\n",
                   [([[[1, 2], [3, 4], [1, 2]]], 2), ([[]], 0)], [[[[0, 0]] * 5], [[[1, 2], [2, 1]]]],
@@ -471,7 +514,9 @@ Example: `distinct_points([[1, 2], [3, 4], [1, 2]])` returns `2`. Lists can't go
                   """
 A heatmap needs to know how many clicks landed on each spot. Write `point_counts(points)` to return a dict from each spot, as an `(x, y)` tuple, to how many times it appears.
 
-Example: `point_counts([[1, 2], [1, 2], [0, 0]])` returns `{(1, 2): 2, (0, 0): 1}`.
+**Constraints**
+- `0 <= len(points) <= 10^4`
+- `-10^16 <= points[i][j] <= 10^16`
 """,
                   "def point_counts(points: List[List[int]]) -> Dict:\n    counts = {}\n    for p in points:\n        key = tuple(p)\n        counts[key] = counts.get(key, 0) + 1\n    return counts\n",
                   [([[[1, 2], [1, 2], [0, 0]]], {(1, 2): 2, (0, 0): 1}), ([[]], {})], [[[[5, 5]]]],
@@ -485,7 +530,8 @@ Example: `point_counts([[1, 2], [1, 2], [0, 0]])` returns `{(1, 2): 2, (0, 0): 1
                   """
 A word puzzle checks whether two words use exactly the same letters, ignoring how many times each appears. Write `same_letters(a, b)` using `frozenset`.
 
-Example: `same_letters("listen", "silent")` returns `True`, and so does `same_letters("aab", "ab")`.
+**Constraints**
+- `0 <= len(a), len(b) <= 10^4`
 """,
                   "def same_letters(a: str, b: str) -> bool:\n    return frozenset(a) == frozenset(b)\n",
                   [(["listen", "silent"], True), (["aab", "ab"], True), (["abc", "abd"], False)], [["", ""], ["a", ""]],
@@ -499,7 +545,8 @@ Example: `same_letters("listen", "silent")` returns `True`, and so does `same_le
                   """
 A word puzzle groups words that use the same set of letters. Write `group_letter_sets(words)` to return the groups as a list of lists, in the order each group's first word appears, with each group's words in their original order.
 
-Example: `group_letter_sets(["ab", "ba", "aab", "c"])` returns `[["ab", "ba", "aab"], ["c"]]`.
+**Constraints**
+- `0 <= len(words) <= 10^4`
 """,
                   "def group_letter_sets(words: List[str]) -> List[List[str]]:\n    groups = {}\n    for w in words:\n        groups.setdefault(frozenset(w), []).append(w)\n    return list(groups.values())\n",
                   [([["ab", "ba", "aab", "c"]], [["ab", "ba", "aab"], ["c"]]), ([[]], [])], [[["x", "y", "xy", "yx", "x"]]],
@@ -514,7 +561,8 @@ Example: `group_letter_sets(["ab", "ba", "aab", "c"])` returns `[["ab", "ba", "a
                   """
 Dicts and sets look values up by their hash. Write `same_hash(a, b)` to return whether `hash(a) == hash(b)`. Equal strings always hash the same.
 
-Example: `same_hash("abc", "abc")` returns `True`, and `same_hash("abc", "abd")` returns `False`.
+**Constraints**
+- `a` and `b` are each a string, an int or a bool
 """,
                   "def same_hash(a: str, b: str) -> bool:\n    return hash(a) == hash(b)\n",
                   [(["abc", "abc"], True), (["abc", "abd"], False)], [["", ""], ["a", "A"]],
