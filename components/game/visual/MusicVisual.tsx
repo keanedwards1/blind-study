@@ -1,12 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { save, useStored } from "@/lib/storage";
+import { load, save, useStored } from "@/lib/storage";
 import { NetworkIcon } from "../icons";
 import { DEFAULTS, loadParams, matchingPreset, PALETTES, PRESETS, saveParams, SHAPES, SLIDERS, type Blend, type ShapeMode, type VisualParams } from "./params";
 import Plexus, { liveMeters, type Meters, resolveColor, toHex } from "./Plexus";
 
 const ENABLED_KEY = "python:visual-on";
+// The tuning panel floats over the page: drag it by its title bar (position remembered) and collapse it to just that bar.
+const PANEL_POS_KEY = "python:visual-panel-pos";
+const PANEL_COLLAPSED_KEY = "python:visual-panel-collapsed";
+const PANEL_W = 330;
+const PANEL_BAR_H = 44;
+const EDGE = 8;
+
+/** Where the panel goes: its saved spot (default: top right, clear of the visual), kept on screen with its title bar visible. */
+function panelBox(pos: { x: number; y: number } | null) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const w = Math.min(PANEL_W, vw - 2 * EDGE);
+  const p = pos ?? { x: vw - w - 16, y: 72 };
+  const x = Math.min(Math.max(EDGE, p.x), Math.max(EDGE, vw - w - EDGE));
+  const y = Math.min(Math.max(EDGE, p.y), Math.max(EDGE, vh - PANEL_BAR_H - EDGE));
+  return { x, y, w, maxH: vh - y - EDGE };
+}
 
 /** Whether the stage visual is shown (remembered between visits; on by default). */
 export function useVisualEnabled(): boolean {
@@ -73,6 +90,43 @@ function ControlPanel({
 }) {
   const [m, setM] = useState<Meters & { beatLit: boolean }>({ ...liveMeters, beatLit: false });
   const [copied, setCopied] = useState(false);
+  const [pos, setPos] = useState(() => load<{ x: number; y: number } | null>(PANEL_POS_KEY, null));
+  const collapsed = useStored<boolean>(PANEL_COLLAPSED_KEY, false);
+  const drag = useRef<{ dx: number; dy: number } | null>(null);
+  const [, setViewport] = useState(0);
+  const box = panelBox(pos);
+
+  // Re-fit the panel when the window changes size.
+  useEffect(() => {
+    const onResize = () => setViewport((n) => n + 1);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const dragProps = {
+    onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.button !== 0 || (e.target as HTMLElement).closest("button")) return;
+      e.preventDefault();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      drag.current = { dx: e.clientX - box.x, dy: e.clientY - box.y };
+    },
+    onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => {
+      const d = drag.current;
+      if (d) setPos({ x: e.clientX - d.dx, y: e.clientY - d.dy });
+    },
+    onPointerUp: (e: React.PointerEvent<HTMLDivElement>) => {
+      const d = drag.current;
+      if (!d) return;
+      drag.current = null;
+      // From the event, not `box`: the last move may not have re-rendered yet.
+      const end = panelBox({ x: e.clientX - d.dx, y: e.clientY - d.dy });
+      setPos({ x: end.x, y: end.y });
+      save(PANEL_POS_KEY, { x: Math.round(end.x), y: Math.round(end.y) });
+    },
+    onLostPointerCapture: () => {
+      drag.current = null;
+    },
+  };
 
   // Live meters, refreshed while the panel is open.
   useEffect(() => {
@@ -122,14 +176,35 @@ function ControlPanel({
   };
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 flex max-h-[78vh] w-[330px] flex-col overflow-hidden rounded-xl border border-line bg-panel text-sm text-fg shadow-2xl">
-      <div className="flex items-center justify-between border-b border-line px-3 py-2">
+    <div
+      className="fixed z-50 flex flex-col overflow-hidden rounded-xl border border-line bg-panel text-sm text-fg shadow-2xl"
+      style={{ left: box.x, top: box.y, width: box.w, maxHeight: box.maxH }}
+    >
+      <div
+        className={`flex h-11 shrink-0 cursor-move touch-none items-center justify-between gap-2 px-3 select-none ${collapsed ? "" : "border-b border-line"}`}
+        title="Drag to move"
+        {...dragProps}
+      >
         <span className="font-semibold">Visual tuning</span>
-        <button type="button" onClick={onClose} className="text-subtle hover:text-fg" aria-label="Close">
-          ✕
-        </button>
+        <span className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => save(PANEL_COLLAPSED_KEY, !collapsed)}
+            className="text-subtle hover:text-fg"
+            aria-label={collapsed ? "Expand the panel" : "Collapse the panel"}
+            aria-expanded={!collapsed}
+            title={collapsed ? "Expand" : "Collapse"}
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`transition-transform ${collapsed ? "rotate-180" : ""}`}>
+              <path d="M3.5 10l4.5-4.5 4.5 4.5" />
+            </svg>
+          </button>
+          <button type="button" onClick={onClose} className="text-subtle hover:text-fg" aria-label="Close">
+            ✕
+          </button>
+        </span>
       </div>
-      <div className="flex flex-col gap-4 overflow-auto px-3 py-3">
+      <div className={`flex-col gap-4 overflow-auto px-3 py-3 ${collapsed ? "hidden" : "flex"}`}>
         <section className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold">Music</span>
@@ -249,7 +324,7 @@ function ControlPanel({
           </section>
         ))}
       </div>
-      <div className="flex flex-wrap items-center gap-2 border-t border-line px-3 py-2">
+      <div className={`flex-wrap items-center gap-2 border-t border-line px-3 py-2 ${collapsed ? "hidden" : "flex"}`}>
         <button type="button" onClick={copy} className="rounded-md bg-fg px-2.5 py-1 text-xs font-semibold text-page hover:opacity-90">
           {copied ? "Copied" : "Copy settings"}
         </button>
