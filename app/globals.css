@@ -728,3 +728,10 @@ select:not([multiple]):focus-visible {
     display: none;
   }
 }
+
+/* While a pane divider is being dragged (components/PaneSplit.tsx): keep the resize cursor everywhere and stop text selection. */
+.pane-resizing,
+.pane-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}

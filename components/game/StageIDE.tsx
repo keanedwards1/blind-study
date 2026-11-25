@@ -12,6 +12,7 @@ import CodeEditor, { type Keymap } from "../CodeEditor";
 import { RunnerBadge } from "../CodePane";
 import LearnMode from "../LearnMode";
 import Markdown from "../Markdown";
+import { PaneHandle, usePaneSplit } from "../PaneSplit";
 import { TaskRules } from "../ProblemDescription";
 import SolutionBreakdown from "../SolutionBreakdown";
 import { useTheme } from "../ThemeToggle";
@@ -73,6 +74,8 @@ export default function StageIDE({
   /** Whether the Examples list under the statement is expanded (click the heading to toggle; remembered across stages). */
   const examplesOpen = useStored<boolean>("python:ide-examples-open", true);
   const theme = useTheme();
+  // Column widths (problem, editor, console); drag the lines between them to resize.
+  const split = usePaneSplit("python:ide-columns", [0.95, 1.2, 0.95]);
 
   // ---- console
   const [rows, setRows] = useState<Row[]>([]);
@@ -239,9 +242,9 @@ export default function StageIDE({
         {barRight}
       </div>
 
-      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.2fr)_minmax(0,0.95fr)] lg:grid-rows-[minmax(0,1fr)]">
+      <div style={split.style} className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-(--pane-cols) lg:grid-rows-[minmax(0,1fr)]">
         {/* ---- problem */}
-        <section className="flex min-h-0 min-w-0 flex-col overflow-auto border-(--ide-line) bg-(--ide-problem) lg:border-r">
+        <section data-pane className="flex min-h-0 min-w-0 flex-col overflow-auto border-(--ide-line) bg-(--ide-problem) lg:border-r">
           <div className="@container flex min-h-full flex-col gap-5 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-(--ide-line) pb-4 @max-[25rem]:gap-1.5">
               <span className={`shrink-0 rounded px-2 py-0.5 text-sm text-white lowercase @max-[25rem]:px-1.5 @max-[25rem]:text-xs @max-[19rem]:px-1 ${DIFFICULTY_PILL[problem.difficulty] ?? "bg-subtle"}`}>
@@ -353,8 +356,10 @@ export default function StageIDE({
           </div>
         </section>
 
+        <PaneHandle label="Resize the problem and editor panes" className="text-(--ide-link)" {...split.handle(0)} />
+
         {/* ---- editor */}
-        <section className="flex min-h-[420px] min-w-0 flex-col border-(--ide-line) bg-(--ide-editor) lg:min-h-0 lg:border-r">
+        <section data-pane className="flex min-h-[420px] min-w-0 flex-col border-(--ide-line) bg-(--ide-editor) lg:min-h-0 lg:border-r">
           <div className="flex flex-wrap items-center justify-end gap-3 px-3 py-2">
             {lesson && <LessonPeek lesson={lesson} />}
             {(["vim", "emacs"] as const).map((k) => (
@@ -381,8 +386,10 @@ export default function StageIDE({
           </div>
         </section>
 
+        <PaneHandle label="Resize the editor and console panes" className="text-(--ide-link)" {...split.handle(1)} />
+
         {/* ---- console */}
-        <section className="flex min-h-[420px] min-w-0 flex-col bg-(--ide-console) lg:min-h-0">
+        <section data-pane className="flex min-h-[420px] min-w-0 flex-col bg-(--ide-console) lg:min-h-0">
           <div className="flex flex-wrap items-center gap-2 px-3 py-2">
             <button type="button" disabled={running} onClick={() => run("custom")} className={`${barBtn} bg-(--ide-run) text-white`} title="Run your function on the input below (Enter)">
               <PlayIcon />
