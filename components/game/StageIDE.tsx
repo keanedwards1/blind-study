@@ -436,7 +436,7 @@ export default function StageIDE({
           </div>
           <div ref={logRef} className="min-h-0 flex-1 overflow-auto px-3 py-3 font-mono text-[13px] leading-6 [font-variant-ligatures:none]" aria-live="polite">
             {rows.length === 0 && !running && (
-              <p className="opacity-60">&quot;Run Code&quot; runs your code with the inputs in the box above. &quot;Run Test Cases&quot; runs the inputs from the examples and from the test cases below; Submit runs the same and additionally, runs hidden test cases if they exist.</p>
+              <p className="opacity-60">Use &quot;Run Code&quot;, &quot;Run Test Cases&quot; and &quot;Submit&quot; to gather information and pass this level.</p>
             )}
             {rows.map((r, i) =>
               r.label ? (
