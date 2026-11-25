@@ -149,6 +149,7 @@ export default function Plexus({ params, accent }: { params: React.RefObject<Vis
 
     let w = 0;
     let h = 0;
+    let ready = false;
     const resize = () => {
       const r = box.getBoundingClientRect();
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -157,6 +158,9 @@ export default function Plexus({ params, accent }: { params: React.RefObject<Vis
       canvas.width = Math.max(1, Math.round(w * dpr));
       canvas.height = Math.max(1, Math.round(h * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Setting the size clears the canvas, and this runs after the frame's draw but before the paint, so redraw now or
+      // the visual flashes blank on every frame of a resize (e.g. while dragging a pane divider).
+      if (ready) draw(performance.now());
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -542,6 +546,7 @@ export default function Plexus({ params, accent }: { params: React.RefObject<Vis
       cancelAnimationFrame(raf);
     };
     if (reduceMotion) for (let i = 0; i < 40; i++) draw(start + i * 33);
+    ready = true;
 
     let onScreen = true;
     const io = new IntersectionObserver(([e]) => {
