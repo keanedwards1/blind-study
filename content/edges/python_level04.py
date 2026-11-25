@@ -1,5 +1,30 @@
 # Edge cases for Learn Python world 4 (dicts, sets and tuples). Format: see python_level01.py.
 
+import random
+
+# Products stored in a fulfillment warehouse. _restock_order builds a fixed (seeded) stock dict and a long order list from them.
+WAREHOUSE = ["wireless earbuds", "phone case", "yoga mat", "desk lamp", "board game", "water bottle", "coffee maker", "air fryer",
+             "bluetooth speaker", "usb-c cable", "phone charger", "laptop stand", "mechanical keyboard", "wireless mouse", "webcam",
+             "hdmi cable", "power bank", "smart watch band", "screen protector", "tablet cover", "dog leash", "cat litter",
+             "dog food", "pet bed", "bath towel", "bed sheets", "throw pillow", "shower curtain", "kitchen knife set", "cutting board",
+             "frying pan", "mixing bowls", "food storage containers", "electric kettle", "blender", "toaster", "paper towels",
+             "toilet paper", "dish soap", "laundry detergent", "trash bags", "shampoo", "toothpaste", "electric toothbrush",
+             "sunscreen", "hand cream", "hair dryer", "running shoes", "hiking socks", "rain jacket", "backpack", "suitcase",
+             "sunglasses", "baseball cap", "dumbbells", "resistance bands", "jump rope", "tent", "sleeping bag", "camping stove",
+             "jigsaw puzzle", "building blocks", "action figure", "plush toy", "crayons", "notebook", "gel pens", "printer paper",
+             "wall calendar", "picture frame", "scented candle", "led light strip", "extension cord", "aa batteries", "light bulbs"]
+
+def _restock_order(seed, *, stocked, lines, empty, unlisted):
+    """A stock dict of `stocked` items (an `empty` share at 0 units) and an order of `lines` requests, with repeats and an
+    `unlisted` share of items the warehouse doesn't carry at all."""
+    rng = random.Random(seed)
+    items = rng.sample(WAREHOUSE, len(WAREHOUSE))
+    carried, uncarried = items[:stocked], items[stocked:]
+    stock = {item: 0 if rng.random() < empty else rng.choice([1, 2, 5, 12, 24, 48, 150, 600, 2400]) for item in carried}
+    order = [rng.choice(uncarried) if rng.random() < unlisted else rng.choice(carried) for _ in range(lines)]
+    return [stock, order]
+
+
 EXHAUSTIVE = {"py-ds-pick-structure"}
 
 EDGES = {
@@ -15,8 +40,15 @@ EDGES = {
                        ("numbers as values", [{"x": 1, "y": 2}]), ("many pairs", [{"a": "z", "b": "y", "c": "x", "d": "w"}]), ('values with spaces', [{'en': 'English', 'fr': 'French'}])],
     "py-first-repeat": [("no repeats", [["x", "y"]]), ("empty list", [[]]), ("repeat right away", [["z", "z"]]), ("repeat at the very end", [["a", "b", "c", "a"]]),
                         ("case matters", [["A", "a"]]), ("three times", [["q", "q", "q"]]), ('two different repeats', [['x', 'y', 'y', 'x']])],
-    "py-restock-list": [("nothing wanted", [{}, []]), ("everything in stock", [{"a": 1}, ["a"]]), ("empty stock", [{}, ["x", "y"]]),
-                        ("asked for twice", [{"a": 0}, ["a", "a"]]), ("negative stock", [{"a": -1}, ["a"]]), ("case matters", [{"Jam": 2}, ["jam"]]), ('mixed stock', [{'a': 3, 'b': 0, 'c': 1}, ['c', 'b', 'd', 'a']])],
+    "py-restock-list": [("nothing wanted", [{"wireless earbuds": 120}, []]),
+                        ("everything in stock", [{"desk lamp": 14, "phone charger": 300, "board game": 9}, ["phone charger", "board game", "desk lamp"]]),
+                        ("empty stock", [{}, ["air fryer", "sleeping bag"]]),
+                        ("asked for twice", [{"yoga mat": 0}, ["yoga mat", "yoga mat"]]),
+                        ("case matters", [{"Water Bottle": 6}, ["water bottle"]]),
+                        ("mixed stock", [{"bath towel": 3, "dog food": 0, "notebook": 1}, ["notebook", "dog food", "backpack", "bath towel"]]),
+                        ("large order, mostly in stock", _restock_order(4, stocked=40, lines=60, empty=0.08, unlisted=0.05)),
+                        ("large order, lots to reorder", _restock_order(11, stocked=25, lines=120, empty=0.4, unlisted=0.3)),
+                        ("very large order", _restock_order(27, stocked=60, lines=400, empty=0.15, unlisted=0.1))],
     "py-registry-names": [("empty registry", [{}]), ("one plugin", [{"a": 1}]), ("order isn't alphabetical", [{"z": 1, "a": 2}]),
                           ("same load order", [{"x": 1, "y": 1}]), ("many plugins", [{"p" + str(i): i for i in range(6)}]),
                           ("names with dashes", [{"auth-v2": 1, "cache": 2}]), ('one plugin, order zero', [{'core': 0}])],

@@ -21,15 +21,18 @@ Example: `owner({"billing": "Ada", "search": "Bo"}, "search")` returns `"Bo"`.
 """),
         ],
         practice=[
-            P("py-restock-list", 'Items to Reorder', "def restock(stock: Dict[str, int], wanted: List[str]) -> List[str]:",
+            P("py-restock-list", 'Items to Reorder', "def restock(stock: Dict[str, int], order: List[str]) -> List[str]:",
               """
-Before an order goes out, a warehouse script checks each requested item against stock. Anything with 0 units, or missing from the stock dict entirely, needs reordering. Write `restock(stock, wanted)` to return those items in the order they were requested.
+A warehouse runs a script every time it receives an order. The script checks each item in the order against the warehouse's inventory. Any item with zero units in stock, or missing from the stock dictionary entirely, needs to be reordered. Write `restock()` to return the items that need reordering, in the same order they appear in `order`. An item that gets ordered twice appears twice in the list that's returned.
 
-Example: `restock({"jam": 2, "tea": 0}, ["jam", "tea", "honey"])` returns `["tea", "honey"]`. A missing item must not crash; treat it as 0.
+**Constraints**
+- `0 <= len(stock), len(order) <= 10^4`
+- `0 <= stock[name] <= 10^16`
 """,
-              "def restock(stock: Dict[str, int], wanted: List[str]) -> List[str]:\n    out = []\n    for item in wanted:\n        if stock.get(item, 0) == 0:\n            out.append(item)\n    return out\n",
-              [([{"jam": 2, "tea": 0}, ["jam", "tea", "honey"]], ["tea", "honey"]), ([{}, []], [])], [[{"a": 1}, ["a"]], [{}, ["x", "y"]]],
-              hints=["Go through the wanted items one by one.",
+              "def restock(stock: Dict[str, int], order: List[str]) -> List[str]:\n    out = []\n    for item in order:\n        if stock.get(item, 0) == 0:\n            out.append(item)\n    return out\n",
+              [([{"wireless earbuds": 120, "yoga mat": 0}, ["wireless earbuds", "yoga mat", "phone case"]], ["yoga mat", "phone case"]), ([{}, []], [])],
+              [[{"desk lamp": 14}, ["desk lamp"]], [{}, ["board game", "water bottle"]]],
+              hints=["Go through the items in `order` one by one.",
                      "`.get(key, default)` reads a count without crashing, using the default when the item isn't in the dict.",
                      "If the count is 0 (including missing items), add the item to your result list."],
               grammar="""
