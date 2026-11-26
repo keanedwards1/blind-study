@@ -113,7 +113,7 @@ export default function GameStage({
       return;
     }
     const a = attempt.current;
-    const { score, stars } = scoreAttempt(a, problem.difficulty);
+    const { score, stars, breakdown } = scoreAttempt(a, problem);
     const result = { score, stars, ms: Math.round(a.ms), tries: a.tries, at: Date.now() };
     const { prev, best } = recordResult(slug, result);
     done.current = true;
@@ -135,7 +135,7 @@ export default function GameStage({
       ...indexes.filter((i) => o.tests[i].note).map((i) => entry(i, false)),
       ...indexes.filter((i) => i >= problem.examples.length && !o.tests[i].note).map((i) => entry(i, true)),
     ];
-    setCleared({ result, prev, best, hints: a.hints, peeked: a.peeked, tests: { passed: o.passed, total: o.total, edges } });
+    setCleared({ result, prev, best, hints: a.hints, peeked: a.peeked, breakdown, tests: { passed: o.passed, total: o.total, edges } });
   }
 
   function bump(change: Partial<Attempt>) {
@@ -196,7 +196,8 @@ export default function GameStage({
         barRight={hudView}
         visual={visualOn ? <MusicVisual accent={WORLD_THEME[stage.world.n].color} /> : undefined}
         onSubmitted={onSubmitted}
-        onHintShown={() => bump({ hints: attempt.current.hints + 1 })}
+        // Charged by the deepest hint opened, so showing hints again after coming back to the stage costs nothing more.
+        onHintShown={(n) => bump({ hints: Math.max(attempt.current.hints, n) })}
         onSolutionRevealed={() => bump({ peeked: true })}
       />
       {cleared && (

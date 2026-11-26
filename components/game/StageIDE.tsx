@@ -54,7 +54,8 @@ export default function StageIDE({
   /** Fills the space under the problem (the music visual). */
   visual?: React.ReactNode;
   onSubmitted?: (o: RunOutcome) => void;
-  onHintShown?: () => void;
+  /** Called with the number of the hint just opened (1 for the first). */
+  onHintShown?: (n: number) => void;
   onSolutionRevealed?: () => void;
 }) {
   const key = `code:${problem.slug}`;
@@ -317,7 +318,7 @@ export default function StageIDE({
                     type="button"
                     onClick={() => {
                       setHintsShown(hintsShown + 1);
-                      onHintShown?.();
+                      onHintShown?.(hintsShown + 1);
                     }}
                     className={`self-start ${barBtn}`}
                   >

@@ -14,7 +14,7 @@ HINTS = {
     ],
     "py-invert-dict": [
         "Each key/value pair needs to go into a new dict the other way round.",
-        "`.items()` gives you each key and value together: `for k, v in d.items():`.",
+        "`.items()` gives you each key and value together: `for k, v in mapping.items():`.",
         "Store each pair the other way round in a new, empty dict, using the value as the new key.",
     ],
     "py-first-repeat": [
@@ -112,7 +112,7 @@ HINTS = {
         "Unpack `items` that way, then return the first item and the list of the rest.",
     ],
     "py-distance-tuples": [
-        "Unpack each point into its x and y: `x1, y1 = p`.",
+        "Unpack each point into its x and y: `x1, y1 = start`.",
         "The distance formula: find the difference in x and in y, square both, add them, then take the square root.",
         "Raising to the power `0.5` is a square root (or use `math.sqrt`). Squaring makes negative differences positive.",
     ],

@@ -2,7 +2,7 @@
 
 LESSONS = {
     "for-loops": r"""
-**In one sentence:** a `for` loop repeats some lines once for every item in a list (or every character in some text).
+**Overview:** a `for` loop repeats some lines once for every item in a list (or every character in some text).
 
 ### The idea
 ```python
@@ -30,7 +30,7 @@ Looping over text gives you one character at a time: `for ch in "hi":` runs with
 - Setting the running total up *inside* the loop, which resets it every time.
 """,
     "range": r"""
-**In one sentence:** `range` produces a row of numbers to count with.
+**Overview:** `range` produces a row of numbers to count with.
 
 ### The idea
 ```python
@@ -52,7 +52,7 @@ Repeating something a fixed number of times, counting from 1 to `n`, or going th
 - Expecting `range(5)` to be a list. Wrap it in `list(...)` if you need one.
 """,
     "while-break": r"""
-**In one sentence:** a `while` loop keeps going as long as something stays true; `break` and `continue` let you jump out early.
+**Overview:** a `while` loop keeps going as long as something stays true; `break` and `continue` let you jump out early.
 
 ### The idea
 Use `while` when you don't know in advance how many rounds you'll need:
@@ -87,7 +87,7 @@ Both work in `for` loops as well as `while` loops.
 - Forgetting to update the thing the condition checks, so the loop never ends.
 """,
     "list-methods": r"""
-**In one sentence:** lists can grow, shrink and be rearranged, using methods.
+**Overview:** lists can grow, shrink and be rearranged, using methods.
 
 ### The idea
 A list holds several values in order: `[3, 1, 2]`. Unlike text, a list **can be changed** after it's made (it's *mutable*).
@@ -112,7 +112,7 @@ Most of these change the list **itself** (they work *in place*) and give back no
 - `a.append([4, 5])` adds the whole list as **one** item. Use `extend` to add its items.
 """,
     "list-slicing": r"""
-**In one sentence:** lists slice exactly like text, and a slice is a brand-new copy.
+**Overview:** lists slice exactly like text, and a slice is a brand-new copy.
 
 ### The idea
 ```python
@@ -146,7 +146,7 @@ When two names point at the same list, that's called *aliasing*. A slice (`a[:]`
 - `a[-0:]` is the **whole** list, because `-0` is just `0`.
 """,
     "enumerate-zip": r"""
-**In one sentence:** `enumerate` gives you each item with its position; `zip` walks two lists side by side.
+**Overview:** `enumerate` gives you each item with its position; `zip` walks two lists side by side.
 
 ### The idea
 ```python
@@ -170,7 +170,7 @@ Numbering a list, finding the position of something, or combining two lists that
 - Writing `for i in range(len(items)):` and then `items[i]` everywhere. It works, but `enumerate` is clearer and harder to get wrong.
 """,
     "list-builtins": r"""
-**In one sentence:** Python has ready-made functions for the loops you'd write all the time.
+**Overview:** Python has ready-made functions for the loops you'd write all the time.
 
 ### The idea
 ```python
@@ -193,7 +193,7 @@ Use `sorted` when you must not change the original.
 - Forgetting `list(...)` around `reversed(...)`: on its own it gives a "reversed view", not a list.
 """,
     "any-all": r"""
-**In one sentence:** `any` asks "is at least one true?" and `all` asks "is every one true?".
+**Overview:** `any` asks "is at least one true?" and `all` asks "is every one true?".
 
 ### The idea
 ```python
@@ -216,7 +216,7 @@ any(ch.isdigit() for ch in "a1")  # True: there's a digit
 - Being surprised by empty lists: `all([])` is `True` and `any([])` is `False`.
 """,
     "nested": r"""
-**In one sentence:** a grid is a list of rows, and a loop inside a loop visits every cell.
+**Overview:** a grid is a list of rows, and a loop inside a loop visits every cell.
 
 ### The idea
 ```python

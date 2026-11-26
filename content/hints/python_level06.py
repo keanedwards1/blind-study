@@ -15,26 +15,26 @@ HINTS = {
     "py-toward-zero": [
         "Python's `//` rounds *down*, so `-7 // 2` is `-4`. You need `-3`: rounding towards zero.",
         "Divide the sizes instead: the absolute values (`abs`) with `//` always give the right number of whole parts.",
-        "Then fix the sign: the answer is negative only when exactly one of `a` and `b` is negative.",
+        "Then fix the sign: the answer is negative only when exactly one of `dividend` and `divisor` is negative.",
     ],
     "py-close-enough": [
         "Floats can be slightly off: `0.1 + 0.2 == 0.3` is `False`, because of tiny rounding errors.",
-        "`math.isclose(a, b)` treats two floats as equal when they're within a tiny tolerance.",
+        "`math.isclose(first, second)` treats two floats as equal when they're within a tiny tolerance.",
         "Return its result. The `math` module is already available.",
     ],
     # ------------------------------------------------------------------ bases
     "py-to-hex": [
         "Hexadecimal is base 16, using digits 0-9 and letters a-f.",
-        "`hex(n)` returns text like `\"0xff\"`, with a two-character `0x` prefix.",
+        "`hex(number)` returns text like `\"0xff\"`, with a two-character `0x` prefix.",
         "Slice off the first two characters.",
     ],
     "py-to-octal": [
         "Octal is base 8.",
-        "`oct(n)` returns text like `\"0o10\"`, with a two-character `0o` prefix.",
+        "`oct(number)` returns text like `\"0o10\"`, with a two-character `0o` prefix.",
         "Slice off the first two characters.",
     ],
     "py-count-one-bits": [
-        "`bin(n)` gives the binary form as text, like `\"0b101\"`.",
+        "`bin(number)` gives the binary form as text, like `\"0b101\"`.",
         "The prefix `0b` contains no `1`, so it doesn't affect counting 1s.",
         "Count the `\"1\"` characters in that text with `.count`.",
     ],
@@ -45,19 +45,19 @@ HINTS = {
     ],
     # ------------------------------------------------------------------ bit operators
     "py-get-bit": [
-        "Shifting right (`>>`) moves bits towards position 0: shift by `k` and the bit you want ends up rightmost.",
+        "Shifting right (`>>`) moves bits towards position 0: shift by `position` and the bit you want ends up rightmost.",
         "`& 1` keeps only the rightmost bit and clears everything else.",
         "Shift first, then mask, so the answer is 0 or 1.",
     ],
     "py-toggle-bit": [
-        "`1 << k` is a number whose only 1 bit is at position `k` (a mask).",
+        "`1 << position` is a number whose only 1 bit is at position `position` (a mask).",
         "XOR (`^`) flips the bits where the mask has a 1 and leaves the rest alone.",
-        "XOR `n` with the mask for position `k`.",
+        "XOR `number` with the mask for position `position`.",
     ],
     "py-power-of-two": [
         "A power of two has exactly one 1 bit in binary (1, 10, 100, …).",
-        "Subtracting 1 flips that bit and turns every bit below it on, so `n & (n - 1)` is 0 exactly when `n` has a single 1 bit.",
-        "Zero and negative numbers aren't powers of two, so check that `n` is positive too. (`&` happens before `==`, so `x & y == 0` already means `(x & y) == 0`.)",
+        "Subtracting 1 flips that bit and turns every bit below it on, so `number & (number - 1)` is 0 exactly when `number` has a single 1 bit.",
+        "Zero and negative numbers aren't powers of two, so check that `number` is positive too. (`&` happens before `==`, so `x & y == 0` already means `(x & y) == 0`.)",
     ],
     # ------------------------------------------------------------------ complex numbers
     "py-complex-length": [
@@ -93,7 +93,7 @@ HINTS = {
     ],
     # ------------------------------------------------------------------ types
     "py-type-name": [
-        "`type(x)` gives the class (the type) of a value.",
+        "`type(value)` gives the class (the type) of a value.",
         "Every class has a `__name__` attribute with its name as text.",
         "Read `__name__` from the type. For `None`, the type's name is `NoneType`.",
     ],
@@ -141,7 +141,7 @@ HINTS = {
     ],
     "py-ternary-abs": [
         "A conditional expression chooses between two values in one line: `value_if_true if condition else value_if_false`.",
-        "When `n` is negative, its absolute value is `-n`; otherwise it's `n` itself.",
+        "When `number` is negative, its absolute value is `-number`; otherwise it's `number` itself.",
         "Return that one-line expression.",
     ],
     "py-walrus-positive": [

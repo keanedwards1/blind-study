@@ -74,14 +74,14 @@ for x in [3, 1, 4]:
 - **Best so far:** `high_mark = values[0]`. Starting at `0` breaks on all-negative lists.
 - **Replace when bigger:** `if val > record: record = val`
 """),
-                P("py-count-letter", "Count a Letter", "def count_letter(s: str, letter: str) -> int:",
-                  """Count how many times `letter` appears in `s`, using a loop over the characters.
+                P("py-count-letter", "Count a Letter", "def count_letter(text: str, letter: str) -> int:",
+                  """Count how many times `letter` appears in `text`, using a loop over the characters.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 - `len(letter) == 1`
 """,
-                  "def count_letter(s: str, letter: str) -> int:\n    n = 0\n    for c in s:\n        if c == letter:\n            n += 1\n    return n\n",
+                  "def count_letter(text: str, letter: str) -> int:\n    n = 0\n    for c in text:\n        if c == letter:\n            n += 1\n    return n\n",
                   [(["banana", "a"], 3), (["", "a"], 0), (["xyz", "a"], 0)], [["aaaa", "a"], ["Mississippi", "s"]],
                   forbid=[".count"],
                   grammar="""
@@ -113,54 +113,54 @@ for x in [3, 1, 4]:
 `for i in range(n):` repeats something `n` times. `list(range(3))` turns it into the list `[0, 1, 2]`.
 """,
             problems=[
-                P("py-one-to-n", "One to N", "def one_to_n(n: int) -> List[int]:",
-                  """Return the list `[1, 2, …, n]` (empty if `n` is 0).
+                P("py-one-to-n", "One to N", "def one_to_n(count: int) -> List[int]:",
+                  """Return the list `[1, 2, …, count]` (empty if `count` is 0).
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= count <= 1000`
 """,
-                  "def one_to_n(n: int) -> List[int]:\n    return list(range(1, n + 1))\n",
+                  "def one_to_n(count: int) -> List[int]:\n    return list(range(1, count + 1))\n",
                   [([5], [1, 2, 3, 4, 5]), ([0], []), ([1], [1])], [[10], [2]],
                   require=["range", "list"],
                   grammar="""
 ## Building blocks
-- **Start and stop:** `range(1, n + 1)`. The `+ 1` is because the stop isn't included.
+- **Start and stop:** `range(1, count + 1)`. The `+ 1` is because the stop isn't included.
 - **Turn it into a list:** `list(range(...))`
 """),
-                P("py-evens-up-to", "Even Numbers up to N", "def evens(n: int) -> List[int]:",
-                  """Return every even number from 0 up to and including `n`.
+                P("py-evens-up-to", "Even Numbers up to N", "def evens(limit: int) -> List[int]:",
+                  """Return every even number from 0 up to and including `limit`.
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= limit <= 1000`
 """,
-                  "def evens(n: int) -> List[int]:\n    return list(range(0, n + 1, 2))\n",
+                  "def evens(limit: int) -> List[int]:\n    return list(range(0, limit + 1, 2))\n",
                   [([6], [0, 2, 4, 6]), ([7], [0, 2, 4, 6]), ([0], [0])], [[1], [20]],
                   require=["range"], forbid=["op:%"],
                   hints=["`range` takes a third argument: the step."],
                   grammar="""
 ## Building blocks
-- **A step:** `range(0, n + 1, 2)`
+- **A step:** `range(0, limit + 1, 2)`
 """),
-                P("py-countdown-list", "Countdown", "def countdown(n: int) -> List[int]:",
-                  """Return `[n, n-1, …, 1]`.
+                P("py-countdown-list", "Countdown", "def countdown(start: int) -> List[int]:",
+                  """Return `[start, start-1, …, 1]`.
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= start <= 1000`
 """,
-                  "def countdown(n: int) -> List[int]:\n    return list(range(n, 0, -1))\n",
+                  "def countdown(start: int) -> List[int]:\n    return list(range(start, 0, -1))\n",
                   [([3], [3, 2, 1]), ([1], [1]), ([0], [])], [[10]],
                   require=["range"], forbid=["reversed", "slicing", ".reverse"],
                   grammar="""
 ## Building blocks
-- **Count down:** `range(n, 0, -1)` stops *before* 0.
+- **Count down:** `range(start, 0, -1)` stops *before* 0.
 """),
-                P("py-sum-of-squares", "Sum of Squares", "def sum_squares(n: int) -> int:",
-                  """Return `1² + 2² + … + n²` using a loop.
+                P("py-sum-of-squares", "Sum of Squares", "def sum_squares(count: int) -> int:",
+                  """Return `1² + 2² + … + count²` using a loop.
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= count <= 1000`
 """,
-                  "def sum_squares(n: int) -> int:\n    total = 0\n    for i in range(1, n + 1):\n        total += i * i\n    return total\n",
+                  "def sum_squares(count: int) -> int:\n    total = 0\n    for i in range(1, count + 1):\n        total += i * i\n    return total\n",
                   [([3], 14), ([1], 1), ([0], 0)], [[10], [100]],
                   require=["for", "range"],
                   grammar="""
@@ -168,13 +168,13 @@ for x in [3, 1, 4]:
 - **Loop over numbers:** `for kk in range(1, num + 1):`
 - **Square:** `i * i` or `i ** 2`
 """),
-                P("py-multiplication-row", "Times Table Row", "def times_row(n: int) -> None:",
-                  """Print the `n` times table from 1 to 5, one line each, as `1 x n = …`.
+                P("py-multiplication-row", "Times Table Row", "def times_row(number: int) -> None:",
+                  """Print the `number` times table from 1 to 5, one line each, as `1 x number = …`.
 
 **Constraints**
-- `-10^16 <= n <= 10^16`
+- `-10^16 <= number <= 10^16`
 """,
-                  'def times_row(n: int) -> None:\n    for i in range(1, 6):\n        print(f"{i} x {n} = {i * n}")\n',
+                  'def times_row(number: int) -> None:\n    for i in range(1, 6):\n        print(f"{i} x {number} = {i * number}")\n',
                   [([3], "1 x 3 = 3\n2 x 3 = 6\n3 x 3 = 9\n4 x 3 = 12\n5 x 3 = 15\n")], [[0], [7], [12]],
                   out="stdout",
                   grammar="""
@@ -209,20 +209,20 @@ while n > 0:
 - Both work in `for` loops too.
 """,
             problems=[
-                P("py-digit-sum", "Digit Sum", "def digit_sum(n: int) -> int:",
-                  """Return the sum of the digits of `n`, using arithmetic rather than converting to text.
+                P("py-digit-sum", "Digit Sum", "def digit_sum(number: int) -> int:",
+                  """Return the sum of the digits of `number`, using arithmetic rather than converting to text.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-                  "def digit_sum(n: int) -> int:\n    total = 0\n    while n > 0:\n        total += n % 10\n        n //= 10\n    return total\n",
+                  "def digit_sum(number: int) -> int:\n    total = 0\n    while number > 0:\n        total += number % 10\n        number //= 10\n    return total\n",
                   [([123], 6), ([0], 0), ([9999], 36)], [[10], [505], [1234567890]],
                   require=["while"], forbid=["str"],
-                  hints=["`n % 10` is the last digit; `n // 10` removes it."],
+                  hints=["`number % 10` is the last digit; `number // 10` removes it."],
                   grammar="""
 ## Building blocks
-- **Last digit:** `n % 10`
-- **Drop the last digit:** `number //= 10`
+- **Last digit:** `number % 10`
+- **Drop the last digit:** `value //= 10`
 - **Until nothing's left:** `while size > 0:`
 """),
                 P("py-first-negative", "First Negative", "def first_negative(nums: List[int]) -> int:",
@@ -240,13 +240,13 @@ while n > 0:
 - **Stop early:** `break`
 - **Or return early:** `return idx` inside the loop, and `return -1` after it.
 """),
-                P("py-halvings", "How Many Halvings", "def halvings(n: int) -> int:",
-                  """How many times can you halve `n` (with `//`) before it reaches 0?
+                P("py-halvings", "How Many Halvings", "def halvings(number: int) -> int:",
+                  """How many times can you halve `number` (with `//`) before it reaches 0?
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-                  "def halvings(n: int) -> int:\n    steps = 0\n    while n > 0:\n        n //= 2\n        steps += 1\n    return steps\n",
+                  "def halvings(number: int) -> int:\n    steps = 0\n    while number > 0:\n        number //= 2\n        steps += 1\n    return steps\n",
                   [([8], 4), ([1], 1), ([0], 0)], [[1000], [2 ** 30]],
                   require=["while"],
                   grammar="""
@@ -303,14 +303,14 @@ Most of these change the list and return `None`. `a = a.sort()` is a classic bug
 In tasks marked **in place**, change the list you're given. The tests look at that list afterwards.
 """,
             problems=[
-                P("py-add-to-end", "Add to the End (in place)", "def add_item(items: List[int], x: int) -> None:",
-                  """Add `x` to the end of `items`, changing the list itself. Don't return anything.
+                P("py-add-to-end", "Add to the End (in place)", "def add_item(items: List[int], item: int) -> None:",
+                  """Add `item` to the end of `items`, changing the list itself. Don't return anything.
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
-- `items` and `x` can hold values of any type
+- `items` and `item` can hold values of any type
 """,
-                  "def add_item(items: List[int], x: int) -> None:\n    items.append(x)\n",
+                  "def add_item(items: List[int], item: int) -> None:\n    items.append(item)\n",
                   [([[1, 2], 3], [1, 2, 3]), ([[], 5], [5])], [[[9, 9], 9]],
                   mutate=0, require=[".append"],
                   grammar="""
@@ -318,43 +318,43 @@ In tasks marked **in place**, change the list you're given. The tests look at th
 - **Add at the end:** `things.append(v)`
 - **Nothing to return:** the tests check `items` itself afterwards.
 """),
-                P("py-add-to-front", "Add to the Front (in place)", "def push_front(items: List[int], x: int) -> None:",
-                  """Put `x` at the start of `items`, in place.
+                P("py-add-to-front", "Add to the Front (in place)", "def push_front(items: List[int], item: int) -> None:",
+                  """Put `item` at the start of `items`, in place.
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
-- `items` and `x` can hold values of any type
+- `items` and `item` can hold values of any type
 """,
-                  "def push_front(items: List[int], x: int) -> None:\n    items.insert(0, x)\n",
+                  "def push_front(items: List[int], item: int) -> None:\n    items.insert(0, item)\n",
                   [([[2, 3], 1], [1, 2, 3]), ([[], 7], [7])], [[[0], -1]],
                   mutate=0, require=[".insert"],
                   grammar="""
 ## Building blocks
 - **Insert at a position:** `things.insert(0, v)`. Position 0 is the front.
 """),
-                P("py-join-lists", "Join Two Lists (in place)", "def extend_with(a: List[int], b: List[int]) -> None:",
-                  """Add every item of `b` to the end of `a`, in place.
+                P("py-join-lists", "Join Two Lists (in place)", "def extend_with(items: List[int], extra: List[int]) -> None:",
+                  """Add every item of `extra` to the end of `items`, in place.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
+- `0 <= len(items), len(extra) <= 10^4`
 - Items can be values of any type
 """,
-                  "def extend_with(a: List[int], b: List[int]) -> None:\n    a.extend(b)\n",
+                  "def extend_with(items: List[int], extra: List[int]) -> None:\n    items.extend(extra)\n",
                   [([[1, 2], [3, 4]], [1, 2, 3, 4]), ([[], []], [])], [[[1], []], [[], [5, 6, 7]]],
                   mutate=0, require=[".extend"],
                   grammar="""
 ## Building blocks
 - **Add many items:** `p.extend(q)`
-- **Compare:** `a.append(b)` would add the whole list `b` as one item.
+- **Compare:** `items.append(extra)` would add the whole list `extra` as one item.
 """),
-                P("py-remove-value", "Remove a Value (in place)", "def remove_value(items: List[int], x: int) -> None:",
-                  """Remove the first `x` from `items`, in place. If `x` isn't there, leave the list alone.
+                P("py-remove-value", "Remove a Value (in place)", "def remove_value(items: List[int], value: int) -> None:",
+                  """Remove the first `value` from `items`, in place. If `value` isn't there, leave the list alone.
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
-- `items` and `x` can hold values of any type
+- `items` and `value` can hold values of any type
 """,
-                  "def remove_value(items: List[int], x: int) -> None:\n    if x in items:\n        items.remove(x)\n",
+                  "def remove_value(items: List[int], value: int) -> None:\n    if value in items:\n        items.remove(value)\n",
                   [([[1, 2, 3, 2], 2], [1, 3, 2]), ([[1], 5], [1])], [[[], 1], [[4, 4, 4], 4]],
                   mutate=0, require=[".remove"],
                   grammar="""
@@ -392,20 +392,20 @@ In tasks marked **in place**, change the list you're given. The tests look at th
 - **Largest first:** `things.sort(reverse=True)`
 - **Don't write `elems = elems.sort()`:** `.sort()` returns `None`.
 """),
-                P("py-position-and-count", "Position and Count", "def find_and_count(items: List[int], x: int) -> List[int]:",
-                  """Return `[first position of x, how many times x appears]`.
+                P("py-position-and-count", "Position and Count", "def find_and_count(items: List[int], value: int) -> List[int]:",
+                  """Return `[first position of value, how many times value appears]`.
 
 **Constraints**
 - `1 <= len(items) <= 10^4`
-- `x` appears in `items` at least once
+- `value` appears in `items` at least once
 """,
-                  "def find_and_count(items: List[int], x: int) -> List[int]:\n    return [items.index(x), items.count(x)]\n",
+                  "def find_and_count(items: List[int], value: int) -> List[int]:\n    return [items.index(value), items.count(value)]\n",
                   [([[5, 3, 5, 5], 5], [0, 3]), ([[1, 2, 3], 3], [2, 1])], [[[0, 0, 1], 1]],
                   require=[".index", ".count"],
                   grammar="""
 ## Building blocks
-- **First position:** `items.index(x)`
-- **How many:** `items.count(x)`
+- **First position:** `items.index(value)`
+- **How many:** `items.count(value)`
 """),
             ],
             quiz=[
@@ -431,21 +431,21 @@ Lists slice just like strings: `a[1:3]`, `a[::-1]`, `a[-2:]`.
 - Gotcha: `a[-0:]` is the whole list, because `-0` is just `0`.
 """,
             problems=[
-                P("py-last-n", "Last N Items", "def last_n(items: List[int], n: int) -> List[int]:",
-                  """Return the last `n` items of the list (all of them if `n` is larger).
+                P("py-last-n", "Last N Items", "def last_n(items: List[int], count: int) -> List[int]:",
+                  """Return the last `count` items of the list (all of them if `count` is larger).
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
-- `0 <= n <= 10^16`
+- `0 <= count <= 10^16`
 """,
-                  "def last_n(items: List[int], n: int) -> List[int]:\n    return items[len(items) - n:] if n else []\n",
+                  "def last_n(items: List[int], count: int) -> List[int]:\n    return items[len(items) - count:] if count else []\n",
                   [([[1, 2, 3, 4], 2], [3, 4]), ([[1, 2], 0], []), ([[1, 2], 5], [1, 2])], [[[], 3], [[9], 1]],
-                  hints=["`items[-n:]` works, except when `n` is 0."],
+                  hints=["`items[-count:]` works, except when `count` is 0."],
                   grammar="""
 ## Building blocks
 - **From a position to the end:** `items[start:]`
-- **The usual trick:** `items[-n:]`, but `items[-0:]` is the *whole* list, so handle `n == 0` separately.
-- **Or compute the start:** `items[max(len(items) - n, 0):]` works for every `n`, including 0.
+- **The usual trick:** `items[-count:]`, but `items[-0:]` is the *whole* list, so handle `count == 0` separately.
+- **Or compute the start:** `items[max(len(items) - count, 0):]` works for every `count`, including 0.
 """),
                 P("py-copy-then-change", "Copy, Then Change", "def with_first_zeroed(items: List[int]) -> List[List[int]]:",
                   """Make a copy of `items`, set the copy's first item to 0, and return `[items, copy]`. The original must be unchanged.
@@ -479,19 +479,19 @@ Lists slice just like strings: `a[1:3]`, `a[::-1]`, `a[-2:]`.
 - **Build a slice from values:** `slice(start, stop, step)`. `None` means "default", just like leaving a gap in `a[::2]`.
 - **Use it:** `items[slice(...)]`
 """),
-                P("py-rotate-left", "Rotate Left", "def rotate_left(items: List[int], k: int) -> List[int]:",
-                  """Move the first `k` items to the end. `k` may be larger than the list, in which case it wraps around.
+                P("py-rotate-left", "Rotate Left", "def rotate_left(items: List[int], steps: int) -> List[int]:",
+                  """Move the first `steps` items to the end. `steps` may be larger than the list, in which case it wraps around.
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
-- `0 <= k <= 10^16`
+- `0 <= steps <= 10^16`
 """,
-                  "def rotate_left(items: List[int], k: int) -> List[int]:\n    if not items:\n        return []\n    k %= len(items)\n    return items[k:] + items[:k]\n",
+                  "def rotate_left(items: List[int], steps: int) -> List[int]:\n    if not items:\n        return []\n    steps %= len(items)\n    return items[steps:] + items[:steps]\n",
                   [([[1, 2, 3, 4, 5], 2], [3, 4, 5, 1, 2]), ([[1, 2, 3], 3], [1, 2, 3]), ([[1, 2, 3], 4], [2, 3, 1])], [[[], 2], [[7], 100], [[1, 2], 1]],
                   difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **Wrap k:** `cap %= len(things)` (check for an empty list first, or you'll divide by zero).
+- **Wrap the step count:** `cap %= len(things)` (check for an empty list first, or you'll divide by zero).
 - **Join two lists:** `[3, 4] + [1, 2]` gives `[3, 4, 1, 2]`.
 """),
             ],
@@ -545,27 +545,27 @@ Both save you from writing `for i in range(len(items)):` and indexing by hand.
 - **Position and item:** `for kk, val in enumerate(things):`
 - **Even position:** `i % 2 == 0`
 """),
-                P("py-pairwise-sum", "Add Side by Side", "def add_lists(a: List[int], b: List[int]) -> List[int]:",
-                  """Return a list where each item is `a[i] + b[i]`. Stop at the end of the shorter list.
+                P("py-pairwise-sum", "Add Side by Side", "def add_lists(first: List[int], second: List[int]) -> List[int]:",
+                  """Return a list where each item is `first[i] + second[i]`. Stop at the end of the shorter list.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
-- `-10^16 <= a[i], b[i] <= 10^16`
+- `0 <= len(first), len(second) <= 10^4`
+- `-10^16 <= first[i], second[i] <= 10^16`
 """,
-                  "def add_lists(a: List[int], b: List[int]) -> List[int]:\n    out = []\n    for x, y in zip(a, b):\n        out.append(x + y)\n    return out\n",
+                  "def add_lists(first: List[int], second: List[int]) -> List[int]:\n    out = []\n    for x, y in zip(first, second):\n        out.append(x + y)\n    return out\n",
                   [([[1, 2, 3], [10, 20, 30]], [11, 22, 33]), ([[1, 2, 3], [1]], [2])], [[[], [1]], [[-1, -1], [1, 1]]],
                   require=["zip"],
                   grammar="""
 ## Building blocks
 - **Two lists at once:** `for val, term in zip(p, q):`. It stops at the shorter list.
 """),
-                P("py-count-matches", "Count Matching Positions", "def matches(a: str, b: str) -> int:",
-                  """Count the positions where `a` and `b` have the same character (compare up to the shorter length).
+                P("py-count-matches", "Count Matching Positions", "def matches(first: str, second: str) -> int:",
+                  """Count the positions where `first` and `second` have the same character (compare up to the shorter length).
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
+- `0 <= len(first), len(second) <= 10^4`
 """,
-                  "def matches(a: str, b: str) -> int:\n    return sum(1 for x, y in zip(a, b) if x == y)\n",
+                  "def matches(first: str, second: str) -> int:\n    return sum(1 for x, y in zip(first, second) if x == y)\n",
                   [(["karolin", "kathrin"], 4), (["abc", "xyz"], 0), (["", "a"], 0)], [["same", "same"], ["ab", "abba"]],
                   require=["zip"],
                   grammar="""
@@ -743,32 +743,32 @@ any(c.isdigit() for c in s)   # any digit in the text?
 ## Building blocks
 - **A condition for every item:** `all(...)` with a generator such as `(w != "" for w in words)`.
 """),
-                P("py-has-digit", "Has a Digit", "def has_digit(s: str) -> bool:",
-                  """Return `True` if `s` contains at least one digit.
+                P("py-has-digit", "Has a Digit", "def has_digit(text: str) -> bool:",
+                  """Return `True` if `text` contains at least one digit.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def has_digit(s: str) -> bool:\n    return any(c.isdigit() for c in s)\n",
+                  "def has_digit(text: str) -> bool:\n    return any(c.isdigit() for c in text)\n",
                   [(["abc1"], True), (["abc"], False), ([""], False)], [["9"], ["no digits here!"]],
                   require=["any"],
                   grammar="""
 ## Building blocks
 - **At least one:** `any(...)` with a generator such as `(ch == "!" for ch in text)`.
 """),
-                P("py-strong-password", "Strong Password", "def strong(pw: str) -> bool:",
+                P("py-strong-password", "Strong Password", "def strong(password: str) -> bool:",
                   """A password is strong if it has at least 8 characters, at least one digit, at least one upper-case letter, and at least one lower-case letter.
 
 **Constraints**
-- `0 <= len(pw) <= 10^4`
-- `pw` is English letters and digits
+- `0 <= len(password) <= 10^4`
+- `password` is English letters and digits
 """,
-                  "def strong(pw: str) -> bool:\n    return (len(pw) >= 8 and any(c.isdigit() for c in pw)\n            and any(c.isupper() for c in pw) and any(c.islower() for c in pw))\n",
+                  "def strong(password: str) -> bool:\n    return (len(password) >= 8 and any(c.isdigit() for c in password)\n            and any(c.isupper() for c in password) and any(c.islower() for c in password))\n",
                   [(["Passw0rd"], True), (["password"], False), (["Sh0rt"], False)], [["ALLUPPER1"], ["alllower1"], ["NoDigitsHere"], ["G00dEnough"]],
                   difficulty="Medium", require=["any"],
                   grammar="""
 ## Building blocks
-- **Length:** `len(pw) >= 8`
+- **Length:** `len(password) >= 8`
 - **At least one passes:** `any(...)` with a generator inside.
 - **Character tests:** `ch.isdigit()`, `ch.isupper()`, `ch.islower()`
 - **All of them:** join with `and`. Brackets let one expression span several lines.

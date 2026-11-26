@@ -25,34 +25,34 @@ HINTS = {
     # ------------------------------------------------------------------ range
     "py-one-to-n": [
         "`range(start, stop)` counts from `start` up to, but **not including**, `stop`.",
-        "To include `n` itself, the stop needs to be one more than `n`.",
-        "`range` gives numbers one at a time; wrap it in `list(...)` to get an actual list. When `n` is 0 it's empty automatically.",
+        "To include `count` itself, the stop needs to be one more than `count`.",
+        "`range` gives numbers one at a time; wrap it in `list(...)` to get an actual list. When `count` is 0 it's empty automatically.",
     ],
     "py-evens-up-to": [
         "Even numbers go 0, 2, 4, …, which is counting in steps of 2.",
         "`range` takes an optional third number, the step: `range(start, stop, step)`.",
-        "Start at 0, step by 2, and make the stop one past `n` so that `n` is included when it's even. Wrap it in `list(...)`.",
+        "Start at 0, step by 2, and make the stop one past `limit` so that `limit` is included when it's even. Wrap it in `list(...)`.",
     ],
     "py-countdown-list": [
         "Counting down means a step of `-1`.",
         "With a negative step, `range` stops *before* reaching the stop value, just as it does going up.",
-        "Start at `n` and stop at 0 so the last number is 1. Wrap it in `list(...)`.",
+        "Start at `start` and stop at 0 so the last number is 1. Wrap it in `list(...)`.",
     ],
     "py-sum-of-squares": [
-        "You need 1×1 + 2×2 + … + n×n: loop over the numbers from 1 to `n`.",
-        "`range(1, n + 1)` gives exactly 1 to `n`.",
+        "You need 1×1 + 2×2 + … + count×count: loop over the numbers from 1 to `count`.",
+        "`range(1, count + 1)` gives exactly 1 to `count`.",
         "Keep a running total, and add each number multiplied by itself.",
     ],
     "py-multiplication-row": [
         "This task checks what you print: five lines, for 1 to 5.",
         "Loop over `range(1, 6)` and print one line per number.",
-        "An f-string makes the line easy: put the loop number, the `n` and their product inside braces. Match the spacing exactly: `1 x 3 = 3`.",
+        "An f-string makes the line easy: put the loop number, the `number` and their product inside braces. Match the spacing exactly: `1 x 3 = 3`.",
     ],
     # ------------------------------------------------------------------ while, break, continue
     "py-digit-sum": [
         "`% 10` gives the last digit of a number (`123 % 10` is 3), and `// 10` removes the last digit (`123 // 10` is 12).",
         "A `while` loop keeps going as long as its condition is true; here, as long as there are digits left (the number is above 0).",
-        "Each time round: add the last digit to a total, then chop it off. When `n` is 0 the total is 0.",
+        "Each time round: add the last digit to a total, then chop it off. When `number` is 0 the total is 0.",
     ],
     "py-first-negative": [
         "Walk through the positions with a counter that starts at 0.",
@@ -60,8 +60,8 @@ HINTS = {
         "After the loop, work out whether you stopped early (found one) or ran off the end (none found, so the answer is `-1`).",
     ],
     "py-halvings": [
-        "Count how many times you can do `n //= 2` before `n` becomes 0.",
-        "A `while` loop with a step counter: keep halving while `n` is above 0, adding 1 each time.",
+        "Count how many times you can do `number //= 2` before `number` becomes 0.",
+        "A `while` loop with a step counter: keep halving while `number` is above 0, adding 1 each time.",
         "Check the example: 8 → 4 → 2 → 1 → 0 is 4 halvings. Starting at 0, the answer is 0.",
     ],
     "py-sum-skip-negatives": [
@@ -81,13 +81,13 @@ HINTS = {
         "Position 0 is the very front.",
     ],
     "py-join-lists": [
-        "You want every item of `b` added to the end of `a`, changing `a` itself.",
-        "`.append(b)` would add the whole list `b` as one single item. `.extend(b)` adds its items one by one.",
-        "Call `extend` on `a`, passing `b`. Don't return anything.",
+        "You want every item of `extra` added to the end of `items`, changing `items` itself.",
+        "`.append(extra)` would add the whole list `extra` as one single item. `.extend(extra)` adds its items one by one.",
+        "Call `extend` on `items`, passing `extra`. Don't return anything.",
     ],
     "py-remove-value": [
-        "`.remove(x)` deletes the first `x` it finds, but it crashes (raises an error) if `x` isn't in the list.",
-        "Check first with `x in items`.",
+        "`.remove(value)` deletes the first `value` it finds, but it crashes (raises an error) if `value` isn't in the list.",
+        "Check first with `value in items`.",
         "Only call `remove` when the check passes; otherwise do nothing.",
     ],
     "py-pop-last": [
@@ -101,15 +101,15 @@ HINTS = {
         "Pass `reverse=True` to get largest first. `.sort()` returns `None`, so don't return its result.",
     ],
     "py-position-and-count": [
-        "Two answers: where `x` first appears, and how many times it appears.",
-        "`.index(x)` gives the first position; `.count(x)` counts occurrences.",
+        "Two answers: where `value` first appears, and how many times it appears.",
+        "`.index(value)` gives the first position; `.count(value)` counts occurrences.",
         "Return both inside a list, position first.",
     ],
     # ------------------------------------------------------------------ list slicing
     "py-last-n": [
-        "A slice starting `n` places from the end gives the last `n` items.",
-        "The start position for the last `n` items is the length minus `n`. Slices that go past the start of the list just begin at the beginning.",
-        "Watch out for `n == 0`: a slice starting at `-0` is the same as starting at 0, which gives the *whole* list. Handle 0 separately.",
+        "A slice starting `count` places from the end gives the last `count` items.",
+        "The start position for the last `count` items is the length minus `count`. Slices that go past the start of the list just begin at the beginning.",
+        "Watch out for `count == 0`: a slice starting at `-0` is the same as starting at 0, which gives the *whole* list. Handle 0 separately.",
     ],
     "py-copy-then-change": [
         "If you write `copy = items`, both names point at the **same** list (no copy is made), so changing one changes the other.",
@@ -122,8 +122,8 @@ HINTS = {
         "Build a `slice` from the three inputs and use it inside square brackets.",
     ],
     "py-rotate-left": [
-        "Rotating left by `k` = the items from position `k` onward, followed by the first `k` items.",
-        "If `k` is bigger than the list, rotating by the length brings you back to the start, so only the remainder matters: `k % len(items)`.",
+        "Rotating left by `steps` = the items from position `steps` onward, followed by the first `steps` items.",
+        "If `steps` is bigger than the list, rotating by the length brings you back to the start, so only the remainder matters: `steps % len(items)`.",
         "Use two slices and join them with `+`. An empty list needs special care, because `% 0` is an error.",
     ],
     # ------------------------------------------------------------------ enumerate and zip
@@ -139,7 +139,7 @@ HINTS = {
     ],
     "py-pairwise-sum": [
         "Add the first items together, then the second items, and so on.",
-        "`zip(a, b)` walks both lists side by side, giving pairs `(a item, b item)`, and stops at the shorter list.",
+        "`zip(first, second)` walks both lists side by side, giving pairs `(first item, second item)`, and stops at the shorter list.",
         "Loop over those pairs and add each pair's sum to a result list.",
     ],
     "py-count-matches": [

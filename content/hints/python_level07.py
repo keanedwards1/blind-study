@@ -98,9 +98,9 @@ HINTS = {
         "Join the sorted letters into a string to use as the key, and append each word under its key. Return the dict's values as a list.",
     ],
     "py-recent-items": [
-        "A `deque` with `maxlen=k` throws away its oldest item whenever it gets too full.",
+        "A `deque` with `maxlen=limit` throws away its oldest item whenever it gets too full.",
         "Create it with that limit, then append every item in order.",
-        "Whatever is left at the end is the last `k` items; convert it to a list.",
+        "Whatever is left at the end is the last `limit` items; convert it to a list.",
     ],
     "py-namedtuple-points": [
         "`namedtuple(\"Point\", \"x y\")` makes a tiny class whose fields are read by name: `p.x`, `p.y`.",
@@ -111,11 +111,11 @@ HINTS = {
     "py-k-smallest": [
         "A heap always keeps its smallest item at the front, ready to take.",
         "Copy the list (so the input isn't changed), turn the copy into a heap with `heapify`, then take items one by one with `heappop`.",
-        "Pop `k` times, but never more times than there are items.",
+        "Pop `count` times, but never more times than there are items.",
     ],
     "py-insert-sorted": [
         "The list is already sorted, so the new item belongs in one specific place.",
-        "`bisect` finds that place quickly; `insort(list, x)` finds it and inserts in one step.",
+        "`bisect` finds that place quickly; `insort(list, value)` finds it and inserts in one step.",
         "Call it on `items` (it changes the list in place) and return nothing.",
     ],
     "py-grade-bisect": [
@@ -166,9 +166,9 @@ HINTS = {
         "`reduce` does exactly that, using `math.gcd` as the combining function.",
     ],
     "py-perfect-square": [
-        "`n ** 0.5` uses floats, which lose precision for huge numbers.",
-        "`math.isqrt(n)` gives the exact whole-number square root (rounded down).",
-        "Square it back up; if you get `n` again, it's a perfect square.",
+        "`number ** 0.5` uses floats, which lose precision for huge numbers.",
+        "`math.isqrt(number)` gives the exact whole-number square root (rounded down).",
+        "Square it back up; if you get `number` again, it's a perfect square.",
     ],
     # ------------------------------------------------------------------ files
     "py-count-lines": [

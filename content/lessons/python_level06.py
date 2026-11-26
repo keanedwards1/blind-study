@@ -2,7 +2,7 @@
 
 LESSONS = {
     "number-tools": r"""
-**In one sentence:** a few number tools save you work and avoid surprises with division and decimals.
+**Overview:** a few number tools save you work and avoid surprises with division and decimals.
 
 ### divmod: whole part and remainder together
 ```python
@@ -31,7 +31,7 @@ math.isclose(0.1 + 0.2, 0.3)   # True: "equal apart from tiny errors"
 - Comparing floats with `==`. Use `math.isclose`.
 """,
     "bases": r"""
-**In one sentence:** the same number can be written in binary, octal or hexadecimal, and Python converts between them.
+**Overview:** the same number can be written in binary, octal or hexadecimal, and Python converts between them.
 
 ### The idea
 We normally count in tens (*base 10*). Computers also use base 2 (*binary*: digits 0-1), base 8 (*octal*: 0-7) and base 16 (*hexadecimal*: 0-9 then a-f).
@@ -58,7 +58,7 @@ Colour codes (`#ff8000`), counting the 1s in a number's binary form, and reading
 - Forgetting the prefix. `bin`, `oct` and `hex` always add `0b`, `0o` or `0x`.
 """,
     "bit-ops": r"""
-**In one sentence:** bit operators work on the individual 1s and 0s of a number.
+**Overview:** bit operators work on the individual 1s and 0s of a number.
 
 ### The idea
 Every whole number is stored as a row of binary digits (*bits*). 12 is `1100`; 10 is `1010`. These operators combine numbers bit by bit:
@@ -86,7 +86,7 @@ Shifting slides the bits along:
 - `~12` is `-13`, not `3`: Python's NOT flips the sign as well.
 """,
     "complex-numbers": r"""
-**In one sentence:** complex numbers store two numbers in one, which makes them handy for points on a map.
+**Overview:** complex numbers store two numbers in one, which makes them handy for points on a map.
 
 ### The idea
 A complex number has a normal part and a second part marked with `j` (the *real* and *imaginary* parts):
@@ -111,7 +111,7 @@ Treat the point `(x, y)` as `complex(x, y)`:
 - Writing `i` like in maths class. Python uses `j`, and needs a number in front: `1j`, not `j`.
 """,
     "bytes": r"""
-**In one sentence:** bytes are the raw numbers (0 to 255) that files and networks actually carry, and text has to be converted into them.
+**Overview:** bytes are the raw numbers (0 to 255) that files and networks actually carry, and text has to be converted into them.
 
 ### The idea
 ```python
@@ -139,7 +139,7 @@ bytes(data)              # b'Hi'
 - Counting characters when you need bytes: `len("é")` is 1, but it takes 2 bytes.
 """,
     "types": r"""
-**In one sentence:** you can ask Python what kind of value something is.
+**Overview:** you can ask Python what kind of value something is.
 
 ### The idea
 Every value has a kind (its *type*): `3` is an `int`, `"hi"` is a `str`, `[1]` is a `list`.
@@ -160,7 +160,7 @@ In Python, `True` and `False` are a special kind of whole number (`bool` is a su
 `issubclass(KeyError, LookupError)` asks whether one kind is a more specific version of another. Errors form a family tree like this.
 """,
     "exceptions": r"""
-**In one sentence:** when something goes wrong, Python raises an error, and `try`/`except` lets you catch it and carry on.
+**Overview:** when something goes wrong, Python raises an error, and `try`/`except` lets you catch it and carry on.
 
 ### The idea
 ```python
@@ -190,7 +190,7 @@ Tasks marked **raises** check that you raise the right error for bad input.
 - Catching everything with a bare `except:`. It hides real bugs. Catch the specific error you expect.
 """,
     "control-extras": r"""
-**In one sentence:** four extra shapes for decisions and loops that make some code shorter.
+**Overview:** four extra shapes for decisions and loops that make some code shorter.
 
 ### One-line if/else
 ```python
@@ -230,7 +230,7 @@ match code:
 ```
 """,
     "dynamic-code": r"""
-**In one sentence:** Python can run code that's stored as text.
+**Overview:** Python can run code that's stored as text.
 
 ### The idea
 ```python
@@ -250,7 +250,7 @@ eval(code, {"x": 21})      # 42    …run many times
 - **Running text you don't trust.** `eval` and `exec` can do anything your program can, including deleting files. In real programs, use safer tools: `int()` for numbers, `json.loads()` for data, or `ast.literal_eval()` for simple Python values.
 """,
     "interpreter-helpers": r"""
-**In one sentence:** these built-ins help you explore and debug Python, rather than compute answers, so they appear only in quiz questions.
+**Overview:** these built-ins help you explore and debug Python, rather than compute answers, so they appear only in quiz questions.
 
 ### The idea
 - `id(x)`: a number identifying one particular object. `a is b` means the two names point at the very same object, the same as `id(a) == id(b)`.

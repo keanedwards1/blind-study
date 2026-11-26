@@ -26,62 +26,62 @@ len(s)      # 6
 - Strings can't be changed in place: `s[0] = "P"` is an error. Build a new string instead.
 """,
             problems=[
-                P("py-string-length", "String Length", "def length(s: str) -> int:",
-                  """Return how many characters `s` has.
+                P("py-string-length", "String Length", "def length(text: str) -> int:",
+                  """Return how many characters `text` has.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
-- `s` can contain any characters, including emoji
+- `0 <= len(text) <= 10^4`
+- `text` can contain any characters, including emoji
 """,
-                  "def length(s: str) -> int:\n    return len(s)\n",
+                  "def length(text: str) -> int:\n    return len(text)\n",
                   [(["hello"], 5), ([""], 0), (["a b"], 3)], [["x"], ["spaces   "], ["🙂"]],
                   require=["len"],
                   grammar="""
 ## Building blocks
-- **Length:** `len(s)`. Spaces count as characters.
+- **Length:** `len(text)`. Spaces count as characters.
 """),
-                P("py-first-and-last", "First and Last", "def ends(s: str) -> str:",
-                  """Return the first character of `s` followed by its last character.
+                P("py-first-and-last", "First and Last", "def ends(text: str) -> str:",
+                  """Return the first character of `text` followed by its last character.
 
 **Constraints**
-- `1 <= len(s) <= 10^4`
+- `1 <= len(text) <= 10^4`
 """,
-                  "def ends(s: str) -> str:\n    return s[0] + s[-1]\n",
+                  "def ends(text: str) -> str:\n    return text[0] + text[-1]\n",
                   [(["python"], "pn"), (["a"], "aa"), (["ok"], "ok")], [["hello world"], ["xyz"]],
                   grammar="""
 ## Building blocks
-- **First character:** `s[0]`
-- **Last character:** `s[-1]` (or `s[len(s) - 1]`).
+- **First character:** `text[0]`
+- **Last character:** `text[-1]` (or `text[len(text) - 1]`).
 - **Join two strings:** `+`
 """),
-                P("py-middle-char", "Middle Character", "def middle(s: str) -> str:",
-                  """Return the middle character of `s`, which has an odd length.
+                P("py-middle-char", "Middle Character", "def middle(text: str) -> str:",
+                  """Return the middle character of `text`, which has an odd length.
 
 **Constraints**
-- `1 <= len(s) <= 10^4`
-- `len(s) % 2 == 1`
+- `1 <= len(text) <= 10^4`
+- `len(text) % 2 == 1`
 """,
-                  "def middle(s: str) -> str:\n    return s[len(s) // 2]\n",
+                  "def middle(text: str) -> str:\n    return text[len(text) // 2]\n",
                   [(["abcde"], "c"), (["x"], "x"), (["cat"], "a")], [["1234567"], ["racecar"]],
                   hints=["For length 5 the middle index is 2. How do you get 2 from 5?"],
                   grammar="""
 ## Building blocks
-- **Middle index:** `len(s) // 2`. Floor division keeps it a whole number.
+- **Middle index:** `len(text) // 2`. Floor division keeps it a whole number.
 - **Index with an expression:** `word[2 + 1]` works; anything that gives a whole number can go in the brackets.
 """),
-                P("py-repeat-text", "Repeat It", "def repeat(s: str, n: int) -> str:",
-                  """Return `s` repeated `n` times.
+                P("py-repeat-text", "Repeat It", "def repeat(text: str, times: int) -> str:",
+                  """Return `text` repeated `times` times.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
-- `-100 <= n <= 100`
+- `0 <= len(text) <= 10^4`
+- `-100 <= times <= 100`
 """,
-                  "def repeat(s: str, n: int) -> str:\n    return s * n\n",
+                  "def repeat(text: str, times: int) -> str:\n    return text * times\n",
                   [(["ab", 3], "ababab"), (["x", 0], ""), (["-", 5], "-----")], [["hi ", 2], ["", 4]],
                   require=["op:*"],
                   grammar="""
 ## Building blocks
-- **Repeat a string:** `s * n`. `"-" * 3` is `"---"`.
+- **Repeat a string:** `text * times`. `"-" * 3` is `"---"`.
 """),
             ],
             quiz=[
@@ -113,74 +113,74 @@ s[::-1]   # 'fedcba' reversed
 - Slicing always makes a **new** string.
 """,
             problems=[
-                P("py-first-three", "First Three", "def first_three(s: str) -> str:",
-                  """Return the first three characters of `s` (or all of it, if it's shorter).
+                P("py-first-three", "First Three", "def first_three(text: str) -> str:",
+                  """Return the first three characters of `text` (or all of it, if it's shorter).
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def first_three(s: str) -> str:\n    return s[:3]\n",
+                  "def first_three(text: str) -> str:\n    return text[:3]\n",
                   [(["python"], "pyt"), (["hi"], "hi"), ([""], "")], [["abc"], ["abcd"]],
                   require=["slicing"],
                   grammar="""
 ## Building blocks
-- **From the start up to index 3:** `s[:3]`. It's fine if `s` is shorter.
+- **From the start up to index 3:** `text[:3]`. It's fine if `text` is shorter.
 """),
-                P("py-reverse-text", "Reverse the Text", "def reverse(s: str) -> str:",
-                  """Return `s` backwards.
+                P("py-reverse-text", "Reverse the Text", "def reverse(text: str) -> str:",
+                  """Return `text` backwards.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def reverse(s: str) -> str:\n    return s[::-1]\n",
+                  "def reverse(text: str) -> str:\n    return text[::-1]\n",
                   [(["stressed"], "desserts"), ([""], ""), (["a"], "a")], [["racecar"], ["Hello, World"]],
                   require=["slicing"],
                   grammar="""
 ## Building blocks
-- **Step of -1:** `s[::-1]` walks the string from the end to the start.
+- **Step of -1:** `text[::-1]` walks the string from the end to the start.
 """),
-                P("py-every-other", "Every Other Character", "def every_other(s: str) -> str:",
-                  """Return the characters of `s` at positions 0, 2, 4 and so on, as a string.
+                P("py-every-other", "Every Other Character", "def every_other(text: str) -> str:",
+                  """Return the characters of `text` at positions 0, 2, 4 and so on, as a string.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def every_other(s: str) -> str:\n    return s[::2]\n",
+                  "def every_other(text: str) -> str:\n    return text[::2]\n",
                   [(["abcdefg"], "aceg"), (["ab"], "a"), ([""], "")], [["0123456789"], ["x"]],
                   require=["slicing"],
                   grammar="""
 ## Building blocks
-- **A step:** the third number in a slice, `s[::2]`.
+- **A step:** the third number in a slice, `text[::2]`.
 """),
-                P("py-drop-ends", "Drop the Ends", "def inner(s: str) -> str:",
-                  """Return `s` without its first and last characters. If `s` has fewer than 2 characters, return `""`.
+                P("py-drop-ends", "Drop the Ends", "def inner(text: str) -> str:",
+                  """Return `text` without its first and last characters. If `text` has fewer than 2 characters, return `""`.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def inner(s: str) -> str:\n    return s[1:-1]\n",
+                  "def inner(text: str) -> str:\n    return text[1:-1]\n",
                   [(["[hello]"], "hello"), (["ab"], ""), (["a"], "")], [["(x)"], ["''"], ["abcdef"]],
                   grammar="""
 ## Building blocks
 - **Skip the first:** start at `1`.
 - **Stop before the last:** a stop of `-1`.
-- **Together:** `s[1:-1]`. Slices never raise errors, so short strings just give `""`.
+- **Together:** `text[1:-1]`. Slices never raise errors, so short strings just give `""`.
 """),
-                P("py-capitalise-first", "Capitalise the First Letter", "def cap_first(s: str) -> str:",
-                  """Return `s` with only its first character changed to upper case.
+                P("py-capitalise-first", "Capitalise the First Letter", "def cap_first(text: str) -> str:",
+                  """Return `text` with only its first character changed to upper case.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def cap_first(s: str) -> str:\n    return s[:1].upper() + s[1:]\n",
+                  "def cap_first(text: str) -> str:\n    return text[:1].upper() + text[1:]\n",
                   [(["hello world"], "Hello world"), ([""], ""), (["Already"], "Already")], [["x"], ["iPhone"], ["1st"]],
                   difficulty="Medium",
-                  hints=["`s[0]` fails on an empty string, but `s[:1]` doesn't."],
+                  hints=["`text[0]` fails on an empty string, but `text[:1]` doesn't."],
                   grammar="""
 ## Building blocks
-- **First character safely:** `s[:1]` is `""` for an empty string, where `s[0]` would crash.
+- **First character safely:** `text[:1]` is `""` for an empty string, where `text[0]` would crash.
 - **Upper case:** `.upper()`
-- **The rest:** `s[1:]`
+- **The rest:** `text[1:]`
 - **Rebuild:** strings can't be edited, so build a new one by joining pieces with `+`.
 """),
             ],
@@ -212,61 +212,61 @@ Strings come with **methods**: functions you call with a dot. They always return
 Methods can be chained: `s.strip().lower()`.
 """,
             problems=[
-                P("py-shout", "Shout", "def shout(s: str) -> str:",
-                  """Return `s` in capitals with `"!"` added.
+                P("py-shout", "Shout", "def shout(text: str) -> str:",
+                  """Return `text` in capitals with `"!"` added.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  'def shout(s: str) -> str:\n    return s.upper() + "!"\n',
+                  'def shout(text: str) -> str:\n    return text.upper() + "!"\n',
                   [(["hey"], "HEY!"), (["Go team"], "GO TEAM!")], [[""], ["already LOUD"]],
                   require=[".upper"],
                   grammar="""
 ## Building blocks
-- **Capitals:** `s.upper()`
+- **Capitals:** `text.upper()`
 - **Add text:** `+ "!"`
 """),
-                P("py-clean-username", "Clean Username", "def clean(s: str) -> str:",
-                  """Usernames are stored without surrounding spaces, in lower case. Return `s` cleaned up that way.
+                P("py-clean-username", "Clean Username", "def clean(text: str) -> str:",
+                  """Usernames are stored without surrounding spaces, in lower case. Return `text` cleaned up that way.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def clean(s: str) -> str:\n    return s.strip().lower()\n",
+                  "def clean(text: str) -> str:\n    return text.strip().lower()\n",
                   [(["  Ada_L "], "ada_l"), (["bob"], "bob")], [["   "], ["\tTabbed\n"], ["MiXeD"]],
                   require=[".strip", ".lower"],
                   grammar="""
 ## Building blocks
-- **Trim whitespace at both ends:** `s.strip()` (spaces, tabs and new lines).
+- **Trim whitespace at both ends:** `text.strip()` (spaces, tabs and new lines).
 - **Lower case:** `.lower()`
-- **Chain:** `s.strip().lower()`
+- **Chain:** `text.strip().lower()`
 """),
-                P("py-spaces-to-underscores", "Spaces to Underscores", "def to_snake(s: str) -> str:",
-                  """Replace every space in `s` with an underscore.
+                P("py-spaces-to-underscores", "Spaces to Underscores", "def to_snake(text: str) -> str:",
+                  """Replace every space in `text` with an underscore.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  'def to_snake(s: str) -> str:\n    return s.replace(" ", "_")\n',
+                  'def to_snake(text: str) -> str:\n    return text.replace(" ", "_")\n',
                   [(["my file name"], "my_file_name"), (["none"], "none")], [["  "], ["a b c d"]],
                   require=[".replace"],
                   grammar="""
 ## Building blocks
-- **Replace every match:** `s.replace(old, new)`
+- **Replace every match:** `text.replace(old, new)`
 """),
-                P("py-title-case", "Title Case", "def headline(s: str) -> str:",
+                P("py-title-case", "Title Case", "def headline(text: str) -> str:",
                   """Capitalise the first letter of every word and lower-case the rest.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def headline(s: str) -> str:\n    return s.title()\n",
+                  "def headline(text: str) -> str:\n    return text.title()\n",
                   [(["the QUICK fox"], "The Quick Fox"), (["a"], "A")], [[""], ["hello world"], ["ONE TWO"]],
                   require=[".title"],
                   grammar="""
 ## Building blocks
-- **Every word capitalised:** `s.title()`
-- **Compare:** `s.capitalize()` only capitalises the very first character.
+- **Every word capitalised:** `text.title()`
+- **Compare:** `text.capitalize()` only capitalises the very first character.
 """),
             ],
             quiz=[
@@ -288,27 +288,27 @@ Methods can be chained: `s.strip().lower()`.
 - `s.startswith("http")` and `s.endswith(".py")` check the ends. Both accept a tuple of options: `s.endswith((".jpg", ".png"))`.
 """,
             problems=[
-                P("py-mentions-cat", "Mentions a Cat", "def mentions_cat(s: str) -> bool:",
+                P("py-mentions-cat", "Mentions a Cat", "def mentions_cat(text: str) -> bool:",
                   """Return `True` if the text contains `"cat"` anywhere, in any case.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  'def mentions_cat(s: str) -> bool:\n    return "cat" in s.lower()\n',
+                  'def mentions_cat(text: str) -> bool:\n    return "cat" in text.lower()\n',
                   [(["My CAT is grey"], True), (["dog"], False), (["concatenate"], True)], [[""], ["c a t"], ["Cat"]],
                   require=["op:in"],
                   grammar="""
 ## Building blocks
 - **Substring test:** `"cat" in text`
-- **Ignore case:** lower-case first: `"cat" in s.lower()`
+- **Ignore case:** lower-case first: `"cat" in text.lower()`
 """),
-                P("py-count-vowels", "Count the Vowels", "def vowels(s: str) -> int:",
-                  """Count the vowels (a, e, i, o, u) in `s`, upper or lower case.
+                P("py-count-vowels", "Count the Vowels", "def vowels(text: str) -> int:",
+                  """Count the vowels (a, e, i, o, u) in `text`, upper or lower case.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  'def vowels(s: str) -> int:\n    t = s.lower()\n    return t.count("a") + t.count("e") + t.count("i") + t.count("o") + t.count("u")\n',
+                  'def vowels(text: str) -> int:\n    t = text.lower()\n    return t.count("a") + t.count("e") + t.count("i") + t.count("o") + t.count("u")\n',
                   [(["Hello World"], 3), (["rhythm"], 0), (["AEIOU"], 5)], [[""], ["banana"], ["Queueing"]],
                   require=[".count"],
                   hints=["`.count` counts one thing at a time. Add up five counts."],
@@ -319,34 +319,34 @@ Methods can be chained: `s.strip().lower()`.
 - **Add the counts:** `t.count("a") + t.count("e") + …`
 - **Later:** a loop or `sum(c in "aeiou" for c in t)` does this in one line (levels 3 and 5).
 """),
-                P("py-is-link", "Is It a Link?", "def is_link(s: str) -> bool:",
-                  """Return `True` if `s` starts with `"http://"` or `"https://"`.
+                P("py-is-link", "Is It a Link?", "def is_link(text: str) -> bool:",
+                  """Return `True` if `text` starts with `"http://"` or `"https://"`.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  'def is_link(s: str) -> bool:\n    return s.startswith(("http://", "https://"))\n',
+                  'def is_link(text: str) -> bool:\n    return text.startswith(("http://", "https://"))\n',
                   [(["https://python.org"], True), (["ftp://x"], False), (["http://a"], True)], [[""], ["www.example.com"], ["https:/broken"]],
                   require=[".startswith"],
                   grammar="""
 ## Building blocks
-- **Check the start:** `s.startswith("http://")`
-- **Several options at once:** pass a tuple: `s.startswith(("http://", "https://"))`
+- **Check the start:** `text.startswith("http://")`
+- **Several options at once:** pass a tuple: `text.startswith(("http://", "https://"))`
 """),
-                P("py-find-position", "Where Is It?", "def position(s: str, sub: str) -> int:",
-                  """Return the index where `sub` first appears in `s`, or `-1` if it doesn't.
+                P("py-find-position", "Where Is It?", "def position(text: str, target: str) -> int:",
+                  """Return the index where `target` first appears in `text`, or `-1` if it doesn't.
 
 **Constraints**
-- `0 <= len(s), len(sub) <= 10^4`
-- `s` and `sub` are lowercase English letters
+- `0 <= len(text), len(target) <= 10^4`
+- `text` and `target` are lowercase English letters
 """,
-                  "def position(s: str, sub: str) -> int:\n    return s.find(sub)\n",
+                  "def position(text: str, target: str) -> int:\n    return text.find(target)\n",
                   [(["banana", "na"], 2), (["banana", "x"], -1), (["abc", "a"], 0)], [["", "a"], ["aaaa", "aa"], ["hello", "o"]],
                   require=[".find"],
                   grammar="""
 ## Building blocks
-- **First position, or -1:** `s.find(sub)`
-- **Compare:** `s.index(sub)` raises `ValueError` when it's missing.
+- **First position, or -1:** `text.find(target)`
+- **Compare:** `text.index(target)` raises `ValueError` when it's missing.
 """),
                 P("py-file-extension", "File Extension", "def extension(filename: str) -> str:",
                   """Return the extension of `filename`: everything after the **last** dot, without the dot. If there is no dot, return `""`.
@@ -385,18 +385,18 @@ Methods can be chained: `s.strip().lower()`.
 - `", ".join(words)` glues a list of strings together with `", "` between each one. The separator comes first: `sep.join(list)`.
 """,
             problems=[
-                P("py-word-count", "Word Count", "def word_count(s: str) -> int:",
-                  """Return how many words `s` has. Words are separated by one or more spaces.
+                P("py-word-count", "Word Count", "def word_count(text: str) -> int:",
+                  """Return how many words `text` has. Words are separated by one or more spaces.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def word_count(s: str) -> int:\n    return len(s.split())\n",
+                  "def word_count(text: str) -> int:\n    return len(text.split())\n",
                   [(["the quick brown fox"], 4), (["  spaced   out  "], 2), ([""], 0)], [["one"], ["a b c d e f"]],
                   require=[".split"],
                   grammar="""
 ## Building blocks
-- **Split on whitespace:** `s.split()` with no argument ignores extra spaces.
+- **Split on whitespace:** `text.split()` with no argument ignores extra spaces.
 - **How many items:** `len(list)`
 """),
                 P("py-join-commas", "Comma List", "def comma_list(words: List[str]) -> str:",
@@ -441,21 +441,21 @@ Methods can be chained: `s.strip().lower()`.
 - **Unpack two items into two names:** `leader, ultimate = who.split()`
 - **Rebuild:** `last + ", " + first`
 """),
-                P("py-snake-to-camel", "snake_case to camelCase", "def camel(s: str) -> str:",
+                P("py-snake-to-camel", "snake_case to camelCase", "def camel(text: str) -> str:",
                   """Convert `snake_case` to `camelCase`: remove the underscores and capitalise each word after the first.
 
 **Constraints**
-- `2 <= len(s) <= 10^4`
-- `s` is lowercase letters, digits and underscores
+- `2 <= len(text) <= 10^4`
+- `text` is lowercase letters, digits and underscores
 """,
-                  'def camel(s: str) -> str:\n    first, *rest = s.split("_")\n    return first + "".join(w.capitalize() for w in rest)\n',
+                  'def camel(text: str) -> str:\n    first, *rest = text.split("_")\n    return first + "".join(w.capitalize() for w in rest)\n',
                   [(["user_first_name"], "userFirstName"), (["id"], "id")], [["a_b_c"], ["already"], ["x_y"]],
                   difficulty="Medium",
                   hints=["Split on `_`, keep the first word, capitalise the others, and join them with `\"\"`.",
-                         "`s.title()` capitalises every word: you could title-case, remove underscores, and lower-case just the first letter."],
+                         "`text.title()` capitalises every word: you could title-case, remove underscores, and lower-case just the first letter."],
                   grammar="""
 ## Building blocks
-- **Pieces:** `s.split("_")`
+- **Pieces:** `text.split("_")`
 - **Option A:** `pattern = word.title().replace("_", "")`, then `pattern[:1].lower() + pattern[1:]`.
 - **Option B (preview of level 5):** star unpacking, `head, *remainder = [1, 2, 3]`, puts the leftovers in a list.
 """),
@@ -505,27 +505,27 @@ The built-in `format(value, spec)` does the same thing without the f-string: `fo
 - **f-string:** put `f` before the quotes and the values in braces: `f"{name} is {age} years old"`.
 - **No `str()` needed:** f-strings convert numbers for you.
 """),
-                P("py-two-decimals", "Two Decimal Places", "def money(x: float) -> str:",
-                  """Return `x` as text with exactly two decimal places.
+                P("py-two-decimals", "Two Decimal Places", "def money(amount: float) -> str:",
+                  """Return `amount` as text with exactly two decimal places.
 
 **Constraints**
-- `x` is an int or a float
-- `-10^16 <= x <= 10^16`
+- `amount` is an int or a float
+- `-10^16 <= amount <= 10^16`
 """,
-                  'def money(x: float) -> str:\n    return f"{x:.2f}"\n',
+                  'def money(amount: float) -> str:\n    return f"{amount:.2f}"\n',
                   [([3.14159], "3.14"), ([2], "2.00"), ([0.005], "0.01")], [[100.0], [-1.234], [9.999]],
                   grammar="""
 ## Building blocks
 - **Fixed decimals:** `f"{x:.2f}"`. `.2f` means "a float with 2 decimal places".
 - **Not the same as `round`:** `round(2, 2)` is `2`, but the format always shows `2.00`.
 """),
-                P("py-zero-pad", "Zero-Padded Number", "def ticket(n: int) -> str:",
+                P("py-zero-pad", "Zero-Padded Number", "def ticket(number: int) -> str:",
                   """Ticket numbers are always 4 digits, padded with zeros. Use the built-in `format` function.
 
 **Constraints**
-- `0 <= n <= 99999`
+- `0 <= number <= 99999`
 """,
-                  'def ticket(n: int) -> str:\n    return format(n, "04d")\n',
+                  'def ticket(number: int) -> str:\n    return format(number, "04d")\n',
                   [([42], "0042"), ([7], "0007"), ([1234], "1234")], [[0], [99999]],
                   require=["format"],
                   grammar="""
@@ -585,26 +585,26 @@ Every character has a number (its Unicode **code point**).
 The letters are consecutive, so `ord(c) - ord("a")` turns `'a'…'z'` into `0…25`. That trick shows up all over the Blind 75.
 """,
             problems=[
-                P("py-char-code", "Character Code", "def code(c: str) -> int:",
-                  """Return the Unicode code point of the single character `c`.
+                P("py-char-code", "Character Code", "def code(char: str) -> int:",
+                  """Return the Unicode code point of the single character `char`.
 
 **Constraints**
-- `len(c) == 1`
+- `len(char) == 1`
 """,
-                  "def code(c: str) -> int:\n    return ord(c)\n",
+                  "def code(char: str) -> int:\n    return ord(char)\n",
                   [(["a"], 97), (["A"], 65), (["0"], 48)], [[" "], ["z"], ["€"]],
                   require=["ord"],
                   grammar="""
 ## Building blocks
-- **Character to number:** `ord(c)`
+- **Character to number:** `ord(char)`
 """),
-                P("py-next-letter", "Next Letter", "def next_letter(c: str) -> str:",
-                  """Return the letter after `c` in the alphabet, wrapping `"z"` around to `"a"`.
+                P("py-next-letter", "Next Letter", "def next_letter(letter: str) -> str:",
+                  """Return the letter after `letter` in the alphabet, wrapping `"z"` around to `"a"`.
 
 **Constraints**
-- `c` is a single lowercase English letter
+- `letter` is a single lowercase English letter
 """,
-                  'def next_letter(c: str) -> str:\n    return chr((ord(c) - ord("a") + 1) % 26 + ord("a"))\n',
+                  'def next_letter(letter: str) -> str:\n    return chr((ord(letter) - ord("a") + 1) % 26 + ord("a"))\n',
                   [(["a"], "b"), (["m"], "n"), (["z"], "a")], [["y"], ["q"]],
                   require=["ord", "chr"],
                   hints=["Turn the letter into 0–25, add 1, wrap with `% 26`, then turn it back."],
@@ -614,18 +614,18 @@ The letters are consecutive, so `ord(c) - ord("a")` turns `'a'…'z'` into `0…
 - **Wrap around:** `% 26`
 - **Back to a letter:** `chr(n + ord("a"))`
 """),
-                P("py-alphabet-position", "Alphabet Position", "def position_in_alphabet(c: str) -> int:",
-                  """Return the position of letter `c` in the alphabet, starting at 1 and ignoring case.
+                P("py-alphabet-position", "Alphabet Position", "def position_in_alphabet(letter: str) -> int:",
+                  """Return the position of letter `letter` in the alphabet, starting at 1 and ignoring case.
 
 **Constraints**
-- `c` is a single English letter, lowercase or uppercase
+- `letter` is a single English letter, lowercase or uppercase
 """,
-                  'def position_in_alphabet(c: str) -> int:\n    return ord(c.lower()) - ord("a") + 1\n',
+                  'def position_in_alphabet(letter: str) -> int:\n    return ord(letter.lower()) - ord("a") + 1\n',
                   [(["a"], 1), (["Z"], 26), (["m"], 13)], [["B"], ["y"]],
                   grammar="""
 ## Building blocks
-- **Ignore case:** `c.lower()` first.
-- **Distance from 'a':** `ord(c) - ord("a")`, then `+ 1` to start counting at 1.
+- **Ignore case:** `letter.lower()` first.
+- **Distance from 'a':** `ord(letter) - ord("a")`, then `+ 1` to start counting at 1.
 """),
             ],
             quiz=[
@@ -664,31 +664,31 @@ These methods return `True`/`False` about **every** character in the string (and
 - **Is it one of several values?** `x in (1, 2)`
 - **Brackets around the `or`:** `(a or b) and c`
 """),
-                P("py-is-word", "Just Letters", "def is_word(s: str) -> bool:",
-                  """Return `True` if `s` is non-empty and made only of letters.
+                P("py-is-word", "Just Letters", "def is_word(text: str) -> bool:",
+                  """Return `True` if `text` is non-empty and made only of letters.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def is_word(s: str) -> bool:\n    return s.isalpha()\n",
+                  "def is_word(text: str) -> bool:\n    return text.isalpha()\n",
                   [(["hello"], True), (["hello!"], False), ([""], False)], [["two words"], ["Ünïcödé"], ["abc1"]],
                   require=[".isalpha"],
                   grammar="""
 ## Building blocks
-- **Only letters:** `s.isalpha()`, which is already `False` for `""`.
+- **Only letters:** `text.isalpha()`, which is already `False` for `""`.
 """),
-                P("py-is-shouting", "Is It Shouting?", "def is_shouting(s: str) -> bool:",
-                  """Return `True` if `s` has at least one letter and all its letters are capitals.
+                P("py-is-shouting", "Is It Shouting?", "def is_shouting(text: str) -> bool:",
+                  """Return `True` if `text` has at least one letter and all its letters are capitals.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def is_shouting(s: str) -> bool:\n    return s.isupper()\n",
+                  "def is_shouting(text: str) -> bool:\n    return text.isupper()\n",
                   [(["STOP!"], True), (["Stop"], False), (["123"], False)], [["HI THERE"], [""], ["A1"]],
                   require=[".isupper"],
                   grammar="""
 ## Building blocks
-- **All letters upper case (and at least one letter):** `s.isupper()`. Digits and punctuation are ignored.
+- **All letters upper case (and at least one letter):** `text.isupper()`. Digits and punctuation are ignored.
 """),
             ],
             quiz=[
@@ -717,44 +717,44 @@ print(repr("a\\tb")) # 'a\\tb'   (invisible characters made visible)
 Tip: when debugging, `print(repr(s))` reveals stray spaces and new lines.
 """,
             problems=[
-                P("py-show-repr", "Show the repr", "def show(s: str) -> str:",
-                  """Return the `repr` of `s`: the text you'd type to create it, including quotes.
+                P("py-show-repr", "Show the repr", "def show(text: str) -> str:",
+                  """Return the `repr` of `text`: the text you'd type to create it, including quotes.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def show(s: str) -> str:\n    return repr(s)\n",
+                  "def show(text: str) -> str:\n    return repr(text)\n",
                   [(["hi"], "'hi'"), ([""], "''"), (["it's"], "\"it's\"")], [["tab\there"], ["new\nline"]],
                   require=["repr"],
                   grammar="""
 ## Building blocks
-- **Programmer's view of a value:** `repr(s)`. Note Python picks double quotes when the text contains a `'`.
+- **Programmer's view of a value:** `repr(text)`. Note Python picks double quotes when the text contains a `'`.
 """),
-                P("py-ascii-safe", "ASCII-Safe Text", "def ascii_safe(s: str) -> str:",
-                  """Return the `ascii` representation of `s`, which escapes every non-ASCII character.
+                P("py-ascii-safe", "ASCII-Safe Text", "def ascii_safe(text: str) -> str:",
+                  """Return the `ascii` representation of `text`, which escapes every non-ASCII character.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def ascii_safe(s: str) -> str:\n    return ascii(s)\n",
+                  "def ascii_safe(text: str) -> str:\n    return ascii(text)\n",
                   [(["café"], "'caf\\xe9'"), (["plain"], "'plain'")], [["naïve"], ["日本"], [""]],
                   require=["ascii"],
                   grammar="""
 ## Building blocks
-- **repr with escapes:** `ascii(s)` turns `é` into `\\xe9` (and wider characters into `\\u…`).
+- **repr with escapes:** `ascii(text)` turns `é` into `\\xe9` (and wider characters into `\\u…`).
 """),
-                P("py-has-hidden-whitespace", "Hidden Whitespace", "def has_hidden(s: str) -> bool:",
-                  """Return `True` if `s` has whitespace at the start or end (a common bug in user input).
+                P("py-has-hidden-whitespace", "Hidden Whitespace", "def has_hidden(text: str) -> bool:",
+                  """Return `True` if `text` has whitespace at the start or end (a common bug in user input).
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-                  "def has_hidden(s: str) -> bool:\n    return s != s.strip()\n",
+                  "def has_hidden(text: str) -> bool:\n    return text != text.strip()\n",
                   [(["ok"], False), (["ok "], True), (["\tok"], True)], [[""], ["in side"], ["\n"]],
                   grammar="""
 ## Building blocks
-- **Compare with the trimmed version:** `s != s.strip()`
-- **Debugging tip:** `print(repr(s))` would show `'ok '` so you can see the space.
+- **Compare with the trimmed version:** `text != text.strip()`
+- **Debugging tip:** `print(repr(text))` would show `'ok '` so you can see the space.
 """),
             ],
             quiz=[

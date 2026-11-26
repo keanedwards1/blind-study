@@ -25,7 +25,7 @@ EDGES = {
                              ("push None", [["Stack", "push", "size", "pop", "size"], [[], [None], [], [], []]]),
                              ("last in, first out", [["Stack", "push", "push", "push", "pop", "pop", "pop"], [[], [1], [2], [3], [], [], []]]),
                              ("size only", [["Stack", "size"], [[], []]]), ('mixed pushes and pops', [['Stack', 'push', 'pop', 'push', 'push', 'size', 'pop'], [[], ['a'], [], ['b'], ['c'], [], []]])],
-    "py-place-top-words": [("ties go alphabetical", ["a b c", 2]), ("one word", ["one", 1]), ("k equals the number of words", ["x y", 2]), ("same word repeated", ["go go go", 1]),
+    "py-place-top-words": [("ties go alphabetical", ["a b c", 2]), ("one word", ["one", 1]), ("count equals the number of words", ["x y", 2]), ("same word repeated", ["go go go", 1]),
                            ("tie for second place", ["a a b c", 2]), ("all words, three-way tie", ["c b a", 3])],
     "py-place-first-unique": [("no unique character", ["aabb"]), ("empty", [""]), ("one character", ["z"]), ("unique at the end", ["aabbccddeef"]), ('only spaces repeat', ['  x'])],
     "py-place-merge-sorted": [("one empty", [[], [1]]), ("both empty", [[], []]), ("all equal", [[1, 1], [1, 1]]), ("negatives", [[-5, 0, 9], [-6, 10]]),

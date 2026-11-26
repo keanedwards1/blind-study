@@ -2,7 +2,7 @@
 
 LESSONS = {
     "indexing": r"""
-**In one sentence:** text is a row of characters, and you can read any one of them by its position.
+**Overview:** text is a row of characters, and you can read any one of them by its position.
 
 ### The idea
 A piece of text (a *string*) is a row of characters. Each character has a position number (its *index*), and **counting starts at 0**, not 1.
@@ -25,7 +25,7 @@ Reading the first letter of a name, the last character of a word, or the middle 
 - **Trying to change one letter.** `s[0] = "P"` is an error: strings can't be changed once made (they're *immutable*). Build a new string instead.
 """,
     "slicing": r"""
-**In one sentence:** a slice takes a stretch of characters out of a piece of text.
+**Overview:** a slice takes a stretch of characters out of a piece of text.
 
 ### The idea
 Write `text[start:stop]` to get the characters from position `start` up to, **but not including**, position `stop` (this is called *slicing*).
@@ -54,7 +54,7 @@ Taking the first few letters, dropping the first and last characters, reversing 
 - Worrying about going past the end: slices never crash. `"hi"[0:100]` is just `"hi"`.
 """,
     "string-methods": r"""
-**In one sentence:** text comes with built-in tools for changing case and tidying up.
+**Overview:** text comes with built-in tools for changing case and tidying up.
 
 ### The idea
 A *method* is a function that belongs to a value; you call it with a dot after the value. String methods **always give you a new string**; the original never changes.
@@ -78,7 +78,7 @@ Cleaning up what people type (extra spaces, random capitals) before comparing or
 - Calling a method and throwing the result away: `s.upper()` on its own line does nothing useful. Keep the result: `s = s.upper()`.
 """,
     "searching": r"""
-**In one sentence:** Python can tell you whether some text contains other text, where, and how often.
+**Overview:** Python can tell you whether some text contains other text, where, and how often.
 
 ### The idea
 ```python
@@ -101,7 +101,7 @@ Checking a file type, finding where a word appears, or counting letters.
 - Using `s.index("x")` when it might be missing: unlike `find`, `index` crashes (raises a `ValueError`) instead of giving `-1`.
 """,
     "split-join": r"""
-**In one sentence:** `split` breaks text into a list of pieces, and `join` glues a list of pieces back into text.
+**Overview:** `split` breaks text into a list of pieces, and `join` glues a list of pieces back into text.
 
 ### The idea
 ```python
@@ -123,7 +123,7 @@ Turning a sentence into words, reading comma-separated data, building a sentence
 - Joining numbers: `join` only works on text, so `", ".join([1, 2])` is an error. Convert them with `str` first.
 """,
     "formatting": r"""
-**In one sentence:** an f-string lets you drop values straight into a piece of text, and format them neatly.
+**Overview:** an f-string lets you drop values straight into a piece of text, and format them neatly.
 
 ### The idea
 Put an `f` before the opening quote, then write values inside curly braces (this is an *f-string*):
@@ -150,7 +150,7 @@ After a colon inside the braces you can describe **how** to show the value (a *f
 - Forgetting the `f`: `"{name}"` without it shows the braces literally.
 """,
     "char-codes": r"""
-**In one sentence:** every character has a number behind it, and you can switch between the two.
+**Overview:** every character has a number behind it, and you can switch between the two.
 
 ### The idea
 Computers store each character as a number (its *Unicode code point*).
@@ -176,7 +176,7 @@ Shifting letters (secret codes), turning a letter into its alphabet position (0 
 - Forgetting that capitals have different numbers from lower-case letters. Lower-case first if case shouldn't matter.
 """,
     "char-tests": r"""
-**In one sentence:** these methods answer yes/no questions about what kind of characters a piece of text contains.
+**Overview:** these methods answer yes/no questions about what kind of characters a piece of text contains.
 
 ### The idea
 Each one checks **every** character, and gives `False` for empty text:
@@ -198,7 +198,7 @@ Checking that a PIN is all digits, that a username has no symbols, or skipping p
 - `"12.5".isdigit()` is `False`: the dot isn't a digit.
 """,
     "repr-ascii": r"""
-**In one sentence:** `repr` shows a value exactly as a programmer would type it, which makes hidden characters visible.
+**Overview:** `repr` shows a value exactly as a programmer would type it, which makes hidden characters visible.
 
 ### The idea
 `str(x)` makes friendly text for people. `repr(x)` makes exact text for programmers (the value's *representation*).

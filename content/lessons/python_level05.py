@@ -2,7 +2,7 @@
 
 LESSONS = {
     "defaults-kwargs": r"""
-**In one sentence:** a function's inputs can have fallback values, and callers can name the inputs they're giving.
+**Overview:** a function's inputs can have fallback values, and callers can name the inputs they're giving.
 
 ### The idea
 ```python
@@ -31,7 +31,7 @@ def add(item, bag=None):
 ```
 """,
     "args-kwargs": r"""
-**In one sentence:** one or two stars let a function accept any number of inputs.
+**Overview:** one or two stars let a function accept any number of inputs.
 
 ### The idea
 ```python
@@ -65,7 +65,7 @@ profile("Bo", **{"age": 4})
 - Forgetting that `*args` arrives as a **tuple**, not a list (you can loop over it and use `len`, but not `append`).
 """,
     "lambda-key": r"""
-**In one sentence:** a `lambda` is a tiny one-line function, perfect for telling `sorted`, `min` and `max` what to compare.
+**Overview:** a `lambda` is a tiny one-line function, perfect for telling `sorted`, `min` and `max` what to compare.
 
 ### The idea
 ```python
@@ -97,7 +97,7 @@ sorted(scores, key=lambda s: -s)           # a minus sign flips to largest first
 - Writing `key=len()` with brackets. Pass the function itself: `key=len`.
 """,
     "map-filter": r"""
-**In one sentence:** `map` changes every item; `filter` keeps only some items.
+**Overview:** `map` changes every item; `filter` keeps only some items.
 
 ### The idea
 ```python
@@ -117,7 +117,7 @@ Both are *lazy*: they don't do any work until you ask for the results, which is 
 - A `map` or `filter` can only be used **once**; after that it's empty.
 """,
     "comprehensions": r"""
-**In one sentence:** a comprehension builds a list (or dict, or set) in a single line.
+**Overview:** a comprehension builds a list (or dict, or set) in a single line.
 
 ### The idea
 These two do exactly the same thing:
@@ -150,7 +150,7 @@ That last-but-one form, in round brackets, makes items one at a time instead of 
 - Squeezing too much into one line. If it's hard to read, a normal loop is fine.
 """,
     "recursion": r"""
-**In one sentence:** a recursive function solves a problem by calling itself on a smaller version of the same problem.
+**Overview:** a recursive function solves a problem by calling itself on a smaller version of the same problem.
 
 ### The idea
 ```python
@@ -176,7 +176,7 @@ Problems that contain smaller copies of themselves: nested lists, family trees, 
 - No stopping point, or one that's never reached. Python gives up after about 1,000 calls and raises a `RecursionError`.
 """,
     "closures": r"""
-**In one sentence:** a function can build and hand back another function that remembers values from where it was made.
+**Overview:** a function can build and hand back another function that remembers values from where it was made.
 
 ### The idea
 Functions are values, just like numbers: you can store them, pass them around and return them.
@@ -212,7 +212,7 @@ def make_counter():
 - `return add()` instead of `return add`. The brackets call it straight away.
 """,
     "iterators-generators": r"""
-**In one sentence:** a generator hands out values one at a time, only when they're asked for.
+**Overview:** a generator hands out values one at a time, only when they're asked for.
 
 ### Taking items one at a time
 ```python
@@ -244,7 +244,7 @@ Producing a long (or even endless) series without building a huge list in memory
 - (`aiter` and `anext` are the same ideas for *asynchronous* code, which runs several things at once; you won't need them here.)
 """,
     "decorators": r"""
-**In one sentence:** a decorator wraps a function to add extra behaviour, without changing the function's own code.
+**Overview:** a decorator wraps a function to add extra behaviour, without changing the function's own code.
 
 ### The idea
 ```python

@@ -125,7 +125,7 @@ HINTS = {
     # ------------------------------------------------------------------ closures
     "py-make-adder": [
         "The outer function doesn't return a number; it returns a *function*.",
-        "Define a small function inside `make_adder` that takes `x`. It can use `n` from the outer function: it remembers it (this is called a closure).",
+        "Define a small function inside `make_adder` that takes `value`. It can use `amount` from the outer function: it remembers it (this is called a closure).",
         "Return the inner function itself, without brackets, so you're not calling it.",
     ],
     "py-make-counter": [
@@ -135,8 +135,8 @@ HINTS = {
     ],
     "py-call-if-callable": [
         "Some inputs are functions (like `len`) and some are plain values (like `5`).",
-        "`callable(x)` is `True` when `x` can be called with brackets.",
-        "If it's callable, call it with `arg` and return the result; otherwise return `x` unchanged. A conditional expression (`a if test else b`) fits in one line.",
+        "`callable(value)` is `True` when `value` can be called with brackets.",
+        "If it's callable, call it with `arg` and return the result; otherwise return `value` unchanged. A conditional expression (`a if test else b`) fits in one line.",
     ],
     # ------------------------------------------------------------------ iterators and generators
     "py-first-or-default": [
@@ -146,13 +146,13 @@ HINTS = {
     ],
     "py-first-match": [
         "A generator expression produces matching items lazily: it only does the work when asked.",
-        "Write one that yields only the words longer than `n`.",
+        "Write one that yields only the words longer than `length`.",
         "Pass it to `next` with `None` as the fallback. Note the generator needs its own brackets when there's a second argument.",
     ],
     "py-countdown-generator": [
         "A generator is a function that uses `yield` instead of `return`. Each `yield` hands out one value and pauses until the next one is asked for.",
-        "Loop from `n` down to 1, yielding each number.",
-        "Don't build a list; just yield the numbers one by one. With `n` of 0 it yields nothing.",
+        "Loop from `start` down to 1, yielding each number.",
+        "Don't build a list; just yield the numbers one by one. With `start` of 0 it yields nothing.",
     ],
     "py-chunks": [
         "Chunks start at positions 0, size, 2×size, and so on.",

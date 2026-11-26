@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { formatTime, type StageResult } from "@/lib/game-score";
+import { formatTime, type ScoreBreakdown, type StageResult } from "@/lib/game-score";
 import { sfx } from "@/lib/audio/engine";
 import Burst from "./Burst";
 import { SoundButtons } from "./GameShell";
@@ -16,9 +16,13 @@ export type ClearInfo = {
   best: StageResult;
   hints: number;
   peeked: boolean;
+  /** How the score was made up (accuracy, independence, speed). */
+  breakdown?: ScoreBreakdown;
   /** The winning submit's tests: totals, and each edge case with the input it ran, your output and the expected answer. */
   tests?: { passed: number; total: number; edges: { note: string; hidden?: boolean; ok: boolean; input: string; output: string; expected: string }[] };
 };
+
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 /** The between-stages screen: leaves earned, score, time, tries, tests passed, the edge cases handled, best, and where to go next. */
 export default function StageClear({
@@ -40,7 +44,7 @@ export default function StageClear({
 }) {
   const router = useRouter();
   const [leavesDone, setLeavesDone] = useState(false);
-  const { result, prev, hints, peeked, tests } = info;
+  const { result, prev, hints, peeked, breakdown, tests } = info;
   const firstClear = !prev;
   const hasEdges = Boolean(tests && tests.edges.length > 0);
   const newBest = Boolean(prev && result.score > prev.score);
@@ -65,6 +69,23 @@ export default function StageClear({
     >
       <span className="text-[#c9bda4]">{k}</span>
       <span className="font-semibold tabular-nums">{v}</span>
+    </div>
+  );
+
+  /** One part of the score: points out of its maximum, with what decided it underneath. */
+  const part = (k: string, points: number, max: number, detail: string, delay: number) => (
+    <div
+      className="n-rise-in flex items-baseline justify-between gap-6 border-b border-white/10 py-1.5 last:border-0"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <span className="flex flex-col">
+        <span className="text-[#c9bda4]">{k}</span>
+        <span className="text-xs text-[#c9bda4]/70">{detail}</span>
+      </span>
+      <span className="font-semibold tabular-nums">
+        {points}
+        <span className="text-xs font-normal text-[#c9bda4]"> / {max}</span>
+      </span>
     </div>
   );
 
@@ -119,11 +140,20 @@ export default function StageClear({
                 </p>
               )}
               <div className="w-full text-left text-sm">
-                {row("Time", formatTime(result.ms), 1300)}
-                {row("Tries", result.tries, 1400)}
-                {tests && row("Tests passed", `${tests.passed} / ${tests.total}`, 1450)}
-                {hints > 0 && row("Hints used", hints, 1500)}
-                {peeked && row("Solution", "Peeked", 1500)}
+                {breakdown && !peeked ? (
+                  <>
+                    {part("Accuracy", breakdown.accuracy, 600, breakdown.wrong === 0 ? "first submit" : plural(breakdown.wrong, "wrong submit"), 1300)}
+                    {part("Independence", breakdown.independence, 500, hints === 0 ? "no hints" : plural(hints, "hint"), 1400)}
+                    {part("Speed", breakdown.speed, 400, `${formatTime(result.ms)} · par ${formatTime(breakdown.parMs)}`, 1450)}
+                  </>
+                ) : (
+                  <>
+                    {row("Time", formatTime(result.ms), 1300)}
+                    {row("Tries", result.tries, 1400)}
+                    {peeked && row("Solution", "Peeked: 15% of the usual score", 1450)}
+                  </>
+                )}
+                {tests && row("Tests passed", `${tests.passed} / ${tests.total}`, 1500)}
                 {row(
                   "Best",
                   `${info.best.score.toLocaleString("en-US")} points`,

@@ -24,13 +24,13 @@ PLACEMENT = [
         'def label(celsius: int) -> str:\n    if celsius < 10:\n        return "cold"\n    if celsius < 25:\n        return "mild"\n    return "hot"\n',
         [([3], "cold"), ([18], "mild"), ([30], "hot")], [[10], [24], [25], [-5], [9]])),
     dict(level=1, problem=P(
-        "py-place-next-step", "Next Step", "def next_step(n: int) -> int:",
-        """If `n` is even, return half of it. If `n` is odd, return `3 * n + 1`.
+        "py-place-next-step", "Next Step", "def next_step(number: int) -> int:",
+        """If `number` is even, return half of it. If `number` is odd, return `3 * number + 1`.
 
 **Constraints**
-- `-10^16 <= n <= 10^16`
+- `-10^16 <= number <= 10^16`
 """,
-        "def next_step(n: int) -> int:\n    if n % 2 == 0:\n        return n // 2\n    return 3 * n + 1\n",
+        "def next_step(number: int) -> int:\n    if number % 2 == 0:\n        return number // 2\n    return 3 * number + 1\n",
         [([6], 3), ([7], 22), ([1], 4)], [[2], [100], [9], [0]])),
     # ------------------------------------------------------------------ level 2: strings
     dict(level=2, problem=P(
@@ -84,14 +84,14 @@ PLACEMENT = [
         "def letter_counts(word: str) -> Dict[str, int]:\n    counts = {}\n    for c in word:\n        counts[c] = counts.get(c, 0) + 1\n    return counts\n",
         [(["hello"], {"h": 1, "e": 1, "l": 2, "o": 1}), ([""], {})], [["aaa"], ["abcabc"], ["mississippi"]])),
     dict(level=4, problem=P(
-        "py-place-common", "In Both Lists", "def common(a: List[int], b: List[int]) -> List[int]:",
-        """Return the values that appear in both `a` and `b`, each listed once, in increasing order.
+        "py-place-common", "In Both Lists", "def common(first: List[int], second: List[int]) -> List[int]:",
+        """Return the values that appear in both `first` and `second`, each listed once, in increasing order.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
+- `0 <= len(first), len(second) <= 10^4`
 - The values are all whole numbers or all strings
 """,
-        "def common(a: List[int], b: List[int]) -> List[int]:\n    return sorted(set(a) & set(b))\n",
+        "def common(first: List[int], second: List[int]) -> List[int]:\n    return sorted(set(first) & set(second))\n",
         [([[1, 2, 2, 3], [2, 3, 4]], [2, 3]), ([[1], [2]], [])], [[[5, 1, 5], [5, 5]], [[], [1]], [[3, 2, 1], [1, 2, 3]]])),
     # ------------------------------------------------------------------ level 5: functions, key=, recursion
     dict(level=5, problem=P(
@@ -116,13 +116,13 @@ PLACEMENT = [
         difficulty="Medium")),
     # ------------------------------------------------------------------ level 6: number tools, errors
     dict(level=6, problem=P(
-        "py-place-to-binary", "To Binary", "def to_binary(n: int) -> str:",
-        """Return `n` written in binary, without any prefix.
+        "py-place-to-binary", "To Binary", "def to_binary(number: int) -> str:",
+        """Return `number` written in binary, without any prefix.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-        'def to_binary(n: int) -> str:\n    return bin(n)[2:]\n',
+        'def to_binary(number: int) -> str:\n    return bin(number)[2:]\n',
         [([5], "101"), ([0], "0"), ([8], "1000")], [[1], [255], [1024], [37]])),
     dict(level=6, problem=P(
         "py-place-sum-valid", "Sum the Valid Numbers", "def sum_valid(items: List[str]) -> int:",
@@ -139,64 +139,64 @@ PLACEMENT = [
         "py-place-stack-class", "Stack Class", "",
         """Write a class `Stack` with:
 
-- `push(x)`: add `x` to the top;
+- `push(item)`: add `item` to the top;
 - `pop()`: remove and return the top item, or `None` if it's empty;
 - `size()`: return how many items it holds.
 
 **Constraints**
-- `x` can be a value of any type
+- `item` can be a value of any type
 - Up to 100 method calls
 """,
-        "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, x: int) -> None:\n        self.items.append(x)\n\n    def pop(self):\n        return self.items.pop() if self.items else None\n\n    def size(self) -> int:\n        return len(self.items)\n",
+        "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item: int) -> None:\n        self.items.append(item)\n\n    def pop(self):\n        return self.items.pop() if self.items else None\n\n    def size(self) -> int:\n        return len(self.items)\n",
         [([["Stack", "push", "push", "pop", "size", "pop", "pop"], [[], [1], [2], [], [], [], []]], [None, None, None, 2, 1, 1, None])],
         [[["Stack", "size", "pop"], [[], [], []]], [["Stack", "push", "push", "push", "size", "pop"], [[], [5], [6], [7], [], []]]],
         kind="class", cls="Stack",
-        starter="class Stack:\n    def __init__(self):\n        pass\n\n    def push(self, x: int) -> None:\n        pass\n\n    def pop(self):\n        pass\n\n    def size(self) -> int:\n        pass\n")),
+        starter="class Stack:\n    def __init__(self):\n        pass\n\n    def push(self, item: int) -> None:\n        pass\n\n    def pop(self):\n        pass\n\n    def size(self) -> int:\n        pass\n")),
     dict(level=7, problem=P(
-        "py-place-top-words", "Top Words", "def top_words(text: str, k: int) -> List[str]:",
-        """Return the `k` most frequent words in `text` (words are separated by spaces). Break ties alphabetically.
+        "py-place-top-words", "Top Words", "def top_words(text: str, count: int) -> List[str]:",
+        """Return the `count` most frequent words in `text` (words are separated by spaces). Break ties alphabetically.
 
 **Constraints**
 - `1 <= len(text) <= 10^4`
 - `text` is lowercase letters and spaces
-- `1 <= k <= 10^16`
+- `1 <= count <= 10^16`
 """,
-        "def top_words(text: str, k: int) -> List[str]:\n    counts = Counter(text.split())\n    return sorted(counts, key=lambda w: (-counts[w], w))[:k]\n",
+        "def top_words(text: str, count: int) -> List[str]:\n    counts = Counter(text.split())\n    return sorted(counts, key=lambda w: (-counts[w], w))[:count]\n",
         [(["the cat and the hat", 2], ["the", "and"]), (["a b c", 2], ["a", "b"])], [["x x y y z", 2], ["one", 1], ["b a b a c c c", 3]],
         difficulty="Medium")),
     # ------------------------------------------------------------------ level 8: Blind 75 Easy style
     dict(level=8, problem=P(
-        "py-place-first-unique", "First Unique Character", "def first_unique(s: str) -> int:",
-        """Return the index of the first character in `s` that appears only once, or `-1` if there isn't one.
+        "py-place-first-unique", "First Unique Character", "def first_unique(text: str) -> int:",
+        """Return the index of the first character in `text` that appears only once, or `-1` if there isn't one.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
+- `0 <= len(text) <= 10^4`
 """,
-        "def first_unique(s: str) -> int:\n    counts = Counter(s)\n    for i, c in enumerate(s):\n        if counts[c] == 1:\n            return i\n    return -1\n",
+        "def first_unique(text: str) -> int:\n    counts = Counter(text)\n    for i, c in enumerate(text):\n        if counts[c] == 1:\n            return i\n    return -1\n",
         [(["leetcode"], 0), (["loveleetcode"], 2), (["aabb"], -1)], [[""], ["z"], ["abcabcd"], ["aabbccddeef"]])),
     dict(level=8, problem=P(
-        "py-place-merge-sorted", "Merge Two Sorted Lists", "def merge(a: List[int], b: List[int]) -> List[int]:",
-        """Return one sorted list with all the values from `a` and `b`, in O(len(a) + len(b)) time (don't just sort them together).
+        "py-place-merge-sorted", "Merge Two Sorted Lists", "def merge(first: List[int], second: List[int]) -> List[int]:",
+        """Return one sorted list with all the values from `first` and `second`, in O(len(first) + len(second)) time (don't just sort them together).
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
-- `a` and `b` are each sorted from smallest to largest
-- `-10^16 <= a[i], b[i] <= 10^16`
+- `0 <= len(first), len(second) <= 10^4`
+- `first` and `second` are each sorted from smallest to largest
+- `-10^16 <= first[i], second[i] <= 10^16`
 """,
-        "def merge(a: List[int], b: List[int]) -> List[int]:\n    i = j = 0\n    out = []\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            out.append(a[i])\n            i += 1\n        else:\n            out.append(b[j])\n            j += 1\n    return out + a[i:] + b[j:]\n",
+        "def merge(first: List[int], second: List[int]) -> List[int]:\n    i = j = 0\n    out = []\n    while i < len(first) and j < len(second):\n        if first[i] <= second[j]:\n            out.append(first[i])\n            i += 1\n        else:\n            out.append(second[j])\n            j += 1\n    return out + first[i:] + second[j:]\n",
         [([[1, 3, 5], [2, 4]], [1, 2, 3, 4, 5]), ([[], [1]], [1])], [[[], []], [[1, 1], [1, 1]], [[-5, 0, 9], [-6, 10]]],
         forbid=["sorted", ".sort"])),
     # ------------------------------------------------------------------ level 9: Blind 75 Medium style
     dict(level=9, problem=P(
-        "py-place-subarray-sum", "Subarrays Summing to K", "def count_subarrays(nums: List[int], k: int) -> int:",
-        """Return how many contiguous, non-empty sublists of `nums` add up to exactly `k`. Aim for O(n).
+        "py-place-subarray-sum", "Subarrays Summing to a Target", "def count_subarrays(nums: List[int], target: int) -> int:",
+        """Return how many contiguous, non-empty sublists of `nums` add up to exactly `target`. Aim for O(n).
 
 **Constraints**
 - `0 <= len(nums) <= 10^4`
 - `-10^16 <= nums[i] <= 10^16`
-- `-10^16 <= k <= 10^16`
+- `-10^16 <= target <= 10^16`
 """,
-        "def count_subarrays(nums: List[int], k: int) -> int:\n    seen = {0: 1}\n    total = count = 0\n    for n in nums:\n        total += n\n        count += seen.get(total - k, 0)\n        seen[total] = seen.get(total, 0) + 1\n    return count\n",
+        "def count_subarrays(nums: List[int], target: int) -> int:\n    seen = {0: 1}\n    total = count = 0\n    for n in nums:\n        total += n\n        count += seen.get(total - target, 0)\n        seen[total] = seen.get(total, 0) + 1\n    return count\n",
         [([[1, 1, 1], 2], 2), ([[1, 2, 3], 3], 2), ([[1, -1, 0], 0], 3)], [[[], 0], [[5], 5], [[0, 0, 0], 0], [[3, 4, 7, 2, -3, 1, 4, 2], 7], [list(range(1, 2001)), 4950]],
         difficulty="Medium")),
     dict(level=9, problem=P(

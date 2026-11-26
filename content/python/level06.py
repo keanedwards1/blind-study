@@ -35,30 +35,30 @@ A video player shows a track's length as minutes and seconds. Write `mm_ss(total
 - **Quotient and remainder at once:** `mins, phrase = divmod(sum_so_far, 60)`
 - **Two-digit seconds:** `f"{s:02d}"`
 """),
-                P("py-mod-pow", 'Huge Power, Small Remainder', "def power_mod(base: int, exp: int, mod: int) -> int:",
+                P("py-mod-pow", 'Huge Power, Small Remainder', "def power_mod(base: int, exponent: int, modulus: int) -> int:",
                   """
-A hashing routine needs `(base ** exp) % mod`, where `exp` can be as large as 10¹⁵. Write `power_mod(base, exp, mod)`. Working out `base ** exp` first is far too slow.
+A hashing routine needs `(base ** exponent) % modulus`, where `exponent` can be as large as 10¹⁵. Write `power_mod(base, exponent, modulus)`. Working out `base ** exponent` first is far too slow.
 
 **Constraints**
-- `0 <= base, exp <= 10^16`
-- `1 <= mod <= 10^16`
+- `0 <= base, exponent <= 10^16`
+- `1 <= modulus <= 10^16`
 """,
-                  "def power_mod(base: int, exp: int, mod: int) -> int:\n    return pow(base, exp, mod)\n",
+                  "def power_mod(base: int, exponent: int, modulus: int) -> int:\n    return pow(base, exponent, modulus)\n",
                   [([2, 10, 1000], 24), ([3, 0, 7], 1)], [[7, 10 ** 15, 1_000_000_007], [10, 10 ** 12, 9], [5, 3, 1]],
                   require=["pow"],
                   grammar="""
 ## Building blocks
-- **Three-argument pow:** `pow(base, exp, mod)` never builds the giant number.
+- **Three-argument pow:** `pow(base, exponent, modulus)` never builds the giant number.
 """),
-                P("py-toward-zero", 'Divide Toward Zero', "def divide(a: int, b: int) -> int:",
+                P("py-toward-zero", 'Divide Toward Zero', "def divide(dividend: int, divisor: int) -> int:",
                   """
-You're porting code from a language whose integer division rounds toward zero. Python's `//` rounds down instead, which gives different answers for negative numbers. Write `divide(a, b)` to divide and drop the fraction, rounding toward zero.
+You're porting code from a language whose integer division rounds toward zero. Python's `//` rounds down instead, which gives different answers for negative numbers. Write `divide(dividend, divisor)` to divide and drop the fraction, rounding toward zero.
 
 **Constraints**
-- `-10^16 <= a, b <= 10^16`
-- `b != 0`
+- `-10^16 <= dividend, divisor <= 10^16`
+- `divisor != 0`
 """,
-                  "def divide(a: int, b: int) -> int:\n    q = abs(a) // abs(b)\n    return q if (a < 0) == (b < 0) else -q\n",
+                  "def divide(dividend: int, divisor: int) -> int:\n    q = abs(dividend) // abs(divisor)\n    return q if (dividend < 0) == (divisor < 0) else -q\n",
                   [([7, 2], 3), ([-7, 2], -3), ([7, -2], -3)], [[-7, -2], [0, 5], [6, 3], [-1, 1000]],
                   difficulty="Medium",
                   hints=["`-7 // 2` is `-4` in Python, so `//` alone isn't enough for negatives.", "Divide the absolute values, then fix the sign."],
@@ -68,21 +68,21 @@ You're porting code from a language whose integer division rounds toward zero. P
 - **Size without the sign:** `abs(-7)` is `7`.
 - **Is it negative?** `x < 0` gives `True` or `False`.
 - **Booleans can be compared:** `True == True` is `True`.
-- **Shortcut for small numbers:** `int(a / b)`, but float division loses precision on very large values.
+- **Shortcut for small numbers:** `int(dividend / divisor)`, but float division loses precision on very large values.
 """),
-                P("py-close-enough", 'Compare Floats', "def close(a: float, b: float) -> bool:",
+                P("py-close-enough", 'Compare Floats', "def close(first: float, second: float) -> bool:",
                   """
-Floats carry tiny rounding errors, so `0.1 + 0.2` is `0.30000000000000004`. Write `close(a, b)` to return `True` when two floats are equal apart from those errors. Use `math.isclose`.
+Floats carry tiny rounding errors, so `0.1 + 0.2` is `0.30000000000000004`. Write `close(first, second)` to return `True` when two floats are equal apart from those errors. Use `math.isclose`.
 
 **Constraints**
-- `-10^16 <= a, b <= 10^16`
+- `-10^16 <= first, second <= 10^16`
 """,
-                  "def close(a: float, b: float) -> bool:\n    return math.isclose(a, b)\n",
+                  "def close(first: float, second: float) -> bool:\n    return math.isclose(first, second)\n",
                   [([0.30000000000000004, 0.3], True), ([0.3, 0.31], False)], [[1e10, 1e10 + 1], [0.0, 0.0], [1.0, 1.0001]],
                   require=[".isclose"],
                   grammar="""
 ## Building blocks
-- **Tolerant comparison:** `math.isclose(a, b)` (`math` is already imported here).
+- **Tolerant comparison:** `math.isclose(first, second)` (`math` is already imported here).
 - **Why:** `0.1 + 0.2 == 0.3` is `False`.
 """),
             ],
@@ -110,48 +110,48 @@ Strip the two-character prefix with `[2:]`. Going the other way, `int("1010", 2)
 `format(10, "b")` / `"o"` / `"x"` give the digits without a prefix.
 """,
             problems=[
-                P("py-to-hex", 'Convert to Hexadecimal', "def to_hex(n: int) -> str:",
+                P("py-to-hex", 'Convert to Hexadecimal', "def to_hex(number: int) -> str:",
                   """
-A colour picker shows values in hexadecimal. Write `to_hex(n)` to return `n` in lower-case hex without the `0x` prefix.
+A colour picker shows values in hexadecimal. Write `to_hex(number)` to return `number` in lower-case hex without the `0x` prefix.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-                  "def to_hex(n: int) -> str:\n    return hex(n)[2:]\n",
+                  "def to_hex(number: int) -> str:\n    return hex(number)[2:]\n",
                   [([255], "ff"), ([0], "0"), ([16], "10")], [[4096], [3735928559]],
                   require=["hex"],
                   grammar="""
 ## Building blocks
-- **Hex text:** `hex(n)` gives `'0xff'`.
+- **Hex text:** `hex(number)` gives `'0xff'`.
 - **Drop the prefix:** `[2:]`
 """),
-                P("py-to-octal", 'Convert to Octal', "def to_octal(n: int) -> str:",
+                P("py-to-octal", 'Convert to Octal', "def to_octal(number: int) -> str:",
                   """
-Unix file permissions are written in octal. Write `to_octal(n)` to return `n` in octal without the `0o` prefix.
+Unix file permissions are written in octal. Write `to_octal(number)` to return `number` in octal without the `0o` prefix.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-                  "def to_octal(n: int) -> str:\n    return oct(n)[2:]\n",
+                  "def to_octal(number: int) -> str:\n    return oct(number)[2:]\n",
                   [([8], "10"), ([0], "0"), ([64], "100")], [[7], [511]],
                   require=["oct"],
                   grammar="""
 ## Building blocks
-- **Octal text:** `oct(n)` gives `'0o10'`; drop `[2:]`.
+- **Octal text:** `oct(number)` gives `'0o10'`; drop `[2:]`.
 """),
-                P("py-count-one-bits", 'Count the 1 Bits', "def ones(n: int) -> int:",
+                P("py-count-one-bits", 'Count the 1 Bits', "def ones(number: int) -> int:",
                   """
-Write `ones(n)` to return how many 1s there are in the binary form of `n`. Use `bin`.
+Write `ones(number)` to return how many 1s there are in the binary form of `number`. Use `bin`.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-                  'def ones(n: int) -> int:\n    return bin(n).count("1")\n',
+                  'def ones(number: int) -> int:\n    return bin(number).count("1")\n',
                   [([11], 3), ([0], 0), ([255], 8)], [[1024], [2 ** 40 - 1]],
                   require=["bin"],
                   grammar="""
 ## Building blocks
-- **Binary text:** `bin(n)`
+- **Binary text:** `bin(number)`
 - **Count the ones:** `.count("1")`
 """),
                 P("py-from-base", 'Parse a Number in Any Base', "def from_base(digits: str, base: int) -> int:",
@@ -195,54 +195,54 @@ A data import receives numbers written in bases from 2 to 36. Write `from_base(d
 Useful tricks: `(n >> k) & 1` reads bit `k`; `n & (n - 1)` clears the lowest 1 bit.
 """,
             problems=[
-                P("py-get-bit", 'Read One Bit', "def bit(n: int, k: int) -> int:",
+                P("py-get-bit", 'Read One Bit', "def bit(status: int, position: int) -> int:",
                   """
-A device reports its status as a number where each bit is a flag. Write `bit(n, k)` to return bit `k` of `n` (0 or 1), where bit 0 is the rightmost.
+A device reports its status as a number where each bit is a flag. Write `bit(status, position)` to return bit `position` of `status` (0 or 1), where bit 0 is the rightmost.
 
 **Constraints**
-- `0 <= n, k <= 10^16`
+- `0 <= status, position <= 10^16`
 """,
-                  "def bit(n: int, k: int) -> int:\n    return (n >> k) & 1\n",
+                  "def bit(status: int, position: int) -> int:\n    return (status >> position) & 1\n",
                   [([5, 0], 1), ([5, 1], 0), ([5, 2], 1)], [[0, 10], [1024, 10], [255, 7]],
                   require=["op:>>", "op:&"],
                   grammar="""
 ## Building blocks
-- **Move bit k to the end:** `n >> k`
+- **Move that bit to the end:** `status >> position`
 - **Keep only the last bit:** `& 1`
 """),
-                P("py-toggle-bit", 'Flip One Bit', "def flip(n: int, k: int) -> int:",
+                P("py-toggle-bit", 'Flip One Bit', "def flip(number: int, position: int) -> int:",
                   """
-Write `flip(n, k)` to return `n` with bit `k` flipped, so a 0 becomes 1 and a 1 becomes 0.
+Write `flip(number, position)` to return `number` with bit `position` flipped, so a 0 becomes 1 and a 1 becomes 0.
 
 **Constraints**
-- `0 <= n <= 10^4`
-- `0 <= k <= 30`
+- `0 <= number <= 10^4`
+- `0 <= position <= 30`
 """,
-                  "def flip(n: int, k: int) -> int:\n    return n ^ (1 << k)\n",
+                  "def flip(number: int, position: int) -> int:\n    return number ^ (1 << position)\n",
                   [([5, 1], 7), ([5, 0], 4), ([0, 3], 8)], [[255, 7], [1, 0]],
                   require=["op:^", "op:<<"],
                   grammar="""
 ## Building blocks
-- **A number with only bit k set:** `1 << k`
-- **Flip it:** XOR, `n ^ (1 << k)`
+- **A number with only that bit set:** `1 << position`
+- **Flip it:** XOR, `number ^ (1 << position)`
 """),
-                P("py-power-of-two", 'Power of Two', "def is_power_of_two(n: int) -> bool:",
+                P("py-power-of-two", 'Power of Two', "def is_power_of_two(number: int) -> bool:",
                   """
-A memory allocator only accepts sizes that are powers of two (1, 2, 4, 8, …). Write `is_power_of_two(n)` using a bit trick.
+A memory allocator only accepts sizes that are powers of two (1, 2, 4, 8, …). Write `is_power_of_two(number)` using a bit trick.
 
 Zero and negative numbers are never powers of two.
 
 **Constraints**
-- `-10^16 <= n <= 10^16`
+- `-10^16 <= number <= 10^16`
 """,
-                  "def is_power_of_two(n: int) -> bool:\n    return n > 0 and n & (n - 1) == 0\n",
+                  "def is_power_of_two(number: int) -> bool:\n    return number > 0 and number & (number - 1) == 0\n",
                   [([8], True), ([6], False), ([1], True)], [[0], [-8], [1024], [1023]],
                   require=["op:&"], forbid=["bin", "while", "for"],
-                  hints=["A power of two has exactly one 1 bit. What does `n & (n - 1)` do to the lowest 1 bit?"],
+                  hints=["A power of two has exactly one 1 bit. What does `number & (number - 1)` do to the lowest 1 bit?"],
                   grammar="""
 ## Building blocks
-- **Clear the lowest 1 bit:** `n & (n - 1)`. For a power of two, that leaves 0.
-- **Exclude 0 and negatives:** `n > 0 and …`
+- **Clear the lowest 1 bit:** `number & (number - 1)`. For a power of two, that leaves 0.
+- **Exclude 0 and negatives:** `number > 0 and …`
 """),
             ],
             quiz=[
@@ -315,20 +315,20 @@ Text is made of characters; **bytes** are raw numbers from 0 to 255 (what files 
 - `memoryview(data)` looks at bytes **without copying** them. Slicing a memoryview is free, which matters for big binary data.
 """,
             problems=[
-                P("py-utf8-bytes", 'Encode Text as Bytes', "def to_bytes(s: str) -> List[int]:",
+                P("py-utf8-bytes", 'Encode Text as Bytes', "def to_bytes(text: str) -> List[int]:",
                   """
-A network client sends text as UTF-8 bytes. Write `to_bytes(s)` to return the UTF-8 bytes of `s` as a list of numbers.
+A network client sends text as UTF-8 bytes. Write `to_bytes(text)` to return the UTF-8 bytes of `text` as a list of numbers.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
-- `s` can contain any characters, including emoji
+- `0 <= len(text) <= 10^4`
+- `text` can contain any characters, including emoji
 """,
-                  'def to_bytes(s: str) -> List[int]:\n    return list(s.encode("utf-8"))\n',
+                  'def to_bytes(text: str) -> List[int]:\n    return list(text.encode("utf-8"))\n',
                   [(["hi"], [104, 105]), (["é"], [195, 169]), ([""], [])], [["A1 "], ["€"]],
                   require=[".encode"],
                   grammar="""
 ## Building blocks
-- **Text to bytes:** `s.encode("utf-8")` (UTF-8 is the default).
+- **Text to bytes:** `text.encode("utf-8")` (UTF-8 is the default).
 - **Bytes to numbers:** `list(...)`
 """),
                 P("py-bytes-to-text", 'Decode Bytes as Text', "def to_text(nums: List[int]) -> str:",
@@ -348,17 +348,17 @@ A network client receives raw byte values. Write `to_text(nums)` to turn them ba
 - **Numbers to bytes:** `bytes(nums)`
 - **Bytes to text:** `.decode()`
 """),
-                P("py-patch-byte", 'Patch One Byte', "def patch(nums: List[int], i: int, value: int) -> List[int]:",
+                P("py-patch-byte", 'Patch One Byte', "def patch(nums: List[int], index: int, value: int) -> List[int]:",
                   """
-A file repair tool fixes a single corrupted byte. Write `patch(nums, i, value)` to build a `bytearray` from `nums`, set position `i` to `value`, and return the result as a list.
+A file repair tool fixes a single corrupted byte. Write `patch(nums, index, value)` to build a `bytearray` from `nums`, set position `index` to `value`, and return the result as a list.
 
 **Constraints**
 - `1 <= len(nums) <= 10^4`
-- `0 <= nums[i] <= 255`
-- `0 <= i < len(nums)`
+- `0 <= nums[index] <= 255`
+- `0 <= index < len(nums)`
 - `0 <= value <= 255`
 """,
-                  "def patch(nums: List[int], i: int, value: int) -> List[int]:\n    data = bytearray(nums)\n    data[i] = value\n    return list(data)\n",
+                  "def patch(nums: List[int], index: int, value: int) -> List[int]:\n    data = bytearray(nums)\n    data[index] = value\n    return list(data)\n",
                   [([[1, 2, 3], 0, 9], [9, 2, 3]), ([[0], 0, 255], [255])], [[[5, 5], 1, 0]],
                   require=["bytearray"],
                   grammar="""
@@ -404,19 +404,19 @@ Large binary buffers are expensive to copy. Write `window(nums, start, stop)` to
 - `issubclass(ValueError, Exception)` asks about classes rather than values.
 """,
             problems=[
-                P("py-type-name", "Name a Value's Type", "def type_name(x) -> str:",
+                P("py-type-name", "Name a Value's Type", "def type_name(value) -> str:",
                   """
-A logging helper records the type of each value it sees. Write `type_name(x)` to return the name of `x`'s type, as Python spells it (`None` has the type `NoneType`).
+A logging helper records the type of each value it sees. Write `type_name(value)` to return the name of `value`'s type, as Python spells it (`None` has the type `NoneType`).
 
 **Constraints**
-- `x` can be a value of any type
+- `value` can be a value of any type
 """,
-                  "def type_name(x) -> str:\n    return type(x).__name__\n",
+                  "def type_name(value) -> str:\n    return type(value).__name__\n",
                   [([3], "int"), (["a"], "str"), ([None], "NoneType")], [[1.5], [[1, 2]], [{"a": 1}], [True]],
                   require=["type"],
                   grammar="""
 ## Building blocks
-- **The type:** `type(x)`
+- **The type:** `type(value)`
 - **Its name:** `.__name__`
 """),
                 P("py-count-real-ints", 'Count the Integers', "def count_ints(items: list) -> int:",
@@ -499,14 +499,14 @@ A form field should hold a whole number, but users type anything. Write `parse(t
 - **Try the risky part:** `try: return int(text)`
 - **Catch the specific failure:** `except ValueError: return None`
 """),
-                P("py-safe-divide", 'Divide Safely', "def safe_divide(a: int, b: int) -> Optional[float]:",
+                P("py-safe-divide", 'Divide Safely', "def safe_divide(total: int, count: int) -> Optional[float]:",
                   """
-A stats page divides totals by counts, and some counts are zero. Write `safe_divide(a, b)` to return `a / b`, or `None` when `b` is 0. Use `try`/`except`, not an `if`.
+A stats page divides totals by counts, and some counts are zero. Write `safe_divide(total, count)` to return `total / count`, or `None` when `count` is 0. Use `try`/`except`, not an `if`.
 
 **Constraints**
-- `-10^16 <= a, b <= 10^16`
+- `-10^16 <= total, count <= 10^16`
 """,
-                  "def safe_divide(a: int, b: int) -> Optional[float]:\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return None\n",
+                  "def safe_divide(total: int, count: int) -> Optional[float]:\n    try:\n        return total / count\n    except ZeroDivisionError:\n        return None\n",
                   [([6, 3], 2.0), ([1, 0], None)], [[0, 0], [-9, 2]],
                   require=["try"], forbid=["if", "ternary"],
                   grammar="""
@@ -590,29 +590,29 @@ match status:
 ```
 """,
             problems=[
-                P("py-for-else-prime", 'Prime Check with for…else', "def is_prime(n: int) -> bool:",
+                P("py-for-else-prime", 'Prime Check with for…else', "def is_prime(number: int) -> bool:",
                   """
-Write `is_prime(n)` to return `True` if `n` is prime. Use a `for` loop that `break`s when it finds a divisor, with an `else` block for the case where it finds none.
+Write `is_prime(number)` to return `True` if `number` is prime. Use a `for` loop that `break`s when it finds a divisor, with an `else` block for the case where it finds none.
 
 **Constraints**
-- `-10^16 <= n <= 10^16`
+- `-10^16 <= number <= 10^16`
 """,
-                  "def is_prime(n: int) -> bool:\n    if n < 2:\n        return False\n    for d in range(2, int(n ** 0.5) + 1):\n        if n % d == 0:\n            break\n    else:\n        return True\n    return False\n",
+                  "def is_prime(number: int) -> bool:\n    if number < 2:\n        return False\n    for d in range(2, int(number ** 0.5) + 1):\n        if number % d == 0:\n            break\n    else:\n        return True\n    return False\n",
                   [([7], True), ([9], False), ([1], False)], [[2], [97], [100], [7919]],
                   grammar="""
 ## Building blocks
-- **Try divisors up to √n:** `for lookup in range(2, int(num ** 0.5) + 1):`
+- **Try divisors up to the square root:** `for lookup in range(2, int(num ** 0.5) + 1):`
 - **Found one:** `break`
 - **Loop finished without break:** an `else:` lined up with the `for`.
 """),
-                P("py-ternary-abs", 'Absolute Value in One Line', "def absolute(n: int) -> int:",
+                P("py-ternary-abs", 'Absolute Value in One Line', "def absolute(number: int) -> int:",
                   """
-Write `absolute(n)` to return the absolute value of `n` with a single conditional expression. Don't use `abs` or an `if` statement.
+Write `absolute(number)` to return the absolute value of `number` with a single conditional expression. Don't use `abs` or an `if` statement.
 
 **Constraints**
-- `-10^16 <= n <= 10^16`
+- `-10^16 <= number <= 10^16`
 """,
-                  "def absolute(n: int) -> int:\n    return -n if n < 0 else n\n",
+                  "def absolute(number: int) -> int:\n    return -number if number < 0 else number\n",
                   [([-5], 5), ([3], 3), ([0], 0)], [[-1000]],
                   require=["ternary"], forbid=["abs", "if"],
                   grammar="""
@@ -673,20 +673,20 @@ Python can run code that's stored as text:
 ⚠️ Never `eval` or `exec` text from someone you don't trust: it can do anything your program can. In real code, prefer `int()`, `json.loads()` or `ast.literal_eval()`.
 """,
             problems=[
-                P("py-calculator", 'Evaluate a Sum Written as Text', "def calculate(expr: str) -> float:",
+                P("py-calculator", 'Evaluate a Sum Written as Text', "def calculate(expression: str) -> float:",
                   """
-A calculator widget receives arithmetic as text. Write `calculate(expr)` to return its value, using `eval`.
+A calculator widget receives arithmetic as text. Write `calculate(expression)` to return its value, using `eval`.
 
 **Constraints**
-- `1 <= len(expr) <= 10^4`
-- `expr` is valid arithmetic using whole numbers, `+`, `-`, `*`, `/`, `%`, `**` and brackets
+- `1 <= len(expression) <= 10^4`
+- `expression` is valid arithmetic using whole numbers, `+`, `-`, `*`, `/`, `%`, `**` and brackets
 """,
-                  "def calculate(expr: str) -> float:\n    return eval(expr)\n",
+                  "def calculate(expression: str) -> float:\n    return eval(expression)\n",
                   [(["2 + 3 * 4"], 14), (["(1 + 1) ** 10"], 1024), (["7 / 2"], 3.5)], [["0"], ["-3 * -3"], ["10 // 3 + 10 % 3"]],
                   require=["eval"],
                   grammar="""
 ## Building blocks
-- **Evaluate an expression:** `eval(expr)`
+- **Evaluate an expression:** `eval(expression)`
 """),
                 P("py-run-snippet", 'Run a Snippet', "def run(code: str) -> int:",
                   """
@@ -705,21 +705,21 @@ A teaching tool runs small Python snippets that set a variable called `result`. 
 - **Run statements into it:** `exec(text, space)`
 - **Read the result:** `env["result"]`
 """),
-                P("py-evaluate-many", 'Evaluate a Formula for Many Values', "def table(expr: str, xs: List[int]) -> List[int]:",
+                P("py-evaluate-many", 'Evaluate a Formula for Many Values', "def table(formula: str, values: List[int]) -> List[int]:",
                   """
-A plotting tool evaluates a formula in `x` for a whole column of values. Write `table(expr, xs)` to compile the formula once with `compile`, then `eval` the compiled code with `{"x": value}` for each value.
+A plotting tool evaluates a formula in `x` for a whole column of values. Write `table(formula, values)` to compile the formula once with `compile`, then `eval` the compiled code with `{"x": value}` for each value.
 
 **Constraints**
-- `expr` is a valid arithmetic formula in `x`
-- `0 <= len(xs) <= 10^4`
-- `-10^16 <= xs[i] <= 10^16`
+- `formula` is a valid arithmetic formula in `x`
+- `0 <= len(values) <= 10^4`
+- `-10^16 <= values[i] <= 10^16`
 """,
-                  'def table(expr: str, xs: List[int]) -> List[int]:\n    code = compile(expr, "<expr>", "eval")\n    return [eval(code, {"x": x}) for x in xs]\n',
+                  'def table(formula: str, values: List[int]) -> List[int]:\n    code = compile(formula, "<expr>", "eval")\n    return [eval(code, {"x": x}) for x in values]\n',
                   [(["x * x + 1", [0, 1, 2]], [1, 2, 5]), (["2 ** x", []], [])], [["x % 3", list(range(7))], ["-x", [5, -5]]],
                   require=["compile", "eval"], difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **Compile once:** `compile(expr, "<expr>", "eval")`
+- **Compile once:** `compile(formula, "<expr>", "eval")`
 - **Run with a variable:** `eval(code, {"x": value})`
 """),
             ],

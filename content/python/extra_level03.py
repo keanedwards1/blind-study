@@ -67,22 +67,22 @@ A table needs to be as wide as its longest name. Write `longest_name(names)` to 
     ),
     "range": dict(
         warmup=[
-            P("py-count-to-n", 'Print 1 to N', "def rows(n: int) -> None:",
+            P("py-count-to-n", 'Print 1 to N', "def rows(steps: int) -> None:",
               """
-A progress log prints each step number as it runs. Write `rows(n)` to print the numbers from 1 to `n`, one per line.
+A progress log prints each step number as it runs. Write `rows(steps)` to print the numbers from 1 to `steps`, one per line.
 
-If `n` is 0, nothing is printed.
+If `steps` is 0, nothing is printed.
 
 _This task checks what you print._
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= steps <= 1000`
 """,
-              "def rows(n: int) -> None:\n    for i in range(1, n + 1):\n        print(i)\n",
+              "def rows(steps: int) -> None:\n    for i in range(1, steps + 1):\n        print(i)\n",
               [([3], "1\n2\n3\n"), ([0], "")], [[1], [5]],
               out="stdout",
               hints=["`range(start, stop)` counts from `start` up to but not including `stop`.",
-                     "To finish at `n`, the stop has to be one more than `n`.",
+                     "To finish at `steps`, the stop has to be one more than `steps`.",
                      "Print each number the loop gives you."],
               grammar="""
 ## Building blocks
@@ -175,24 +175,24 @@ A CI script runs its checks in order and reports the first one that failed. Writ
     ),
     "list-methods": dict(
         warmup=[
-            P("py-pending-list", "A List of Placeholders", "def pending(n: int) -> List[str]:",
+            P("py-pending-list", "A List of Placeholders", "def pending(slots: int) -> List[str]:",
               """
-A task tracker creates `n` empty slots marked `"pending"` before any work starts. Write `pending(n)` to build that list by appending one `"pending"` at a time in a loop.
+A task tracker creates `slots` empty slots marked `"pending"` before any work starts. Write `pending(slots)` to build that list by appending one `"pending"` at a time in a loop.
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= slots <= 1000`
 """,
-              "def pending(n: int) -> List[str]:\n    out = []\n    for _ in range(n):\n        out.append(\"pending\")\n    return out\n",
+              "def pending(slots: int) -> List[str]:\n    out = []\n    for _ in range(slots):\n        out.append(\"pending\")\n    return out\n",
               [([2], ["pending", "pending"]), ([0], [])], [[1], [5]],
               require=[".append"],
               hints=["Start with an empty list.",
-                     "Loop `n` times with `range`; the loop variable isn't needed, so `_` is a fine name.",
+                     "Loop `slots` times with `range`; the loop variable isn't needed, so `_` is a fine name.",
                      "Each time round, `append` one `\"pending\"`."],
               grammar="""
 ## Building blocks
 - **Empty list:** `[]`
 - **Add to the end:** `bag.append("x")`
-- **Repeat n times:** `for _ in range(3):`
+- **Repeat a fixed number of times:** `for _ in range(3):`
 """),
         ],
         practice=[

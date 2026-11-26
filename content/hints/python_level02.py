@@ -5,7 +5,7 @@ HINTS = {
     "py-string-length": [
         "You want the number of characters in the text, counting spaces and punctuation too.",
         "The built-in `len(...)` gives the length of a string (and of lists, and more).",
-        "Return what `len` gives you for `s`. An empty string has length 0.",
+        "Return what `len` gives you for `text`. An empty string has length 0.",
     ],
     "py-first-and-last": [
         "Every character in a string has a position number (an index), starting from 0 for the first character.",
@@ -15,12 +15,12 @@ HINTS = {
     "py-middle-char": [
         "For an odd length like 5, the middle position is 2 (positions 0, 1, **2**, 3, 4).",
         "That middle position is the length divided by 2, using whole-number division `//` so you get an int (indexes must be whole numbers).",
-        "Work out the middle index from `len(s)`, then use it inside square brackets.",
+        "Work out the middle index from `len(text)`, then use it inside square brackets.",
     ],
     "py-repeat-text": [
-        "Repeating text `n` times is like multiplying it.",
+        "Repeating text `times` times is like multiplying it.",
         "In Python, a string times a number repeats it: `\"ha\" * 2` gives `\"haha\"`.",
-        "Return `s` multiplied by `n`. If `n` is 0 you get an empty string automatically.",
+        "Return `text` multiplied by `times`. If `times` is 0 you get an empty string automatically.",
     ],
     # ------------------------------------------------------------------ slicing
     "py-first-three": [
@@ -46,7 +46,7 @@ HINTS = {
     "py-capitalise-first": [
         "Split the job in two: the first character (made upper case) and everything after it (unchanged).",
         "`.upper()` makes text upper case. A slice like `text[:1]` gives the first character, or an empty string if `text` is empty, so it never crashes.",
-        "Join the upper-cased first part and the rest with `+`. Using `s[0]` instead would crash on an empty string.",
+        "Join the upper-cased first part and the rest with `+`. Using `text[0]` instead would crash on an empty string.",
     ],
     # ------------------------------------------------------------------ case and clean-up
     "py-shout": [
@@ -87,7 +87,7 @@ HINTS = {
     ],
     "py-find-position": [
         "You need the index where the smaller text first appears.",
-        "`.find(sub)` returns that index, or `-1` when it isn't there, which is exactly the required answer.",
+        "`.find(target)` returns that index, or `-1` when it isn't there, which is exactly the required answer.",
         "Return what `.find` gives you. (`.index` would crash when it's missing, so it's the wrong choice here.)",
     ],
     "py-file-extension": [
@@ -131,7 +131,7 @@ HINTS = {
     "py-two-decimals": [
         "You need text with exactly two digits after the point, even for whole numbers (`2` → `\"2.00\"`).",
         "Inside an f-string's braces you can add a format after a colon. `.2f` means \"a float with 2 decimal places\".",
-        "Put `x` in the braces followed by that format. It rounds for you.",
+        "Put `amount` in the braces followed by that format. It rounds for you.",
     ],
     "py-zero-pad": [
         "The number must always be 4 characters wide, with zeros filling the front.",
@@ -152,7 +152,7 @@ HINTS = {
     "py-char-code": [
         "Every character has a number code (its Unicode code point). For example `A` is 65.",
         "`ord(...)` gives the code of a single character.",
-        "Return `ord` of `c`.",
+        "Return `ord` of `char`.",
     ],
     "py-next-letter": [
         "Turn the letter into a number, add one, and turn it back into a letter. `ord` gives the number and `chr` turns a number back into a character.",
@@ -173,7 +173,7 @@ HINTS = {
     "py-is-word": [
         "You need to know whether every character is a letter.",
         "`.isalpha()` checks exactly that, and it's `False` for an empty string.",
-        "Return the result of calling it on `s`.",
+        "Return the result of calling it on `text`.",
     ],
     "py-is-shouting": [
         "\"Shouting\" means there's at least one letter, and none of the letters are lower case. Digits and punctuation don't matter.",
@@ -184,12 +184,12 @@ HINTS = {
     "py-show-repr": [
         "The \"repr\" of a value is how you'd write it in code: for text, that includes the quotes.",
         "The built-in `repr(...)` produces it.",
-        "Return `repr` of `s`. Notice Python picks the kind of quotes for you.",
+        "Return `repr` of `text`. Notice Python picks the kind of quotes for you.",
     ],
     "py-ascii-safe": [
         "ASCII is the basic set of English characters. Anything else (like `é` or an emoji) needs to be written as an escape code.",
         "The built-in `ascii(...)` works like `repr`, but escapes every non-ASCII character.",
-        "Return `ascii` of `s`.",
+        "Return `ascii` of `text`.",
     ],
     "py-has-hidden-whitespace": [
         "If there's whitespace at either end, removing it changes the text.",

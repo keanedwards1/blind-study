@@ -55,15 +55,15 @@ A search feature needs to know how often each word appears in a document. Write 
 - **Read with a default:** `d.get(key, 0)`
 - **Store under a key:** `d[key] = value`
 """),
-                P("py-invert-dict", 'Invert a Lookup Table', "def invert(d: Dict[str, str]) -> Dict[str, str]:",
+                P("py-invert-dict", 'Invert a Lookup Table', "def invert(mapping: Dict[str, str]) -> Dict[str, str]:",
                   """
-A config maps internal codes to display names, and you need the reverse mapping too. Write `invert(d)` to return a new dict where each value becomes a key and each key becomes its value.
+A config maps internal codes to display names, and you need the reverse mapping too. Write `invert(mapping)` to return a new dict where each value becomes a key and each key becomes its value.
 
 **Constraints**
-- `0 <= len(d) <= 10^4`
-- All the values in `d` are different
+- `0 <= len(mapping) <= 10^4`
+- All the values in `mapping` are different
 """,
-                  "def invert(d: Dict[str, str]) -> Dict[str, str]:\n    out = {}\n    for k, v in d.items():\n        out[v] = k\n    return out\n",
+                  "def invert(mapping: Dict[str, str]) -> Dict[str, str]:\n    out = {}\n    for k, v in mapping.items():\n        out[v] = k\n    return out\n",
                   [([{"a": "x", "b": "y"}], {"x": "a", "y": "b"}), ([{}], {})], [[{"one": "1"}]],
                   grammar="""
 ## Building blocks
@@ -126,18 +126,18 @@ An inventory report needs the total number of units in stock across all products
 - **Just the values:** `stock.values()`
 - **Add them:** `sum(...)`
 """),
-                P("py-sorted-keys", 'Sort the Keys', "def sorted_keys(d: Dict[str, int]) -> List[str]:",
+                P("py-sorted-keys", 'Sort the Keys', "def sorted_keys(settings: Dict[str, int]) -> List[str]:",
                   """
-A settings page lists its options alphabetically. Write `sorted_keys(d)` to return the dict's keys as a list in alphabetical order.
+A settings page lists its options alphabetically. Write `sorted_keys(settings)` to return the dict's keys as a list in alphabetical order.
 
 **Constraints**
-- `0 <= len(d) <= 10^4`
+- `0 <= len(settings) <= 10^4`
 """,
-                  "def sorted_keys(d: Dict[str, int]) -> List[str]:\n    return sorted(d)\n",
+                  "def sorted_keys(settings: Dict[str, int]) -> List[str]:\n    return sorted(settings)\n",
                   [([{"b": 1, "a": 2}], ["a", "b"]), ([{}], [])], [[{"z": 0, "m": 0, "a": 0}]],
                   grammar="""
 ## Building blocks
-- **Looping over a dict gives keys:** so `sorted(d)` sorts the keys.
+- **Looping over a dict gives keys:** so `sorted(settings)` sorts the keys.
 """),
                 P("py-merge-settings", 'Merge Settings', "def merge(defaults: Dict[str, int], overrides: Dict[str, int]) -> Dict[str, int]:",
                   """
@@ -155,19 +155,19 @@ An app starts from default settings and lets each user override some of them. Wr
 - **Copy keys across:** `result.update(changes)`
 - **Shortcut you'll see:** `{**defaults, **overrides}`
 """),
-                P("py-pop-key", 'Remove a Key and Keep Its Value', "def take(d: Dict[str, int], key: str) -> List:",
+                P("py-pop-key", 'Remove a Key and Keep Its Value', "def take(cart: Dict[str, int], key: str) -> List:",
                   """
-When a cart item is removed, the cart code needs the item's price for a refund. Write `take(d, key)` to remove `key` from `d` and return `[its value, the dict afterwards]`. If the key isn't there, return `[None, d]` with the dict unchanged.
+When a cart item is removed, the cart code needs the item's price for a refund. Write `take(cart, key)` to remove `key` from `cart` and return `[its value, the dict afterwards]`. If the key isn't there, return `[None, cart]` with the dict unchanged.
 
 **Constraints**
-- `0 <= len(d) <= 10^4`
+- `0 <= len(cart) <= 10^4`
 """,
-                  "def take(d: Dict[str, int], key: str) -> List:\n    value = d.pop(key, None)\n    return [value, d]\n",
+                  "def take(cart: Dict[str, int], key: str) -> List:\n    value = cart.pop(key, None)\n    return [value, cart]\n",
                   [([{"a": 1, "b": 2}, "a"], [1, {"b": 2}]), ([{"a": 1}, "z"], [None, {"a": 1}])], [[{}, "x"]],
                   require=[".pop"],
                   grammar="""
 ## Building blocks
-- **Remove and return, with a default:** `d.pop(key, None)`. Without the default, a missing key raises `KeyError`.
+- **Remove and return, with a default:** `cart.pop(key, None)`. Without the default, a missing key raises `KeyError`.
 """),
                 P("py-group-by-initial", 'Group Names by First Letter', "def by_initial(words: List[str]) -> Dict[str, List[str]]:",
                   """
@@ -295,31 +295,31 @@ A word game needs the set of letters in the player's word. Write `letters(word)`
 `a <= b` asks "is every item of `a` also in `b`?" (subset).
 """,
             problems=[
-                P("py-in-both", 'Values in Both Lists', "def both(a: List[int], b: List[int]) -> Set[int]:",
+                P("py-in-both", 'Values in Both Lists', "def both(first_tags: List[int], second_tags: List[int]) -> Set[int]:",
                   """
-Two teams each have a list of tags they use. Write `both(a, b)` to return the set of tags that appear in both lists.
+Two teams each have a list of tags they use. Write `both(first_tags, second_tags)` to return the set of tags that appear in both lists.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
+- `0 <= len(first_tags), len(second_tags) <= 10^4`
 - Items are numbers or strings
 """,
-                  "def both(a: List[int], b: List[int]) -> Set[int]:\n    return set(a) & set(b)\n",
+                  "def both(first_tags: List[int], second_tags: List[int]) -> Set[int]:\n    return set(first_tags) & set(second_tags)\n",
                   [([[1, 2, 3], [2, 3, 4]], {2, 3}), ([[1], [2]], set())], [[[], []], [[5, 5], [5]]],
                   compare="strict", require=["op:&"],
                   grammar="""
 ## Building blocks
-- **Make sets:** `set(a)`, `set(b)`
+- **Make sets:** `set(first_tags)`, `set(second_tags)`
 - **Intersection:** `&`
 """),
-                P("py-in-either", 'Values in Either List', "def either(a: List[int], b: List[int]) -> Set[int]:",
+                P("py-in-either", 'Values in Either List', "def either(first_source: List[int], second_source: List[int]) -> Set[int]:",
                   """
-Two data sources each list some product IDs, and the merged catalogue needs every ID once. Write `either(a, b)` to return the set of values that appear in at least one list.
+Two data sources each list some product IDs, and the merged catalogue needs every ID once. Write `either(first_source, second_source)` to return the set of values that appear in at least one list.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
+- `0 <= len(first_source), len(second_source) <= 10^4`
 - Items are numbers or strings
 """,
-                  "def either(a: List[int], b: List[int]) -> Set[int]:\n    return set(a) | set(b)\n",
+                  "def either(first_source: List[int], second_source: List[int]) -> Set[int]:\n    return set(first_source) | set(second_source)\n",
                   [([[1, 2], [2, 3]], {1, 2, 3}), ([[], []], set())], [[[1], []]],
                   compare="strict", require=["op:|"],
                   grammar="""
@@ -341,15 +341,15 @@ An event app compares the guest list with the people who have checked in. Write 
 - **Difference:** `{1, 2, 3} - {2}` gives `{1, 3}`.
 - **Sorted list from a set:** `sorted(...)`
 """),
-                P("py-in-exactly-one", 'Values in Exactly One List', "def exactly_one(a: List[int], b: List[int]) -> List[int]:",
+                P("py-in-exactly-one", 'Values in Exactly One List', "def exactly_one(first_machine: List[int], second_machine: List[int]) -> List[int]:",
                   """
-A sync tool compares the file IDs on two machines and needs the ones that exist on only one of them. Write `exactly_one(a, b)` to return those values in increasing order.
+A sync tool compares the file IDs on two machines and needs the ones that exist on only one of them. Write `exactly_one(first_machine, second_machine)` to return those values in increasing order.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
-- `-10^16 <= a[i], b[i] <= 10^16`
+- `0 <= len(first_machine), len(second_machine) <= 10^4`
+- `-10^16 <= first_machine[i], second_machine[i] <= 10^16`
 """,
-                  "def exactly_one(a: List[int], b: List[int]) -> List[int]:\n    return sorted(set(a) ^ set(b))\n",
+                  "def exactly_one(first_machine: List[int], second_machine: List[int]) -> List[int]:\n    return sorted(set(first_machine) ^ set(second_machine))\n",
                   [([[1, 2, 3], [3, 4]], [1, 2, 4]), ([[1], [1]], [])], [[[], [1, 1]], [[5, 6], [7, 8]]],
                   require=["op:^"],
                   grammar="""
@@ -392,20 +392,20 @@ A **tuple** is like a list that can't change: `point = (3, 4)`.
 - `tuple(items)` converts. Functions often return several values as a tuple: `return low, high`.
 """,
             problems=[
-                P("py-swap-pair", 'Swap Two Values', "def swap(a: int, b: int) -> Tuple[int, int]:",
+                P("py-swap-pair", 'Swap Two Values', "def swap(first: int, second: int) -> Tuple[int, int]:",
                   """
-A sorting routine needs a helper that swaps a pair. Write `swap(a, b)` to return the tuple `(b, a)`.
+A sorting routine needs a helper that swaps a pair. Write `swap(first, second)` to return the tuple `(second, first)`.
 
 **Constraints**
-- `a` and `b` can be values of any type
+- `first` and `second` can be values of any type
 """,
-                  "def swap(a: int, b: int) -> Tuple[int, int]:\n    return b, a\n",
+                  "def swap(first: int, second: int) -> Tuple[int, int]:\n    return second, first\n",
                   [([1, 2], (2, 1)), ([0, 0], (0, 0))], [[-1, 5]],
                   compare="strict",
                   grammar="""
 ## Building blocks
 - **Return a tuple:** `return q, p`. The comma makes the tuple; brackets are optional.
-- **This task checks the type:** `[b, a]` is a list, so it won't pass.
+- **This task checks the type:** `[second, first]` is a list, so it won't pass.
 """),
                 P("py-min-max-tuple", 'Smallest and Largest', "def low_high(nums: List[int]) -> Tuple[int, int]:",
                   """
@@ -438,15 +438,15 @@ A job queue processes the first job and keeps the rest waiting. Write `head_tail
 - **Star unpacking:** `leader, *remainder = things`. `remainder` is always a list.
 - **Return both:** `return one, tail_items`
 """),
-                P("py-distance-tuples", 'Distance Between Two Points', "def distance(p: Tuple[int, int], q: Tuple[int, int]) -> float:",
+                P("py-distance-tuples", 'Distance Between Two Points', "def distance(start: Tuple[int, int], end: Tuple[int, int]) -> float:",
                   """
-A map feature stores locations as `(x, y)` tuples. Write `distance(p, q)` to return the straight-line distance between two of them: √((x₁−x₂)² + (y₁−y₂)²).
+A map feature stores locations as `(x, y)` tuples. Write `distance(start, end)` to return the straight-line distance between two of them: √((x₁−x₂)² + (y₁−y₂)²).
 
 **Constraints**
-- `len(p) == len(q) == 2`
-- `-10^16 <= p[i], q[i] <= 10^16`
+- `len(start) == len(end) == 2`
+- `-10^16 <= start[i], end[i] <= 10^16`
 """,
-                  "def distance(p: Tuple[int, int], q: Tuple[int, int]) -> float:\n    (x1, y1), (x2, y2) = p, q\n    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5\n",
+                  "def distance(start: Tuple[int, int], end: Tuple[int, int]) -> float:\n    (x1, y1), (x2, y2) = start, end\n    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5\n",
                   [([(0, 0), (3, 4)], 5.0), ([(1, 1), (1, 1)], 0.0)], [[(-1, -1), (2, 3)], [(0, 0), (1, 1)]],
                   **{"in": ["tuple", "tuple"]},
                   grammar="""
@@ -526,19 +526,19 @@ A heatmap needs to know how many clicks landed on each spot. Write `point_counts
 - **Tuple keys:** `counts[tuple(p)]`
 - **Counting pattern:** `counts.get(key, 0) + 1`
 """),
-                P("py-same-letter-set", 'Same Set of Letters', "def same_letters(a: str, b: str) -> bool:",
+                P("py-same-letter-set", 'Same Set of Letters', "def same_letters(first_word: str, second_word: str) -> bool:",
                   """
-A word puzzle checks whether two words use exactly the same letters, ignoring how many times each appears. Write `same_letters(a, b)` using `frozenset`.
+A word puzzle checks whether two words use exactly the same letters, ignoring how many times each appears. Write `same_letters(first_word, second_word)` using `frozenset`.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 10^4`
+- `0 <= len(first_word), len(second_word) <= 10^4`
 """,
-                  "def same_letters(a: str, b: str) -> bool:\n    return frozenset(a) == frozenset(b)\n",
+                  "def same_letters(first_word: str, second_word: str) -> bool:\n    return frozenset(first_word) == frozenset(second_word)\n",
                   [(["listen", "silent"], True), (["aab", "ab"], True), (["abc", "abd"], False)], [["", ""], ["a", ""]],
                   require=["frozenset"],
                   grammar="""
 ## Building blocks
-- **An unchangeable set:** `frozenset(a)`
+- **An unchangeable set:** `frozenset(first_word)`
 - **Sets compare by contents:** `frozenset("ab") == frozenset("ba")` is `True`.
 """),
                 P("py-group-by-letter-set", 'Group Words by Their Letters', "def group_letter_sets(words: List[str]) -> List[List[str]]:",
@@ -557,19 +557,19 @@ A word puzzle groups words that use the same set of letters. Write `group_letter
 - **Group:** `groups.setdefault(key, []).append(w)`
 - **Groups in first-seen order:** `list(groups.values())`
 """),
-                P("py-hash-equal", 'Compare Hashes', "def same_hash(a: str, b: str) -> bool:",
+                P("py-hash-equal", 'Compare Hashes', "def same_hash(first: str, second: str) -> bool:",
                   """
-Dicts and sets look values up by their hash. Write `same_hash(a, b)` to return whether `hash(a) == hash(b)`. Equal strings always hash the same.
+Dicts and sets look values up by their hash. Write `same_hash(first, second)` to return whether `hash(first) == hash(second)`. Equal strings always hash the same.
 
 **Constraints**
-- `a` and `b` are each a string, an int or a bool
+- `first` and `second` are each a string, an int or a bool
 """,
-                  "def same_hash(a: str, b: str) -> bool:\n    return hash(a) == hash(b)\n",
+                  "def same_hash(first: str, second: str) -> bool:\n    return hash(first) == hash(second)\n",
                   [(["abc", "abc"], True), (["abc", "abd"], False)], [["", ""], ["a", "A"]],
                   require=["hash"],
                   grammar="""
 ## Building blocks
-- **A value's hash:** `hash(a)`. Equal values → equal hashes; different values almost always differ.
+- **A value's hash:** `hash(first)`. Equal values → equal hashes; different values almost always differ.
 """),
             ],
             quiz=[

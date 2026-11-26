@@ -8,15 +8,15 @@ EXTRA = {
               """
 An API client builds the query for paged results, and most callers want the default page size of 10. Write `fetch(limit=10)` to return `"limit=N"`.
 
-The tests call `fetch()`, then `fetch(n)`.
+The tests call `fetch()`, then `fetch(limit)`.
 
 **Constraints**
 - `limit` is a whole number
 """,
               "def fetch(limit: int = 10) -> str:\n    return f\"limit={limit}\"\n",
               [([None], ["limit=10", "limit=10"]), ([25], ["limit=10", "limit=25"])], [[0], [100]],
-              params=["n"],
-              driver='def driver(ns, n):\n    f = resolve(ns, "fetch")\n    return [f(), f() if n is None else f(n)]\n',
+              params=["limit"],
+              driver='def driver(ns, limit):\n    f = resolve(ns, "fetch")\n    return [f(), f() if limit is None else f(limit)]\n',
               hints=["A default value goes in the function's first line: `def f(x=5):`.",
                      "When the caller leaves the argument out, the default is used.",
                      "Build the text with an f-string."],
@@ -272,17 +272,17 @@ A user directory shows initials next to each person. Write `initials(names)`, wh
     ),
     "recursion": dict(
         warmup=[
-            P("py-countdown", "Count Down Recursively", "def countdown(n: int) -> List[int]:",
+            P("py-countdown", "Count Down Recursively", "def countdown(start: int) -> List[int]:",
               """
-A launch screen counts down from `n` to 1. Write `countdown(n)` to return `[n, n-1, ..., 1]` using recursion and no loops.
+A launch screen counts down from `start` to 1. Write `countdown(start)` to return `[start, start-1, ..., 1]` using recursion and no loops.
 
 **Constraints**
-- `0 <= n <= 100`
+- `0 <= start <= 100`
 """,
-              "def countdown(n: int) -> List[int]:\n    if n == 0:\n        return []\n    return [n] + countdown(n - 1)\n",
+              "def countdown(start: int) -> List[int]:\n    if start == 0:\n        return []\n    return [start] + countdown(start - 1)\n",
               [([3], [3, 2, 1]), ([0], [])], [[1], [6]],
               require=["recursion"], forbid=["for", "while"],
-              hints=["The countdown from `n` is `n` followed by the countdown from `n - 1`.",
+              hints=["The countdown from `start` is `start` followed by the countdown from `start - 1`.",
                      "Base case: the countdown from 0 is an empty list.",
                      "Join a one-item list and the shorter countdown with `+`."],
               grammar="""
@@ -293,15 +293,15 @@ A launch screen counts down from `n` to 1. Write `countdown(n)` to return `[n, n
 """),
         ],
         practice=[
-            P("py-power-tower", 'Fast Power', "def power(base: int, exp: int) -> int:",
+            P("py-power-tower", 'Fast Power', "def power(base: int, exponent: int) -> int:",
               """
-Write `power(base, exp)` to return `base ** exp` without using `**` or `pow`. Do it recursively with the halving trick: x to the power 2k is (x to the power k) squared, so each call halves the exponent.
+Write `power(base, exponent)` to return `base ** exponent` without using `**` or `pow`. Do it recursively with the halving trick: x to the power 2k is (x to the power k) squared, so each call halves the exponent.
 
 **Constraints**
 - `-100 <= base <= 100`
-- `0 <= exp <= 100`
+- `0 <= exponent <= 100`
 """,
-              "def power(base: int, exp: int) -> int:\n    if exp == 0:\n        return 1\n    half = power(base, exp // 2)\n    if exp % 2 == 0:\n        return half * half\n    return half * half * base\n",
+              "def power(base: int, exponent: int) -> int:\n    if exponent == 0:\n        return 1\n    half = power(base, exponent // 2)\n    if exponent % 2 == 0:\n        return half * half\n    return half * half * base\n",
               [([2, 10], 1024), ([5, 0], 1)], [[3, 5], [2, 1], [7, 12]],
               require=["recursion"], forbid=["pow", "op:**"],
               hints=["Anything to the power 0 is 1: that's the base case.",
@@ -387,16 +387,16 @@ The tests call the limiter `calls` times.
     ),
     "iterators-generators": dict(
         warmup=[
-            P("py-yield-evens", "Yield Even Numbers", "def evens(n: int):",
+            P("py-yield-evens", "Yield Even Numbers", "def evens(limit: int):",
               """
-A test-data helper hands out even ids one at a time instead of building a big list. Write a generator `evens(n)` that yields the even numbers from 0 up to, but not including, `n`.
+A test-data helper hands out even ids one at a time instead of building a big list. Write a generator `evens(limit)` that yields the even numbers from 0 up to, but not including, `limit`.
 
 **Constraints**
-- `0 <= n <= 1000`
+- `0 <= limit <= 1000`
 """,
-              "def evens(n: int):\n    for i in range(0, n, 2):\n        yield i\n",
+              "def evens(limit: int):\n    for i in range(0, limit, 2):\n        yield i\n",
               [([7], [0, 2, 4, 6]), ([0], [])], [[1], [10]],
-              driver='def driver(ns, n):\n    return list(resolve(ns, "evens")(n))\n',
+              driver='def driver(ns, limit):\n    return list(resolve(ns, "evens")(limit))\n',
               require=["yield"],
               hints=["A generator uses `yield` to hand out values one at a time.",
                      "Loop over the even numbers with a `range` that steps by 2.",

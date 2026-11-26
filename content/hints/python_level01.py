@@ -3,9 +3,9 @@
 HINTS = {
     # ------------------------------------------------------------------ return and + − *
     "py-one-less": [
-        "Your function receives a number called `n`. Whatever comes after the word `return` is what the function hands back as its answer.",
+        "Your function receives a number called `number`. Whatever comes after the word `return` is what the function hands back as its answer.",
         "The number just before another one is that number minus one. Python uses `-` for subtraction.",
-        "Write `return` followed by a calculation that uses `n`. Check it on the example: for 5 you should get 4.",
+        "Write `return` followed by a calculation that uses `number`. Check it on the example: for 5 you should get 4.",
     ],
     "py-double-it": [
         "\"Twice\" a number means the number multiplied by 2.",
@@ -39,7 +39,7 @@ HINTS = {
         "Return the comparison directly; you don't need an `if`. Remember 0 is even too.",
     ],
     "py-power-of": [
-        "\"Raised to the power\" means multiplying the base by itself `exp` times. For example, 2 to the power 3 is 2 × 2 × 2 = 8.",
+        "\"Raised to the power\" means multiplying the base by itself `exponent` times. For example, 2 to the power 3 is 2 × 2 × 2 = 8.",
         "Python has a power operator: two stars, `**`.",
         "Anything to the power 0 is 1, and the operator already handles that for you.",
     ],
@@ -57,13 +57,13 @@ HINTS = {
     "py-is-nonzero": [
         "Python treats every number as \"true-ish\" or \"false-ish\" (truthy or falsy): 0 counts as false, and any other number counts as true.",
         "The built-in function `bool(...)` turns a value into exactly `True` or `False` using that rule.",
-        "Return the result of calling it on `n`. Negative numbers are truthy too.",
+        "Return the result of calling it on `number`. Negative numbers are truthy too.",
     ],
     # ------------------------------------------------------------------ if / elif / else
     "py-sign": [
         "There are three cases (positive, negative, zero), and each one returns a different number.",
         "`if` checks the first condition, `elif` (\"else if\") checks the next one, and `else` catches everything left over.",
-        "Check `n > 0` first, then `n < 0`; whatever is left must be zero. Note that 0 is neither positive nor negative.",
+        "Check `number > 0` first, then `number < 0`; whatever is left must be zero. Note that 0 is neither positive nor negative.",
     ],
     "py-grade": [
         "Check the grades from the top down: once a score is 90 or more you know it's an A, and you don't need to check anything else.",
@@ -71,13 +71,13 @@ HINTS = {
         "Because you check from the top, the B test only needs `score >= 80`: anything 90 or more was already caught by the A test. Mind the edges: exactly 90 is an A, exactly 80 a B.",
     ],
     "py-fizzbuzz-one": [
-        "\"Divisible by 3\" means dividing by 3 leaves no remainder, so `n % 3 == 0`.",
+        "\"Divisible by 3\" means dividing by 3 leaves no remainder, so `number % 3 == 0`.",
         "Order matters. Check \"divisible by both\" first, because 15 is also divisible by 3 and by 5 on its own. (Divisible by both 3 and 5 is the same as divisible by 15.)",
         "If none of the checks match, return the number as text. `str(...)` turns a number into a string.",
     ],
     # ------------------------------------------------------------------ and / or / not
     "py-in-range": [
-        "\"Between `lo` and `hi`, including both ends\" means `x` is at least `lo` AND at most `hi`.",
+        "\"Between `low` and `high`, including both ends\" means `value` is at least `low` AND at most `high`.",
         "You can join two comparisons with `and`. Python also lets you chain them like maths: `a <= b <= c`.",
         "Use `<=` (not `<`) on both sides, so the ends themselves count.",
     ],
@@ -100,7 +100,7 @@ HINTS = {
     "py-number-to-text": [
         "You need the same digits, but as text (a string) instead of a number.",
         "`str(...)` turns any value into its text form.",
-        "Return the result of calling `str` on `n`. Negative numbers keep their minus sign.",
+        "Return the result of calling `str` on `number`. Negative numbers keep their minus sign.",
     ],
     "py-chop-decimals": [
         "You want to drop everything after the decimal point, without rounding up or down.",
@@ -121,7 +121,7 @@ HINTS = {
     "py-round-price": [
         "Prices have two decimal places, so round to 2 places.",
         "`round(value, digits)` rounds to that many decimal places. With only one argument it rounds to a whole number, which isn't what you want here.",
-        "Pass `x` and the number of decimal places, and return the result.",
+        "Pass `price` and the number of decimal places, and return the result.",
     ],
     "py-largest-of-three": [
         "You need whichever of the three numbers is biggest.",
@@ -129,8 +129,8 @@ HINTS = {
         "One call with all three inputs is enough. Negative numbers work too.",
     ],
     "py-clamp": [
-        "Two limits: the answer can't go above `hi`, and it can't go below `lo`.",
-        "`min(x, hi)` keeps a number from going above `hi` (it picks the smaller of the two). `max(..., lo)` keeps it from going below `lo`.",
+        "Two limits: the answer can't go above `high`, and it can't go below `low`.",
+        "`min(value, high)` keeps a number from going above `high` (it picks the smaller of the two). `max(..., low)` keeps it from going below `low`.",
         "Apply one limit, then apply the other to that result, by putting one call inside the other. Test all three cases: below, inside and above the range.",
     ],
     # ------------------------------------------------------------------ print
@@ -142,7 +142,7 @@ HINTS = {
     "py-two-lines": [
         "Each `print` call finishes with a new line automatically.",
         "So printing one thing and then printing the other puts them on separate lines.",
-        "Use two `print` calls, `a` first and then `b`.",
+        "Use two `print` calls, `first_line` first and then `second_line`.",
     ],
     "py-dashed": [
         "When you give `print` several values separated by commas, it puts a space between them by default.",
@@ -152,7 +152,7 @@ HINTS = {
     "py-same-line": [
         "Normally each `print` ends with a new line. Here the first one mustn't.",
         "The `end=` option changes what `print` adds at the very end; an empty string `\"\"` adds nothing.",
-        "Give the first `print` an empty ending and leave the second one as normal, so the line still ends after `b`.",
+        "Give the first `print` an empty ending and leave the second one as normal, so the line still ends after `second`.",
     ],
     # ------------------------------------------------------------------ input
     "py-echo-name": [

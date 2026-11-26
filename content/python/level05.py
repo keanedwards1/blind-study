@@ -46,20 +46,20 @@ The tests call `greet(name)`, then `greet(name, greeting="Hi")`.
 - **A default value:** `def greet(name, greeting="Hello"):`
 - **Callers can skip it** (`greet("Ada")`) **or name it** (`greet("Ada", greeting="Hi")`).
 """),
-                P("py-power-default", 'Square by Default', "def power(x: int, exp: int = ...) -> int:",
+                P("py-power-default", 'Square by Default', "def power(number: int, exponent: int = ...) -> int:",
                   """
-A maths helper raises a number to a power, and most calls just want the square. Write `power(x, exp)` to return `x ** exp`, where `exp` defaults to `2`.
+A maths helper raises a number to a power, and most calls just want the square. Write `power(number, exponent)` to return `number ** exponent`, where `exponent` defaults to `2`.
 
-The tests call `power(x)`, then `power(x, 3)`.
+The tests call `power(number)`, then `power(number, 3)`.
 
 **Constraints**
-- `-10^16 <= x <= 10^16`
+- `-10^16 <= number <= 10^16`
 """,
-                  "def power(x: int, exp: int = 2) -> int:\n    return x ** exp\n",
+                  "def power(number: int, exponent: int = 2) -> int:\n    return number ** exponent\n",
                   [([3], [9, 27])], [[0], [-2], [10]],
-                  starter="def power(x, exp):\n    pass\n",
-                  params=["x"],
-                  driver='def driver(ns, x):\n    power = resolve(ns, "power")\n    return [power(x), power(x, 3)]\n',
+                  starter="def power(number, exponent):\n    pass\n",
+                  params=["number"],
+                  driver='def driver(ns, number):\n    power = resolve(ns, "power")\n    return [power(number), power(number, 3)]\n',
                   grammar="""
 ## Building blocks
 - **Default:** `power=2` in the `def` line.
@@ -475,20 +475,20 @@ def countdown_sum(n):
 - Trees and backtracking problems (levels 9–10) lean on recursion heavily.
 """,
             problems=[
-                P("py-factorial", 'Factorial', "def factorial(n: int) -> int:",
+                P("py-factorial", 'Factorial', "def factorial(number: int) -> int:",
                   """
-Write `factorial(n)` to return `n!`, which is 1 × 2 × … × n, using recursion. By definition `0!` is `1`.
+Write `factorial(number)` to return the factorial of `number` (written `number!`), which is 1 × 2 × … × `number`, using recursion. By definition `0!` is `1`.
 
 **Constraints**
-- `0 <= n <= 100`
+- `0 <= number <= 100`
 """,
-                  "def factorial(n: int) -> int:\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n",
+                  "def factorial(number: int) -> int:\n    if number <= 1:\n        return 1\n    return number * factorial(number - 1)\n",
                   [([5], 120), ([0], 1), ([1], 1)], [[10], [20]],
                   require=["recursion"],
                   grammar="""
 ## Building blocks
 - **Base case:** `if size <= 1: return 1`
-- **Recursive case:** the function calls itself on a smaller input, e.g. `f(n - 1)`.
+- **Recursive case:** the function calls itself on a smaller input, e.g. `f(number - 1)`.
 """),
                 P("py-recursive-sum", 'Sum a List Recursively', "def rsum(nums: List[int]) -> int:",
                   """
@@ -506,14 +506,14 @@ Write `rsum(nums)` to return the sum of the list using recursion: the first numb
 - **Base case:** an empty list sums to 0: `if not xs: return 0`
 - **The first item / the rest:** `xs[0]`, `xs[1:]`
 """),
-                P("py-recursive-reverse", 'Reverse a String Recursively', "def rreverse(s: str) -> str:",
+                P("py-recursive-reverse", 'Reverse a String Recursively', "def rreverse(text: str) -> str:",
                   """
-Write `rreverse(s)` to return `s` reversed, using recursion. Don't use loops or a slice with a step.
+Write `rreverse(text)` to return `text` reversed, using recursion. Don't use loops or a slice with a step.
 
 **Constraints**
-- `0 <= len(s) <= 100`
+- `0 <= len(text) <= 100`
 """,
-                  "def rreverse(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    return rreverse(s[1:]) + s[0]\n",
+                  "def rreverse(text: str) -> str:\n    if len(text) <= 1:\n        return text\n    return rreverse(text[1:]) + text[0]\n",
                   [(["abc"], "cba"), ([""], "")], [["a"], ["racecar"], ["hello world"]],
                   require=["recursion"], forbid=["for", "while", "reversed"],
                   grammar="""
@@ -566,22 +566,22 @@ add5(10)   # 15
 - `callable(x)` tells you whether `x` can be called like a function.
 """,
             problems=[
-                P("py-make-adder", 'Make an Adder', "def make_adder(n: int):",
+                P("py-make-adder", 'Make an Adder', "def make_adder(amount: int):",
                   """
-Write `make_adder(n)` to return a function. That function takes `x` and returns `x + n`.
+Write `make_adder(amount)` to return a function. That function takes `value` and returns `value + amount`.
 
-The tests call `make_adder(n)(x)`.
+The tests call `make_adder(amount)(value)`.
 
 **Constraints**
-- `-10^16 <= n, x <= 10^16`
+- `-10^16 <= amount, value <= 10^16`
 """,
-                  "def make_adder(n: int):\n    def add(x):\n        return x + n\n    return add\n",
+                  "def make_adder(amount: int):\n    def add(value):\n        return value + amount\n    return add\n",
                   [([5, 10], 15), ([0, 0], 0)], [[-3, 3], [100, 1]],
-                  params=["n", "x"],
-                  driver='def driver(ns, n, x):\n    return resolve(ns, "make_adder")(n)(x)\n',
+                  params=["amount", "value"],
+                  driver='def driver(ns, amount, value):\n    return resolve(ns, "make_adder")(amount)(value)\n',
                   grammar="""
 ## Building blocks
-- **A function inside a function:** `def add(x): return x + n`
+- **A function inside a function:** `def add(num): return num + amount`
 - **Return the function itself:** `return plus` (no brackets: you're not calling it).
 """),
                 P("py-make-counter", 'Make a Counter', "def make_counter():",
@@ -605,24 +605,24 @@ The tests make two counters, call the first one `calls` times, then call the sec
 - **Change it from inside:** `nonlocal sum_so_far`, then `sum_so_far += 1`.
 - **Each call to `make_counter()` creates a fresh `count`**, so counters are independent.
 """),
-                P("py-call-if-callable", 'Call It If You Can', "def resolve_value(x, arg):",
+                P("py-call-if-callable", 'Call It If You Can', "def resolve_value(value, arg):",
                   """
-A settings system lets each value be either a plain value or a function that computes it. Write `resolve_value(x, arg)` to return `x(arg)` if `x` can be called, and `x` itself otherwise.
+A settings system lets each value be either a plain value or a function that computes it. Write `resolve_value(value, arg)` to return `value(arg)` if `value` can be called, and `value` itself otherwise.
 
 In the test inputs, a string like `"fn:len"` stands for the function `len` itself.
 
 **Constraints**
-- `x` is a function or a plain value of any type
+- `value` is a function or a plain value of any type
 """,
-                  "def resolve_value(x, arg):\n    return x(arg) if callable(x) else x\n",
+                  "def resolve_value(value, arg):\n    return value(arg) if callable(value) else value\n",
                   [(["fn:len", "abc"], 3), ([5, "abc"], 5)], [["fn:upper", "hi"], ["text", "ignored"]],
-                  params=["x", "arg"],
+                  params=["value", "arg"],
                   # A string like "fn:len" stands for that function, since tests can only pass plain values.
-                  driver='def driver(ns, x, arg):\n    funcs = {"fn:len": len, "fn:upper": str.upper, "fn:abs": abs, "fn:sorted": sorted, "fn:int": int}\n    return resolve(ns, "resolve_value")(funcs.get(x, x) if isinstance(x, str) else x, arg)\n',
+                  driver='def driver(ns, value, arg):\n    funcs = {"fn:len": len, "fn:upper": str.upper, "fn:abs": abs, "fn:sorted": sorted, "fn:int": int}\n    return resolve(ns, "resolve_value")(funcs.get(value, value) if isinstance(value, str) else value, arg)\n',
                   require=["callable"],
                   grammar="""
 ## Building blocks
-- **Can it be called?** `callable(x)`
+- **Can it be called?** `callable(value)`
 - **One-line if/else:** `a if condition else b`
 """),
             ],
@@ -675,15 +675,15 @@ Write `first(items, default)` to return the first item, or `default` if the list
 - **An iterator:** `iter(items)`
 - **Next value, or a fallback:** `next(it, default)`
 """),
-                P("py-first-match", 'First Long Word', "def first_long(words: List[str], n: int) -> Optional[str]:",
+                P("py-first-match", 'First Long Word', "def first_long(words: List[str], length: int) -> Optional[str]:",
                   """
-An autocomplete feature shows the first suggestion longer than the text typed so far. Write `first_long(words, n)` to return the first word longer than `n` characters, or `None`, using `next` with a generator expression.
+An autocomplete feature shows the first suggestion longer than the text typed so far. Write `first_long(words, length)` to return the first word longer than `length` characters, or `None`, using `next` with a generator expression.
 
 **Constraints**
 - `0 <= len(words) <= 10^4`
-- `0 <= n <= 10^16`
+- `0 <= length <= 10^16`
 """,
-                  "def first_long(words: List[str], n: int) -> Optional[str]:\n    return next((w for w in words if len(w) > n), None)\n",
+                  "def first_long(words: List[str], length: int) -> Optional[str]:\n    return next((w for w in words if len(w) > length), None)\n",
                   [([["a", "abcd", "abcdef"], 3], "abcd"), ([["a"], 3], None)], [[[], 0], [["xy", "xyz"], 2]],
                   require=["next", "genexp"],
                   grammar="""
@@ -691,14 +691,14 @@ An autocomplete feature shows the first suggestion longer than the text typed so
 - **A lazy search:** `(x for x in nums if x < 0)` only does the work when asked.
 - **Take the first, or None:** `next(that_generator, None)`. Brackets are needed around the generator when it's not the only argument.
 """),
-                P("py-countdown-generator", 'Countdown Generator', "def countdown(n: int):",
+                P("py-countdown-generator", 'Countdown Generator', "def countdown(start: int):",
                   """
-Write a generator `countdown(n)` that yields `n`, `n - 1`, …, `1`.
+Write a generator `countdown(start)` that yields `start`, `start - 1`, …, `1`.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= start <= 10^16`
 """,
-                  "def countdown(n: int):\n    while n > 0:\n        yield n\n        n -= 1\n",
+                  "def countdown(start: int):\n    while start > 0:\n        yield start\n        start -= 1\n",
                   [([3], Gen([3, 2, 1])), ([0], Gen([]))], [[1], [10]],
                   compare="strict", require=["yield"],
                   grammar="""
@@ -762,15 +762,15 @@ greet("ada")      # 'HI ADA'
                   """
 Write a decorator `double_result` that makes the decorated function return twice its normal result.
 
-The tests decorate a function that returns `a + b`, then call it with `a` and `b`.
+The tests decorate a function that returns `first + second`, then call it with `first` and `second`.
 
 **Constraints**
-- `a` and `b` are two numbers or two strings
+- `first` and `second` are two numbers or two strings
 """,
                   "def double_result(func):\n    def wrapper(*args, **kwargs):\n        return 2 * func(*args, **kwargs)\n    return wrapper\n",
                   [([1, 2], 6), ([0, 0], 0)], [[-5, 2], [10, 10]],
-                  params=["a", "b"],
-                  driver='def driver(ns, a, b):\n    deco = resolve(ns, "double_result")\n\n    @deco\n    def add(x, y):\n        return x + y\n\n    return add(a, b)\n',
+                  params=["first", "second"],
+                  driver='def driver(ns, first, second):\n    deco = resolve(ns, "double_result")\n\n    @deco\n    def add(x, y):\n        return x + y\n\n    return add(first, second)\n',
                   grammar="""
 ## Building blocks
 - **Take a function, return a wrapper:** `def double_result(fn):` … `return inner`

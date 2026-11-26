@@ -3,7 +3,7 @@
 
 LESSONS = {
     "return-arithmetic": """
-**In one sentence:** a function is a small machine that takes some inputs and hands back one answer.
+**Overview:** a function is a small machine that takes some inputs and hands back one answer.
 
 ### The idea
 Every task in Learn Python asks you to finish a **function** (a named, reusable piece of code). Python runs your function with some values, and whatever comes after the word `return` is your answer.
@@ -17,7 +17,7 @@ def add_two(n):
 - The indented line underneath is what the machine does. `return` hands the answer back and stops the function straight away.
 - If you call `add_two(5)`, the answer is `7`.
 
-### Doing maths
+### Adding, subtracting and multiplying
 `+` adds, `-` subtracts and `*` multiplies (Python uses a star for "times", not `x`). Brackets decide what happens first, exactly like in maths:
 
 ```python
@@ -33,7 +33,7 @@ Every single task. Read the inputs, work something out, `return` it.
 - **Not indenting.** The lines inside a function must be pushed in by 4 spaces.
 """,
     "division": """
-**In one sentence:** Python has three kinds of division, and each answers a different question.
+**Overview:** Python has three kinds of division, and each answers a different question.
 
 ### The idea
 | Write | Question it answers | `7 ? 2` gives |
@@ -61,7 +61,7 @@ And `**` means "to the power of": `2 ** 3` is 2 × 2 × 2 = `8`.
 - Forgetting that `//` rounds **down**: `-7 // 2` is `-4`, not `-3`.
 """,
     "comparisons": """
-**In one sentence:** a comparison asks a yes-or-no question, and Python answers `True` or `False`.
+**Overview:** a comparison asks a yes-or-no question, and Python answers `True` or `False`.
 
 ### The idea
 `True` and `False` are Python's yes and no (values of this kind are called *booleans*, or *bools*). You get them by comparing things:
@@ -87,7 +87,7 @@ Python can treat *any* value as a yes or no. Zero, empty text `""`, an empty lis
 - **One `=` versus two.** One `=` *stores* a value (`x = 5`). Two `==` *asks* whether two values are equal (`x == 5`).
 """,
     "if-else": """
-**In one sentence:** `if` lets your code make decisions.
+**Overview:** `if` lets your code make decisions.
 
 ### The idea
 `if` runs some lines only when a condition is true. `elif` (short for "else if") checks another condition, and `else` catches everything that's left.
@@ -115,7 +115,7 @@ Any time the answer depends on the input: grades, labels, prices with discounts.
 - **Forgetting the colon** at the end of an `if` line.
 """,
     "boolean-logic": """
-**In one sentence:** `and`, `or` and `not` combine several yes/no questions into one.
+**Overview:** `and`, `or` and `not` combine several yes/no questions into one.
 
 ### The idea
 - `a and b` is true only when **both** are true.
@@ -136,7 +136,7 @@ Python lets you chain comparisons like you would in maths: `13 <= age <= 19` mea
 - **Writing `day == 6 or 7`.** Python reads this as `(day == 6) or 7`, and `7` on its own always counts as true. Write the full comparison on each side: `day == 6 or day == 7`.
 """,
     "conversions": """
-**In one sentence:** numbers and text are different kinds of value, and you sometimes need to turn one into the other.
+**Overview:** numbers and text are different kinds of value, and you sometimes need to turn one into the other.
 
 ### The idea
 `42` is a number, but `"42"` (in quotes) is text that happens to contain digits (text values are called *strings*). Python won't guess what you mean, so `"5" + 1` is an error.
@@ -159,7 +159,7 @@ Whenever text and numbers meet: reading what someone typed (always text), or bui
 - `int(3.9)` is `3`, not `4`. It cuts the decimals off; it doesn't round.
 """,
     "number-builtins": """
-**In one sentence:** Python comes with ready-made functions for common number jobs.
+**Overview:** Python comes with ready-made functions for common number jobs.
 
 ### The idea
 These are *built-in functions*: they're always available, with nothing to import.
@@ -180,7 +180,7 @@ max(3, 8, 5)       # 8     the largest (any number of values)
 - `round(2.5)` gives `2`, not `3`! Python rounds exact halves to the nearest **even** number (called *banker's rounding*), so `round(3.5)` is `4`.
 """,
     "print": """
-**In one sentence:** `print` shows something on the screen.
+**Overview:** `print` shows something on the screen.
 
 ### The idea
 ```python
@@ -203,7 +203,7 @@ Talking to the person running your program, and checking what your code is doing
 - Extra or missing spaces: `print("a", "b")` shows `a b` with a space, but `print("a" + "b")` shows `ab`.
 """,
     "input": """
-**In one sentence:** `input()` waits for someone to type a line, and gives you what they typed.
+**Overview:** `input()` waits for someone to type a line, and gives you what they typed.
 
 ### The idea
 ```python

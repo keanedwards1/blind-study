@@ -157,14 +157,14 @@ A growth report counts how many different people used the app today who aren't r
     ),
     "set-operations": dict(
         warmup=[
-            P("py-shared-deps", 'Shared Dependencies', "def shared(a: Set[str], b: Set[str]) -> Set[str]:",
+            P("py-shared-deps", 'Shared Dependencies', "def shared(first_service: Set[str], second_service: Set[str]) -> Set[str]:",
               """
-Two services each have a set of the libraries they depend on. Write `shared(a, b)` to return the libraries both services use, with the `&` operator.
+Two services each have a set of the libraries they depend on. Write `shared(first_service, second_service)` to return the libraries both services use, with the `&` operator.
 
 **Constraints**
-- `0 <= len(a), len(b) <= 1000`
+- `0 <= len(first_service), len(second_service) <= 1000`
 """,
-              "def shared(a: Set[str], b: Set[str]) -> Set[str]:\n    return a & b\n",
+              "def shared(first_service: Set[str], second_service: Set[str]) -> Set[str]:\n    return first_service & second_service\n",
               [([["x", "y"], ["y", "z"]], ["y"]), ([[], ["a"]], [])], [[["a"], ["a"]]],
               **{"in": ["set", "set"]},
               hints=["The values that are in both sets are called the intersection.",

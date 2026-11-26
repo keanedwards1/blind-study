@@ -53,17 +53,17 @@ A running app shows the average pace of a run as `"M:SS /km"`. Write `pace(secon
     ),
     "bases": dict(
         warmup=[
-            P("py-to-binary", 'Number to Binary', "def to_binary(n: int) -> str:",
+            P("py-to-binary", 'Number to Binary', "def to_binary(number: int) -> str:",
               """
-A debugging tool prints numbers in binary. Write `to_binary(n)` to return `n` in binary without the `0b` prefix, using `bin`.
+A debugging tool prints numbers in binary. Write `to_binary(number)` to return `number` in binary without the `0b` prefix, using `bin`.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-              "def to_binary(n: int) -> str:\n    return bin(n)[2:]\n",
+              "def to_binary(number: int) -> str:\n    return bin(number)[2:]\n",
               [([5], "101"), ([0], "0")], [[1], [255]],
               require=["bin"],
-              hints=["`bin(n)` returns text starting with `0b`.",
+              hints=["`bin(number)` returns text starting with `0b`.",
                      "That prefix is always two characters long.",
                      "Slice it off."],
               grammar="""
@@ -73,14 +73,14 @@ A debugging tool prints numbers in binary. Write `to_binary(n)` to return `n` in
 """),
         ],
         practice=[
-            P("py-colour-code", 'RGB to Hex', "def colour(r: int, g: int, b: int) -> str:",
+            P("py-colour-code", 'RGB to Hex', "def colour(red: int, green: int, blue: int) -> str:",
               """
-A design tool stores colours as hex codes like `"#ff8000"`, with two hex digits each for red, green and blue. Write `colour(r, g, b)` to return `"#"` followed by each value as two lower-case hex digits.
+A design tool stores colours as hex codes like `"#ff8000"`, with two hex digits each for red, green and blue. Write `colour(red, green, blue)` to return `"#"` followed by each value as two lower-case hex digits.
 
 **Constraints**
-- `0 <= r, g, b <= 255`
+- `0 <= red, green, blue <= 255`
 """,
-              "def colour(r: int, g: int, b: int) -> str:\n    return \"#\" + \"\".join(format(v, \"02x\") for v in (r, g, b))\n",
+              "def colour(red: int, green: int, blue: int) -> str:\n    return \"#\" + \"\".join(format(v, \"02x\") for v in (red, green, blue))\n",
               [([255, 128, 0], "#ff8000"), ([0, 0, 0], "#000000")], [[1, 2, 3], [16, 255, 10]],
               hints=["Each colour needs exactly two hex digits, so small numbers need a leading zero.",
                      "`format(value, \"02x\")` gives lower-case hex padded to 2 digits.",
@@ -99,18 +99,18 @@ A design tool stores colours as hex codes like `"#ff8000"`, with two hex digits 
     ),
     "bit-ops": dict(
         warmup=[
-            P("py-is-odd-bit", 'Odd Check with a Bit', "def is_odd(n: int) -> bool:",
+            P("py-is-odd-bit", 'Odd Check with a Bit', "def is_odd(number: int) -> bool:",
               """
-Odd numbers always have their last binary digit set. Write `is_odd(n)` to return `True` if `n` is odd, checking that bit with `&` instead of using `%`.
+Odd numbers always have their last binary digit set. Write `is_odd(number)` to return `True` if `number` is odd, checking that bit with `&` instead of using `%`.
 
 **Constraints**
-- `0 <= n <= 10^16`
+- `0 <= number <= 10^16`
 """,
-              "def is_odd(n: int) -> bool:\n    return n & 1 == 1\n",
+              "def is_odd(number: int) -> bool:\n    return number & 1 == 1\n",
               [([7], True), ([10], False)], [[0], [1], [1001]],
               forbid=["op:%"], require=["op:&"],
               hints=["In binary, odd numbers end in 1 and even numbers end in 0.",
-                     "`n & 1` keeps only that last bit.",
+                     "`number & 1` keeps only that last bit.",
                      "Compare it with 1."],
               grammar="""
 ## Building blocks
@@ -243,14 +243,14 @@ A serial protocol adds a simple checksum to every message: the sum of its UTF-8 
     ),
     "types": dict(
         warmup=[
-            P("py-is-text", 'Is It Text?', "def is_text(x) -> bool:",
+            P("py-is-text", 'Is It Text?', "def is_text(value) -> bool:",
               """
-A form validator only accepts text in its name field. Write `is_text(x)` to return `True` if `x` is a `str`, using `isinstance`.
+A form validator only accepts text in its name field. Write `is_text(value)` to return `True` if `value` is a `str`, using `isinstance`.
 
 **Constraints**
-- `x` can be a value of any type
+- `value` can be a value of any type
 """,
-              "def is_text(x) -> bool:\n    return isinstance(x, str)\n",
+              "def is_text(value) -> bool:\n    return isinstance(value, str)\n",
               [(["abc"], True), ([3], False)], [[None], [[1]]],
               require=["isinstance"],
               hints=["`isinstance(value, type)` checks a value's type.",
@@ -363,9 +363,9 @@ A weather app labels each hour `"day"` from 6 up to, but not including, 18, and 
 """),
         ],
         practice=[
-            P("py-match-command", 'Handle Chat Commands', "def command(cmd: List[str]) -> str:",
+            P("py-match-command", 'Handle Chat Commands', "def command(words: List[str]) -> str:",
               """
-A chat bot receives each command as a list of words. Write `command(cmd)` to handle them with `match`:
+A chat bot receives each command as a list of words. Write `command(words)` to handle them with `match`:
 
 - `["go", place]` returns `"heading to PLACE"`
 - `["stop"]` returns `"stopping"`
@@ -373,10 +373,10 @@ A chat bot receives each command as a list of words. Write `command(cmd)` to han
 - anything else returns `"unknown"`
 
 **Constraints**
-- `0 <= len(cmd) <= 10^4`
+- `0 <= len(words) <= 10^4`
 - Each word is a non-empty lowercase string
 """,
-              "def command(cmd: List[str]) -> str:\n    match cmd:\n        case [\"go\", place]:\n            return f\"heading to {place}\"\n        case [\"stop\"]:\n            return \"stopping\"\n        case [\"report\", *items]:\n            return f\"reporting {len(items)} items\"\n        case _:\n            return \"unknown\"\n",
+              "def command(words: List[str]) -> str:\n    match words:\n        case [\"go\", place]:\n            return f\"heading to {place}\"\n        case [\"stop\"]:\n            return \"stopping\"\n        case [\"report\", *items]:\n            return f\"reporting {len(items)} items\"\n        case _:\n            return \"unknown\"\n",
               [([["go", "lake"]], "heading to lake"), ([["report", "a", "b"]], "reporting 2 items")], [[["stop"]], [["report"]], [["fly"]], [[]]],
               require=["match"],
               hints=["`match` can compare against list shapes: `case [\"halt\"]:` would match exactly the one-word list `[\"halt\"]`.",
@@ -400,15 +400,15 @@ A chat bot receives each command as a list of words. Write `command(cmd)` to han
     ),
     "dynamic-code": dict(
         warmup=[
-            P("py-eval-sum", 'Evaluate an Expression', "def calc(expr: str) -> int:",
+            P("py-eval-sum", 'Evaluate an Expression', "def calc(expression: str) -> int:",
               """
-A calculator widget receives each sum as text, like `"3 + 4"`. Write `calc(expr)` to return its value, using `eval`.
+A calculator widget receives each sum as text, like `"3 + 4"`. Write `calc(expression)` to return its value, using `eval`.
 
 **Constraints**
-- `1 <= len(expr) <= 10^4`
-- `expr` is valid arithmetic using whole numbers, `+`, `-`, `*`, `/` and brackets
+- `1 <= len(expression) <= 10^4`
+- `expression` is valid arithmetic using whole numbers, `+`, `-`, `*`, `/` and brackets
 """,
-              "def calc(expr: str) -> int:\n    return eval(expr)\n",
+              "def calc(expression: str) -> int:\n    return eval(expression)\n",
               [(["3 + 4"], 7), (["10 - 2 * 3"], 4)], [["0"], ["2 ** 5"]],
               require=["eval"],
               hints=["`eval(text)` runs a Python expression written as text and returns its value.",

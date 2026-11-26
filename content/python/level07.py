@@ -72,17 +72,17 @@ c.increment()   # 1
 - **Refuse early:** `if target_amt > self._balance: return False`
 """),
                 P("py-class-stack", "Stack with Peek", None,
-                  """Write a class `Stack` with `push(x)`, `pop()` (remove and return the top, or `None` if empty), `peek()` (return the top without removing it, or `None`) and `is_empty()`.
+                  """Write a class `Stack` with `push(item)`, `pop()` (remove and return the top, or `None` if empty), `peek()` (return the top without removing it, or `None`) and `is_empty()`.
 
 **Constraints**
-- `x` can be a value of any type
+- `item` can be a value of any type
 - Up to 100 method calls
 """,
-                  "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, x: int) -> None:\n        self.items.append(x)\n\n    def pop(self):\n        return self.items.pop() if self.items else None\n\n    def peek(self):\n        return self.items[-1] if self.items else None\n\n    def is_empty(self) -> bool:\n        return not self.items\n",
+                  "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item: int) -> None:\n        self.items.append(item)\n\n    def pop(self):\n        return self.items.pop() if self.items else None\n\n    def peek(self):\n        return self.items[-1] if self.items else None\n\n    def is_empty(self) -> bool:\n        return not self.items\n",
                   [([["Stack", "is_empty", "push", "push", "peek", "pop", "pop", "pop", "is_empty"], [[], [], [1], [2], [], [], [], [], []]], [None, True, None, None, 2, 2, 1, None, True])],
                   [[["Stack", "peek"], [[], []]], [["Stack", "push", "is_empty", "peek"], [[], [9], [], []]]],
                   kind="class", cls="Stack",
-                  starter="class Stack:\n    def __init__(self):\n        pass\n\n    def push(self, x: int) -> None:\n        pass\n\n    def pop(self):\n        pass\n\n    def peek(self):\n        pass\n\n    def is_empty(self) -> bool:\n        pass\n",
+                  starter="class Stack:\n    def __init__(self):\n        pass\n\n    def push(self, item: int) -> None:\n        pass\n\n    def pop(self):\n        pass\n\n    def peek(self):\n        pass\n\n    def is_empty(self) -> bool:\n        pass\n",
                   grammar="""
 ## Building blocks
 - **A list inside the object:** `self.items = []`
@@ -122,17 +122,17 @@ Without `__eq__`, `==` only checks whether two names point to the same object.
 - `repr(Point(1, 2))` is `"Point(1, 2)"`;
 - two points are `==` when their coordinates match.
 
-The tests return `[repr of the first point, p == q, p == Point(0, 0)]`.
+The tests return `[repr of the first point, first_point == second_point, first_point == Point(0, 0)]`.
 
 **Constraints**
-- `len(p) == len(q) == 2`
-- `-10^16 <= p[i], q[i] <= 10^16`
+- `len(first_point) == len(second_point) == 2`
+- `-10^16 <= first_point[i], second_point[i] <= 10^16`
 """,
                   "class Point:\n    def __init__(self, x: int, y: int):\n        self.x = x\n        self.y = y\n\n    def __repr__(self) -> str:\n        return f\"Point({self.x}, {self.y})\"\n\n    def __eq__(self, other) -> bool:\n        return isinstance(other, Point) and (self.x, self.y) == (other.x, other.y)\n",
                   [([[1, 2], [1, 2]], ["Point(1, 2)", True, False]), ([[0, 0], [5, 5]], ["Point(0, 0)", False, True])], [[[-1, 3], [-1, 4]]],
-                  params=["p", "q"],
+                  params=["first_point", "second_point"],
                   starter="class Point:\n    def __init__(self, x: int, y: int):\n        pass\n",
-                  driver='def driver(ns, p, q):\n    Point = resolve_class(ns, "Point")\n    a, b = Point(*p), Point(*q)\n    return [repr(a), a == b, a == Point(0, 0)]\n',
+                  driver='def driver(ns, first_point, second_point):\n    Point = resolve_class(ns, "Point")\n    a, b = Point(*first_point), Point(*second_point)\n    return [repr(a), a == b, a == Point(0, 0)]\n',
                   grammar="""
 ## Building blocks
 - **Text for repr:** `def __repr__(self): return f"Point({self.x}, {self.y})"`
@@ -157,18 +157,18 @@ The tests return `[repr of the first point, p == q, p == Point(0, 0)]`.
 - **Dollars and cents:** `cents // 100` and `cents % 100`, padded with `:02d`.
 """),
                 P("py-vector-add", "Vector Addition", None,
-                  """Write a class `Vector(*components)` supporting `+` (adds matching components, giving a new `Vector`) and `len()` (number of components). It also needs a `components` attribute that is a list. The tests return `[(a + b).components, len(a)]`.
+                  """Write a class `Vector(*components)` supporting `+` (adds matching components, giving a new `Vector`) and `len()` (number of components). It also needs a `components` attribute that is a list. The tests return `[(first_vector + second_vector).components, len(first_vector)]`.
 
 **Constraints**
-- `1 <= len(a) <= 10^4`
-- `len(b) == len(a)`
-- `-10^16 <= a[i], b[i] <= 10^16`
+- `1 <= len(first_vector) <= 10^4`
+- `len(second_vector) == len(first_vector)`
+- `-10^16 <= first_vector[i], second_vector[i] <= 10^16`
 """,
                   "class Vector:\n    def __init__(self, *components: int):\n        self.components = list(components)\n\n    def __add__(self, other: \"Vector\") -> \"Vector\":\n        return Vector(*(x + y for x, y in zip(self.components, other.components)))\n\n    def __len__(self) -> int:\n        return len(self.components)\n",
                   [([[1, 2], [10, 20]], [[11, 22], 2]), ([[5], [-5]], [[0], 1])], [[[1, 1, 1], [2, 2, 2]]],
-                  params=["a", "b"], difficulty="Medium",
+                  params=["first_vector", "second_vector"], difficulty="Medium",
                   starter="class Vector:\n    def __init__(self, *components: int):\n        pass\n",
-                  driver='def driver(ns, a, b):\n    Vector = resolve_class(ns, "Vector")\n    va, vb = Vector(*a), Vector(*b)\n    return [(va + vb).components, len(va)]\n',
+                  driver='def driver(ns, first_vector, second_vector):\n    Vector = resolve_class(ns, "Vector")\n    va, vb = Vector(*first_vector), Vector(*second_vector)\n    return [(va + vb).components, len(va)]\n',
                   grammar="""
 ## Building blocks
 - **`+`:** `def __add__(self, other): return Vector(...)`, returning a new object.
@@ -441,18 +441,18 @@ Sometimes the attribute name is in a variable:
 - `namedtuple("Point", "x y")`: a tuple whose items have names: `p.x`.
 """,
             problems=[
-                P("py-most-common-letter", "Most Common Letter", "def most_common(s: str) -> str:",
-                  """Return the most common character in `s` (the first one to reach that count, if tied).
+                P("py-most-common-letter", "Most Common Letter", "def most_common(text: str) -> str:",
+                  """Return the most common character in `text` (the first one to reach that count, if tied).
 
 **Constraints**
-- `1 <= len(s) <= 10^4`
+- `1 <= len(text) <= 10^4`
 """,
-                  "def most_common(s: str) -> str:\n    return Counter(s).most_common(1)[0][0]\n",
+                  "def most_common(text: str) -> str:\n    return Counter(text).most_common(1)[0][0]\n",
                   [(["banana"], "a"), (["abc"], "a")], [["zzzy"], ["mississippi"]],
                   require=["Counter"],
                   grammar="""
 ## Building blocks
-- **Count everything:** `Counter(s)`
+- **Count everything:** `Counter(text)`
 - **Top one:** `.most_common(1)` gives `[(char, count)]`, so take `[0][0]`.
 """),
                 P("py-anagram-groups-dd", "Group Anagrams with defaultdict", "def group(words: List[str]) -> List[List[str]]:",
@@ -470,19 +470,19 @@ Sometimes the attribute name is in a variable:
 - **Key shared by anagrams:** `"".join(sorted(w))`
 - **No setup needed:** `groups[key].append(w)`
 """),
-                P("py-recent-items", "Last K Items", "def recent(items: List[int], k: int) -> List[int]:",
-                  """Feed `items` one at a time into a `deque` that only keeps the last `k`, and return what's left as a list.
+                P("py-recent-items", "Last K Items", "def recent(items: List[int], limit: int) -> List[int]:",
+                  """Feed `items` one at a time into a `deque` that only keeps the last `limit`, and return what's left as a list.
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
-- `1 <= k <= 10^16`
+- `1 <= limit <= 10^16`
 """,
-                  "def recent(items: List[int], k: int) -> List[int]:\n    window = deque(maxlen=k)\n    for x in items:\n        window.append(x)\n    return list(window)\n",
+                  "def recent(items: List[int], limit: int) -> List[int]:\n    window = deque(maxlen=limit)\n    for x in items:\n        window.append(x)\n    return list(window)\n",
                   [([[1, 2, 3, 4, 5], 3], [3, 4, 5]), ([[1], 3], [1])], [[[], 2], [list(range(100)), 1]],
                   require=["deque"],
                   grammar="""
 ## Building blocks
-- **A bounded queue:** `deque(maxlen=k)` drops the oldest item automatically.
+- **A bounded queue:** `deque(maxlen=limit)` drops the oldest item automatically.
 """),
                 P("py-namedtuple-points", "Named Points", "def furthest(points: List[List[int]]) -> List[int]:",
                   """Turn each `[x, y]` into a `namedtuple` `Point` with fields `x` and `y`, and return the coordinates `[x, y]` of the point furthest from the origin (the first one, if tied).
@@ -527,32 +527,32 @@ Sometimes the attribute name is in a variable:
 - `insort(a, x)`: insert `x`, keeping the list sorted
 """,
             problems=[
-                P("py-k-smallest", "K Smallest", "def k_smallest(nums: List[int], k: int) -> List[int]:",
-                  """Return the `k` smallest numbers in increasing order, using a heap (not by sorting the whole list).
+                P("py-k-smallest", "K Smallest", "def k_smallest(nums: List[int], count: int) -> List[int]:",
+                  """Return the `count` smallest numbers in increasing order, using a heap (not by sorting the whole list).
 
 **Constraints**
 - `0 <= len(nums) <= 10^4`
 - `-10^16 <= nums[i] <= 10^16`
-- `0 <= k <= 10^16`
+- `0 <= count <= 10^16`
 """,
-                  "def k_smallest(nums: List[int], k: int) -> List[int]:\n    heap = list(nums)\n    heapify(heap)\n    return [heappop(heap) for _ in range(min(k, len(heap)))]\n",
+                  "def k_smallest(nums: List[int], count: int) -> List[int]:\n    heap = list(nums)\n    heapify(heap)\n    return [heappop(heap) for _ in range(min(count, len(heap)))]\n",
                   [([[5, 1, 4, 2], 2], [1, 2]), ([[3], 5], [3])], [[[], 1], [[9, 9, 1], 3]],
                   require=["heappop"], forbid=["sorted", ".sort"],
                   grammar="""
 ## Building blocks
 - **Heap in place:** `heapify(pq)` (copy the list first, so you don't change the input).
 - **Smallest each time:** `heappop(heap)`
-- **Or simply:** `nsmallest(k, nums)`
+- **Or simply:** `nsmallest(count, nums)`
 """),
-                P("py-insert-sorted", "Keep It Sorted (in place)", "def add_sorted(items: List[int], x: int) -> None:",
-                  """Insert `x` into `items` so it stays sorted, in place, using `bisect`.
+                P("py-insert-sorted", "Keep It Sorted (in place)", "def add_sorted(items: List[int], value: int) -> None:",
+                  """Insert `value` into `items` so it stays sorted, in place, using `bisect`.
 
 **Constraints**
 - `0 <= len(items) <= 10^4`
 - `items` is sorted from smallest to largest
-- `-10^16 <= items[i], x <= 10^16`
+- `-10^16 <= items[i], value <= 10^16`
 """,
-                  "def add_sorted(items: List[int], x: int) -> None:\n    insort(items, x)\n",
+                  "def add_sorted(items: List[int], value: int) -> None:\n    insort(items, value)\n",
                   [([[1, 3, 5], 4], [1, 3, 4, 5]), ([[], 1], [1])], [[[1, 1], 1], [[2, 4], 0]],
                   mutate=0, require=["insort"],
                   grammar="""
@@ -626,19 +626,19 @@ Sometimes the attribute name is in a variable:
 ## Building blocks
 - **Running anything:** `accumulate(nums, max)`. With no function it's running totals.
 """),
-                P("py-run-lengths", "Run-Length Encoding", "def encode(s: str) -> str:",
+                P("py-run-lengths", "Run-Length Encoding", "def encode(text: str) -> str:",
                   """Compress runs of the same character: write each character followed by how many times it repeats in a row. Use `itertools.groupby`.
 
 **Constraints**
-- `0 <= len(s) <= 10^4`
-- `s` is English letters
+- `0 <= len(text) <= 10^4`
+- `text` is English letters
 """,
-                  'def encode(s: str) -> str:\n    return "".join(f"{ch}{len(list(run))}" for ch, run in itertools.groupby(s))\n',
+                  'def encode(text: str) -> str:\n    return "".join(f"{ch}{len(list(run))}" for ch, run in itertools.groupby(text))\n',
                   [(["aaabcc"], "a3b1c2"), ([""], ""), (["x"], "x1")], [["aabbaa"], ["zzzzzzzzzzzz"]],
                   require=["groupby"], difficulty="Medium",
                   grammar="""
 ## Building blocks
-- **Runs of equal neighbours:** `itertools.groupby(s)` yields `(char, run)` pairs.
+- **Runs of equal neighbours:** `itertools.groupby(text)` yields `(char, run)` pairs.
 - **Length of a run:** `len(list(run))`
 """),
                 P("py-every-outfit", "Every Outfit", "def outfits(tops: List[str], bottoms: List[str]) -> List[str]:",
@@ -676,18 +676,18 @@ Sometimes the attribute name is in a variable:
 **math**: `gcd`, `lcm`, `isqrt` (exact integer square root), `comb`, `sqrt`, `floor`, `ceil`, `inf`.
 """,
             problems=[
-                P("py-memo-fib", "Fast Fibonacci", "def fib(n: int) -> int:",
-                  """Return the `n`th Fibonacci number (`fib(0) = 0`, `fib(1) = 1`) **recursively**. Without caching it would take forever; add `@cache`.
+                P("py-memo-fib", "Fast Fibonacci", "def fib(position: int) -> int:",
+                  """Return the Fibonacci number at `position` (`fib(0) = 0`, `fib(1) = 1`) **recursively**. Without caching it would take forever; add `@cache`.
 
 **Constraints**
-- `0 <= n <= 300`
+- `0 <= position <= 300`
 """,
-                  "@cache\ndef fib(n: int) -> int:\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n",
+                  "@cache\ndef fib(position: int) -> int:\n    if position < 2:\n        return position\n    return fib(position - 1) + fib(position - 2)\n",
                   [([10], 55), ([0], 0), ([1], 1)], [[50], [90], [300]],
                   require=["recursion", "cache"],
                   grammar="""
 ## Building blocks
-- **Remember results:** put `@cache` on the line above `def fib(n):`.
+- **Remember results:** put `@cache` on the line above `def fib(position):`.
 - **Base case:** `if size < 2: return size`
 - **Recursive case:** the function calls itself on smaller inputs, e.g. `f(k - 1)`.
 """),
@@ -736,19 +736,19 @@ Sometimes the attribute name is in a variable:
 - **GCD of two:** `math.gcd(a, b)`
 - **Of many:** `reduce(math.gcd, nums)` (in Python 3.9+, `math.gcd(*nums)` also works).
 """),
-                P("py-perfect-square", "Perfect Square?", "def is_square(n: int) -> bool:",
-                  """Return `True` if `n` (which can be huge) is a perfect square. Use `math.isqrt`, which is exact for big numbers where `n ** 0.5` isn't.
+                P("py-perfect-square", "Perfect Square?", "def is_square(number: int) -> bool:",
+                  """Return `True` if `number` (which can be huge) is a perfect square. Use `math.isqrt`, which is exact for big numbers where `number ** 0.5` isn't.
 
 **Constraints**
-- `0 <= n <= 10^31`
+- `0 <= number <= 10^31`
 """,
-                  "def is_square(n: int) -> bool:\n    r = math.isqrt(n)\n    return r * r == n\n",
+                  "def is_square(number: int) -> bool:\n    r = math.isqrt(number)\n    return r * r == number\n",
                   [([16], True), ([15], False), ([0], True)], [[1], [10 ** 30], [10 ** 30 + 1]],
                   require=["isqrt"],
                   grammar="""
 ## Building blocks
-- **Exact integer square root:** `math.isqrt(n)` rounds down.
-- **Check:** `r * r == n`
+- **Exact integer square root:** `math.isqrt(number)` rounds down.
+- **Check:** `r * r == number`
 """),
             ],
             quiz=[
