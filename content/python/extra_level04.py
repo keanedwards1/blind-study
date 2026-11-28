@@ -77,16 +77,18 @@ A plugin registry maps each plugin's name to its load order. Write `names(regist
 """),
         ],
         practice=[
-            P("py-cheapest-supplier", 'Cheapest Supplier', "def cheapest(prices: Dict[str, int]) -> str:",
+            P("py-cheapest-supplier", 'Cheapest Supplier', "def cheapest(prices: Dict[str, float]) -> str:",
               """
-A purchasing tool compares quotes from several suppliers. Write `cheapest(prices)`, where `prices` maps supplier names to their price, to return the cheapest supplier. If several tie, return the one that comes first alphabetically.
+A purchasing tool compares quotes from several suppliers for a given order. Write `cheapest()` so that it returns the name of the cheapest supplier given the input. If several tie, return the one that comes first alphabetically.
 
 **Constraints**
 - `1 <= len(prices) <= 10^4`
-- `-10^16 <= prices[name] <= 10^16`
+- `0 <= prices[name] <= 10^6`, with at most two decimal places
 """,
-              "def cheapest(prices: Dict[str, int]) -> str:\n    best = None\n    for name, cost in sorted(prices.items()):\n        if best is None or cost < prices[best]:\n            best = name\n    return best\n",
-              [([{"tea": 3, "jam": 2, "bun": 2}], "bun"), ([{"x": 1}], "x")], [[{"b": 1, "a": 1}], [{"z": 5, "y": 9}]],
+              "def cheapest(prices: Dict[str, float]) -> str:\n    best = None\n    for name, cost in sorted(prices.items()):\n        if best is None or cost < prices[best]:\n            best = name\n    return best\n",
+              [([{"Northgate Supply": 412.50, "Harbor Line Packaging": 398.75, "Brightwell Industrial": 398.75}], "Brightwell Industrial"),
+               ([{"Cedar Ridge Lumber": 1249.99}], "Cedar Ridge Lumber")],
+              [[{"Pinecrest Office Supply": 24.99, "Lakeshore Stationers": 24.98}], [{"Willowbrook Farms": 3.15, "Amberfield Dairy": 3.89}]],
               hints=["`.items()` gives each supplier together with its price.",
                      "Sorting the items puts the names in alphabetical order, so on a tie the first one you see is the right one.",
                      "Keep the best supplier so far, and replace it only when a price is strictly lower."],

@@ -25,6 +25,24 @@ def _restock_order(seed, *, stocked, lines, empty, unlisted):
     return [stock, order]
 
 
+# Made-up supplier names. _supplier_quotes builds a fixed (seeded) dict of quotes, to the cent, for one order.
+SUPPLIER_FIRST = ["Northgate", "Harbor Line", "Brightwell", "Cedar Ridge", "Pinecrest", "Lakeshore", "Willowbrook", "Amberfield",
+                  "Ironvale", "Bluestone", "Summit Peak", "Redfern", "Copperleaf", "Silverbirch", "Maple Hollow", "Granite Bay"]
+SUPPLIER_LAST = ["Supply", "Packaging", "Industrial", "Trading Co.", "Wholesale", "Distributors", "Materials", "Logistics",
+                 "Manufacturing", "Goods", "Imports", "Provisions", "Hardware"]
+SUPPLIERS = [f"{a} {b}" for a in SUPPLIER_FIRST for b in SUPPLIER_LAST]
+
+def _supplier_quotes(seed, *, suppliers, base, tied):
+    """Quotes from `suppliers` suppliers spread around `base` dollars. `tied` of them share the lowest price."""
+    rng = random.Random(seed)
+    names = rng.sample(SUPPLIERS, suppliers)
+    quotes = {name: round(base * rng.uniform(0.9, 1.3), 2) for name in names}
+    low = round(min(quotes.values()) - 0.01, 2)
+    for name in rng.sample(names, tied):
+        quotes[name] = low
+    return [quotes]
+
+
 EXHAUSTIVE = {"py-ds-pick-structure"}
 
 EDGES = {
@@ -65,8 +83,16 @@ EDGES = {
                             ("one word", [["solo"]]), ("all the same letter", [["ab", "ac", "ad"]]), ("one-letter words", [["a", "b", "a"]]), ('digits as initials', [['1st', '2nd', '10th']])],
     "py-zip-to-dict": [("empty lists", [[], []]), ("repeated key keeps the last", [["x", "x"], [1, 2]]), ("one pair", [["a"], [1]]),
                        ("None values", [["a", "b"], [None, None]]), ("many columns", [list("abcdef"), list(range(6))]), ("numbers as keys", [[1, 2], ["a", "b"]]), ('mixed value types', [['n', 's'], [1, 'x']])],
-    "py-cheapest-supplier": [("one supplier", [{"x": 1}]), ("tie goes alphabetical", [{"b": 1, "a": 1}]), ("cheapest first", [{"z": 5, "y": 9}]),
-                             ("zero price", [{"a": 3, "b": 0}]), ("decimals", [{"a": 1.5, "b": 1.25}]), ("tie, alphabetical isn't insertion order", [{"zed": 2, "amy": 2, "max": 3}]), ('negative price', [{'a': 1, 'b': -1}])],
+    "py-cheapest-supplier": [("one supplier", [{"Ironvale Metals": 86.40}]),
+                             ("tie goes alphabetical", [{"Redfern Hardware": 19.95, "Copperleaf Goods": 19.95}]),
+                             ("cheapest listed first", [{"Summit Peak Logistics": 2150.00, "Granite Bay Freight": 2275.50}]),
+                             ("free sample beats paid quotes", [{"Bluestone Materials": 48.00, "Maple Hollow Provisions": 0.0}]),
+                             ("one cent apart", [{"Silverbirch Imports": 7.49, "Amberfield Wholesale": 7.50}]),
+                             ("round dollars against cents", [{"Northgate Supply": 150.0, "Lakeshore Distributors": 149.99}]),
+                             ("tie, alphabetical isn't insertion order", [{"Willowbrook Farms": 3.15, "Brightwell Industrial": 3.15, "Pinecrest Office Supply": 3.29}]),
+                             ("many quotes", _supplier_quotes(3, suppliers=40, base=640.0, tied=1)),
+                             ("many quotes, three-way tie", _supplier_quotes(8, suppliers=90, base=12.5, tied=3)),
+                             ("every supplier in the catalogue", _supplier_quotes(21, suppliers=len(SUPPLIERS), base=18400.0, tied=2))],
     "py-has-repeat-visitor": [("no visitors", [[]]), ("immediate repeat", [["x", "x"]]), ("all different", [["a", "b", "c", "d"]]),
                               ("case matters", [["Ada", "ada"]]), ("repeat at the end", [["a", "b", "c", "a"]]), ("one visitor", [["a"]])],
     "py-unique-count": [("empty list", [[]]), ("all the same", [[7] * 10]), ("all different", [list(range(50))]), ("one item", [[4]]),
